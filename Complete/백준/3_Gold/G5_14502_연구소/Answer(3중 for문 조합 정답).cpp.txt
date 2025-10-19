@@ -1,0 +1,102 @@
+// 백준 14502번 - 연구소
+// N X M (3 ≤ N, M ≤ 8)
+// 빈칸 = 0, 벽 = 1, 바이러스 = 2
+// 상하좌우 인접 이동
+// 새로운 벽 3개 무조건 세워야 함
+// 범위가 작아서 조합 + 완전탐색 가능
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int dy[] = {-1, 0, 1,  0};
+const int dx[] = { 0, 1, 0, -1};
+
+int arr[10][10];
+int visited[10][10];
+int N, M, ret;
+vector<pair<int, int>> virusList;
+vector<pair<int, int>> emptyList;
+
+void DFS(int y, int x)
+{
+    for(int i = 0; i < 4; i++)
+    {
+        int ny = y + dy[i];
+        int nx = x + dx[i];
+
+        // 경계 / 방문 / 벽 체크
+        if(ny < 0 || ny >= N || nx < 0 || nx >= M || visited[ny][nx] || arr[ny][nx] == 1) continue;
+
+        visited[ny][nx] = 1; // 감염 표시(방문)
+
+        DFS(ny, nx);
+    }
+}
+
+int Check()
+{
+    // 방문 배열 초기화
+    fill_n(&visited[0][0], 10 * 10, 0);
+
+    // 모든 바이러스에서 확산 시작
+    for(pair<int, int> virus : virusList)
+    {
+        visited[virus.first][virus.second] = 1;
+        DFS(virus.first, virus.second);
+    }
+
+    // 안전영역(0이면서 방문되지 않은 칸) 카운트
+    int cnt = 0;
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < M; j++)
+        {
+            if(arr[i][j] == 0 && !visited[i][j]) cnt++;
+        }
+    }
+    return cnt;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> N >> M;
+
+    // 입력 파싱 및 빈칸/바이러스 위치 저장
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < M; j++)
+        {
+            cin >> arr[i][j];
+            if     (arr[i][j] == 0) emptyList.emplace_back(i, j); // 빈칸 목록
+            else if(arr[i][j] == 2) virusList.emplace_back(i, j); // 바이러스 목록
+        }
+    }
+
+    // 빈칸 중 3개를 선택하는 모든 조합 탐색
+    for(int i = 0; i < (int)emptyList.size(); i++)
+    {
+        for(int j = 0; j < i; j++)
+        {
+            for(int k = 0; k < j; k++)
+            {
+                // 선택된 3칸을 벽으로 세움
+                arr[emptyList[i].first][emptyList[i].second] = 1;
+                arr[emptyList[j].first][emptyList[j].second] = 1;
+                arr[emptyList[k].first][emptyList[k].second] = 1;
+
+                // 바이러스 확산 시뮬레이션 및 안전영역 계산
+                ret = max(ret, Check());
+
+                // 원복
+                arr[emptyList[i].first][emptyList[i].second] = 0;
+                arr[emptyList[j].first][emptyList[j].second] = 0;
+                arr[emptyList[k].first][emptyList[k].second] = 0;
+            }
+        }
+    }
+
+    cout << ret << "\n";
+    return 0;
+}

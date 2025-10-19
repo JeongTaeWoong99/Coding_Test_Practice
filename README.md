@@ -38,6 +38,6 @@ Complete/
 │   └── 📂 4_Platinum
 └── 📂 해커 랭크
     ├── 📂 Easy
-    └── 📂 Medium
+    ├── 📂 Medium
     └── 📂 Hard
 ```

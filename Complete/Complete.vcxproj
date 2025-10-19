@@ -183,6 +183,8 @@
     <None Include="백준\3_Gold\G4_14497_주난의난\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_14497_주난의난\README.md" />
     <None Include="백준\3_Gold\G4_1987_알파벳\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G5_14502_연구소\Answer(3중 for문 조합 정답).cpp.txt" />
+    <None Include="백준\3_Gold\G5_14502_연구소\Answer(next_permutation 조합 정답).cpp.txt" />
     <None Include="백준\4_Platinum\P5_17071_숨바꼭질5\Answer(정답).cpp.txt" />
     <None Include="백준\4_Platinum\P5_3197_백조의호수\Answer(정답).cpp.txt" />
     <None Include="해커 랭크\1_Easy\Easy30_Variable_Sized_Arrays(가변_크기_배열)\Answer(성공).cpp.txt" />
@@ -207,6 +209,7 @@
     <None Include="백준\3_Gold\G3_15684_사다리조작\README.md" />
     <None Include="백준\3_Gold\G4_13913_숨바꼭질4\README.md" />
     <None Include="백준\3_Gold\G4_1987_알파벳\README.md" />
+    <None Include="백준\3_Gold\G5_14502_연구소\README.md" />
     <None Include="백준\4_Platinum\P5_17071_숨바꼭질5\README.md" />
     <None Include="백준\4_Platinum\P5_3197_백조의호수\README.md" />
     <None Include="해커 랭크\1_Easy\Easy30_Variable_Sized_Arrays(가변_크기_배열)\README.md" />

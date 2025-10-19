@@ -1,0 +1,114 @@
+// 백준 14502번 - 연구소 (next_permutation 조합 버전)
+// N X M (3 ≤ N, M ≤ 8)
+// 빈칸 = 0, 벽 = 1, 바이러스 = 2
+// 상하좌우 인접 이동
+// 새로운 벽 3개 무조건 세워야 함
+// next_permutation을 활용한 일반화된 조합 구현
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int dy[] = {-1, 0, 1,  0};
+const int dx[] = { 0, 1, 0, -1};
+
+int arr[10][10];
+int visited[10][10];
+int N, M, ret;
+vector<pair<int, int>> virusList;
+vector<pair<int, int>> emptyList;
+
+void DFS(int y, int x)
+{
+    for(int i = 0; i < 4; i++)
+    {
+        int ny = y + dy[i];
+        int nx = x + dx[i];
+
+        // 경계 / 방문 / 벽 체크
+        if(ny < 0 || ny >= N || nx < 0 || nx >= M || visited[ny][nx] || arr[ny][nx] == 1) continue;
+
+        visited[ny][nx] = 1; // 감염 표시(방문)
+
+        DFS(ny, nx);
+    }
+}
+
+int Check()
+{
+    // 방문 배열 초기화
+    fill_n(&visited[0][0], 10 * 10, 0);
+
+    // 모든 바이러스에서 확산 시작
+    for(pair<int, int> virus : virusList)
+    {
+        visited[virus.first][virus.second] = 1;
+        DFS(virus.first, virus.second);
+    }
+
+    // 안전영역(0이면서 방문되지 않은 칸) 카운트
+    int cnt = 0;
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < M; j++)
+        {
+            if(arr[i][j] == 0 && !visited[i][j]) cnt++;
+        }
+    }
+    return cnt;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> N >> M;
+
+    // 입력 파싱 및 빈칸/바이러스 위치 저장
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < M; j++)
+        {
+            cin >> arr[i][j];
+            if     (arr[i][j] == 0) emptyList.emplace_back(i, j); // 빈칸 목록
+            else if(arr[i][j] == 2) virusList.emplace_back(i, j); // 바이러스 목록
+        }
+    }
+
+    // next_permutation을 사용한 조합 생성
+    // emptyList에서 3개를 선택하는 조합
+    vector<int> combi(emptyList.size(), 1);  // 1로 채운 벡터
+    fill_n(combi.begin(), 3, 0);             // 앞 3개만 0으로 (선택 표시)
+
+    // 조합이 더이상 없을 때까지 반복
+    do
+    {
+        // 조합으로 선택된 3개 위치 추출
+        vector<pair<int,int>> picked;
+        for(int i = 0; i < (int)emptyList.size(); i++)
+        {
+            if(combi[i] == 0)  // 0인 위치가 선택된 위치
+            {
+                picked.push_back(emptyList[i]);
+            }
+        }
+
+        // 선택된 3칸을 벽으로 세움
+        for(auto pos : picked)
+        {
+            arr[pos.first][pos.second] = 1;
+        }
+
+        // 바이러스 확산 시뮬레이션 및 안전영역 계산
+        ret = max(ret, Check());
+
+        // 원복
+        for(auto pos : picked)
+        {
+            arr[pos.first][pos.second] = 0;
+        }
+
+    } while(next_permutation(combi.begin(), combi.end()));
+
+    cout << ret << "\n";
+    return 0;
+}

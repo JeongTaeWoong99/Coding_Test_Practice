@@ -32,7 +32,8 @@
       "Bash(ren:*)",
       "Bash(move:*)",
       "WebFetch(domain:velog.io)",
-      "Bash(.test.exe)"
+      "Bash(.test.exe)",
+      "Bash(tree /F /A \"Complete\")"
     ]
   },
   "outputStyle": "korean-terminal"

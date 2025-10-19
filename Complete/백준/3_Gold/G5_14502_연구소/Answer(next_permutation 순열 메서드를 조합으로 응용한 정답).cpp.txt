@@ -1,9 +1,15 @@
-// 백준 14502번 - 연구소 (next_permutation 조합 버전)
+// 백준 14502번 - 연구소 (next_permutation 순열 메서드를 조합으로 응용)
 // N X M (3 ≤ N, M ≤ 8)
 // 빈칸 = 0, 벽 = 1, 바이러스 = 2
 // 상하좌우 인접 이동
 // 새로운 벽 3개 무조건 세워야 함
-// next_permutation을 활용한 일반화된 조합 구현
+//
+// ⭐ 핵심: next_permutation은 "순열" 메서드지만, 0/1 선택 마스크를 사용하면 "조합"으로 응용 가능!
+// - {0,0,0,1,1}의 순열 = 5개 중 3개를 선택하는 모든 조합
+// - 0의 위치 = 선택된 항목
+// - 1의 위치 = 선택되지 않은 항목
+// - 같은 값(0끼리, 1끼리)의 순서는 구분되지 않으므로 중복 없는 조합 생성
+// - 생성되는 개수: 5!/(3!×2!) = C(5,3) = 10가지
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -74,19 +80,20 @@ int main()
         }
     }
 
-    // next_permutation을 사용한 조합 생성
-    // emptyList에서 3개를 선택하는 조합
-    vector<int> combi(emptyList.size(), 1);  // 1로 채운 벡터
-    fill_n(combi.begin(), 3, 0);             // 앞 3개만 0으로 (선택 표시)
+    // ═══════════════════════════════════════════════════════════════
+    // ⭐ next_permutation 순열 메서드를 조합으로 응용하는 방법
+    // ═══════════════════════════════════════════════════════════════
+    vector<int> combi(emptyList.size(), 1);  // 모두 1로 초기화 (미선택 상태)
+    fill_n(combi.begin(), 3, 0);             // 앞 3개만 0으로 변경 (선택 상태)
 
-    // 조합이 더이상 없을 때까지 반복
+    // next_permutation으로 combi의 모든 순열 생성 (= 조합과 동일)
     do
     {
-        // 조합으로 선택된 3개 위치 추출
+        // combi에서 0인 위치(선택된 위치)의 좌표를 picked에 저장
         vector<pair<int,int>> picked;
         for(int i = 0; i < (int)emptyList.size(); i++)
         {
-            if(combi[i] == 0)  // 0인 위치가 선택된 위치
+            if(combi[i] == 0)  // 0 = 선택됨, 1 = 선택 안 됨
             {
                 picked.push_back(emptyList[i]);
             }

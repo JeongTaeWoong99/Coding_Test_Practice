@@ -1,0 +1,50 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 전역 변수
+int N, M;        // N = 재료 개수, M = 필요한 합
+int arr[15004];  // 재료 고유번호 저장
+int ret;         // 만들 수 있는 갑옷 개수
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력 처리
+    cin >> N >> M;
+
+    for (int i = 0; i < N; i++)
+        cin >> arr[i];
+
+    // 정렬 (투 포인터를 위한 필수 단계)
+    sort(arr, arr + N);
+
+    // 투 포인터 알고리즘
+    int left = 0;         // 왼쪽 포인터 (최소값)
+    int right = N - 1;    // 오른쪽 포인터 (최대값)
+
+    while (left < right)
+    {
+        int sum = arr[left] + arr[right];
+
+        if (sum == M)
+        {
+            ret++;     // 갑옷 개수 증가
+            left++;    // 다음 조합 탐색을 위해 양쪽 포인터 이동
+            right--;
+        }
+        else if (sum < M)
+        {
+            left++;    // 합이 작으면 더 큰 값을 위해 left 증가
+        }
+        else
+        {
+            right--;   // 합이 크면 더 작은 값을 위해 right 감소
+        }
+    }
+
+    // 결과 출력
+    cout << ret << "\n";
+
+    return 0;
+}

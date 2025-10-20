@@ -163,7 +163,7 @@
     <None Include="백준\1_Bronze\B3_2979_트럭주차\Answer(정답).cpp.txt" />
     <None Include="백준\1_Bronze\B3_10988_팰린드롬인지확인하기\Answer(성공).cpp.txt" />
     <None Include="백준\1_Bronze\B4_1159_농구경기\Answer(성공).cpp.txt" />
-    <None Include="백준\2_Silver\S1_1189_컴백홈\Answer.cpp.txt" />
+    <None Include="백준\2_Silver\S1_1189_컴백홈\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_2529_부등호\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_9934_완전이진트리\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_9934_완전이진트리\Answer(성공).cpp.txt" />
@@ -174,6 +174,8 @@
     <None Include="백준\2_Silver\S3_9375_패션왕신해빈\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_9996_한국이그리울땐서버에접속하지\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_1620_나는야포켓몬마스터이다솜\Answer(정답).cpp.txt" />
+    <None Include="백준\2_Silver\S4_1940_주몽\Answer(조합 성공).cpp.txt" />
+    <None Include="백준\2_Silver\S4_1940_주몽\Answer(투포인터 최적화 정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_15684_사다리조작\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_16637_괄호추가하기\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_12851_숨바꼭질2\Answer(정답).cpp.txt" />
@@ -208,6 +210,7 @@
     <None Include="백준\2_Silver\S3_9375_패션왕신해빈\README.md" />
     <None Include="백준\2_Silver\S3_9996_한국이그리울땐서버에접속하지\README.md" />
     <None Include="백준\2_Silver\S4_1620_나는야포켓몬마스터이다솜\README.md" />
+    <None Include="백준\2_Silver\S4_1940_주몽\README.md" />
     <None Include="백준\3_Gold\G3_15684_사다리조작\README.md" />
     <None Include="백준\3_Gold\G4_13913_숨바꼭질4\README.md" />
     <None Include="백준\3_Gold\G4_1987_알파벳\README.md" />

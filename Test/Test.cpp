@@ -1,53 +1,34 @@
-# include <bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-const int dy[4] = {0,0,1,-1};
-const int dx[4] = {1,-1,0,0};
-
-int  R, C, K, ret;
-int  visited[10][10];
-char arr[10][10];
-
-void DFS(int y, int x, int hap)
-{
-    // 찾는 경로값 && R 위치 같음 && C 위치 값음
-    if (hap == K && y == 0 && x == C - 1)
-    {
-        ret++;
-        return;
-    }
-
-    for (int i = 0; i < 4; i++)
-    {
-        int nY = y + dy[i];
-        int nX = x + dx[i];
-
-        if (nY < 0 || nY >= R || nX < 0 || nX >= C || visited[nY][nX]) continue;
-
-        if (arr[nY][nX] == 'T') continue;
-
-        visited[nY][nX] = 1;
-        DFS(nY, nX, hap + 1);
-        visited[nY][nX] = 0;
-    }
-}
-
+int N, M, ret;     // N = 재료 수, M = 합 수 
+int arr[15004];    // 재료 저장
 
 int main(int argc, char* argv[])
 {
-    cin >> R >> C >> K;
+    cin >> N >> M;
 
-    for (int i = 0; i < R; i++)
+    sort(arr, arr + N);  // 정렬: [1, 2, 3, 4, 5, 7]
+
+    int left = 0, right = N - 1;
+
+    while (left < right)
     {
-        for (int j = 0; j < C; j++)
+        int sum = arr[left] + arr[right];
+
+        if (sum == M)
         {
-            cin >> arr[i][j];
+            ret++;
+            left++;
+            right--;
         }
+        else if (sum < M)
+            left++;   // 합을 키워야 함
+        else
+            right--;  // 합을 줄여야 함
     }
 
-    // 왼쪽 아래 시작. 시작 경로값 1
-    visited[R - 1][0] = 1;
-    DFS(R - 1, 0,1);
-    
-    cout << ret << '\n';
+    cout << ret;
+
+    return 0;
 }

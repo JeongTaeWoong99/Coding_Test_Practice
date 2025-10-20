@@ -1,0 +1,35 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 전역 변수
+int N, M;        // N = 재료 개수, M = 필요한 합
+int arr[15004];  // 재료 고유번호 저장
+int ret;         // 만들 수 있는 갑옷 개수
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력 처리
+    cin >> N >> M;
+
+    for (int i = 0; i < N; i++)
+        cin >> arr[i];
+
+    // 모든 재료 쌍을 확인하여 합이 M인 경우 카운트
+    for (int j = 0; j < N; j++)
+    {
+        for (int k = 0; k < j; k++)
+        {
+            int sum = arr[j] + arr[k];
+
+            if (sum == M)  // 두 재료의 합이 M이면
+                ret++;     // 갑옷 개수 증가
+        }
+    }
+
+    // 결과 출력
+    cout << ret << "\n";
+
+    return 0;
+}

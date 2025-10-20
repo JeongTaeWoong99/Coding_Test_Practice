@@ -1,40 +1,47 @@
 # include <bits/stdc++.h>
 using namespace std;
 
-const int dy[4] = {0,0,1,-1};
-const int dx[4] = {1,-1,0,0};
+const int dy[4] = {0, 0, 1, -1};
+const int dx[4] = {1, -1, 0, 0};
 
 int  R, C, K, ret;
 int  visited[10][10];
 char arr[10][10];
 
+// 백트래킹 DFS로 모든 경로 탐색
+// y : 현재 세로 위치, x : 현재 가로 위치, hap : 현재까지의 경로 길이
 void DFS(int y, int x, int hap)
 {
-    // 찾는 경로값 && R 위치 같음 && C 위치 값음
+    // 경로 길이가 K인 경우 && 목적지 도착
     if (hap == K && y == 0 && x == C - 1)
     {
         ret++;
         return;
     }
 
+    // 상하좌우 4방향 탐색
     for (int i = 0; i < 4; i++)
     {
         int nY = y + dy[i];
         int nX = x + dx[i];
 
+        // 범위 체크 + 방문 체크
         if (nY < 0 || nY >= R || nX < 0 || nX >= C || visited[nY][nX]) continue;
 
+        // 장애물 체크
         if (arr[nY][nX] == 'T') continue;
 
-        visited[nY][nX] = 1;
-        DFS(nY, nX, hap + 1);
-        visited[nY][nX] = 0;
+        visited[nY][nX] = 1;       // 방문 처리
+        DFS(nY, nX, hap + 1);      // 재귀 호출 (경로 길이 +1)
+        visited[nY][nX] = 0;       // 백트래킹: 방문 해제
     }
 }
 
 
 int main(int argc, char* argv[])
 {
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
     cin >> R >> C >> K;
 
     for (int i = 0; i < R; i++)
@@ -45,9 +52,9 @@ int main(int argc, char* argv[])
         }
     }
 
-    // 왼쪽 아래 시작. 시작 경로값 1
+    // 왼쪽 아래 시작
     visited[R - 1][0] = 1;
-    DFS(R - 1, 0,1);
-    
+    DFS(R - 1, 0, 1);
+
     cout << ret << '\n';
 }

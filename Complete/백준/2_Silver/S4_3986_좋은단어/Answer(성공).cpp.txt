@@ -1,38 +1,38 @@
-#include<bits/stdc++.h> 
+#include <bits/stdc++.h>
 using namespace std;
 
-int    N, RET; 
+int    N, RET;
 string S;
 
-int main() 
+int main()
 {
     ios_base::sync_with_stdio(false);cin.tie(NULL);
-	
-    cin >> N; 
+
+    cin >> N;
     for(int i = 0; i < N; i++)
     {
         // 스트링 입력
         cin >> S;
 
-        // 새스택(매번 초기화 필요)
+        // 새 스택 (매번 초기화 필요)
         stack<char> stk;
-        
+
         for(char current : S)
         {
-            // 스택이 비어있지 않고, 맨위 값이 같으면
-            // 넣지 말고, 바로 스택탑과 함께 제거해주기
+            // 스택이 비어있지 않고, 맨 위 값이 같으면
+            // 넣지 말고, 바로 스택 탑과 함께 제거해주기
             if(!stk.empty() && stk.top() == current)
                 stk.pop();
             // 다르면 넣어주기
-            else 
+            else
                 stk.push(current);
         }
-		
+
         // 남아있는 스택이 없음 => 좋은 단어
         if(stk.empty()) RET++;
     }
-    
-    cout << RET << "\n"; 
-	
+
+    cout << RET << "\n";
+
     return 0;
 }

@@ -1,0 +1,41 @@
+﻿#include<bits/stdc++.h>
+using namespace std;
+
+typedef long long LL;
+LL A, B, C;
+
+// 분할 정복(Divide and Conquer)을 이용한 거듭제곱
+// a : 밑(base), b : 지수(exponent), c : 나눌 수(modulo)
+// 반환값 : a^b % c
+// ※ 전역 변수를 매개 변수로 받아서, 각 메서드에서 독립적으로 사용함.
+// ※ 현재 코드에서는 b만 재귀-분할을 통해, 변화함. a, c는 고정 사용됨.
+LL DICO(LL a, LL b, LL c)
+{
+	// 기저 사례 : b가 1이면 a^1 % c 반환
+	if (b == 1) return a % c;
+
+	// b를 절반으로 줄여서 재귀 호출
+	// a^b → a^(b/2) 계산
+	LL ret = DICO(a, b / 2, c);
+
+	// [짝수/홀수 공통] 재귀에서 반환된 값을 제곱
+	// (a^(b/2))^2 계산 → 짝수든 홀수든 일단 제곱부터!
+	ret = (ret * ret) % c;
+
+	// [홀수일 때만] b가 홀수라면 a를 한 번 더 곱해줌
+	// 왜? b/2로 나눌 때 나머지 1이 버려지므로 보정 필요
+	if (b % 2) ret = (ret * a) % c;
+
+	return ret;
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+
+	cin >> A >> B >> C;
+
+	cout << DICO(A, B, C) << "\n";
+
+	return 0;
+}

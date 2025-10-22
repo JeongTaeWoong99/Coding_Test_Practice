@@ -164,6 +164,7 @@
     <None Include="백준\1_Bronze\B3_10988_팰린드롬인지확인하기\Answer(성공).cpp.txt" />
     <None Include="백준\1_Bronze\B4_1159_농구경기\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_1189_컴백홈\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S1_1629_곱셈\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_2529_부등호\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_9934_완전이진트리\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_9934_완전이진트리\Answer(성공).cpp.txt" />
@@ -203,6 +204,7 @@
     <None Include="백준\1_Bronze\B3_10988_팰린드롬인지확인하기\README.md" />
     <None Include="백준\1_Bronze\B4_1159_농구경기\README.md" />
     <None Include="백준\2_Silver\S1_1189_컴백홈\README.md" />
+    <None Include="백준\2_Silver\S1_1629_곱셈\README.md" />
     <None Include="백준\2_Silver\S1_2529_부등호\README.md" />
     <None Include="백준\2_Silver\S1_9934_완전이진트리\README.md" />
     <None Include="백준\2_Silver\S2_14620_꽃길\README.md" />

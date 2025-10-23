@@ -172,6 +172,7 @@
     <None Include="백준\2_Silver\S3_1213_팰린드롬만들기\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_2559_수열\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_2559_수열\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S3_4375_1(일)\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_9375_패션왕신해빈\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_9996_한국이그리울땐서버에접속하지\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_1620_나는야포켓몬마스터이다솜\Answer(정답).cpp.txt" />
@@ -211,6 +212,7 @@
     <None Include="백준\2_Silver\S2_14620_꽃길\README.md" />
     <None Include="백준\2_Silver\S3_1213_팰린드롬만들기\README.md" />
     <None Include="백준\2_Silver\S3_2559_수열\README.md" />
+    <None Include="백준\2_Silver\S3_4375_1(일)\README.md" />
     <None Include="백준\2_Silver\S3_9375_패션왕신해빈\README.md" />
     <None Include="백준\2_Silver\S3_9996_한국이그리울땐서버에접속하지\README.md" />
     <None Include="백준\2_Silver\S4_1620_나는야포켓몬마스터이다솜\README.md" />

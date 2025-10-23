@@ -1,0 +1,31 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+int n;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    while (cin >> n) // 나눌 값 입력 // ctrl+z 누르고, 엔터하면 종료
+    {
+        int cnt = 1; // 현재 나눌 값
+        int ret = 1; // 현재 자릿수 기록
+
+        while (true)
+        {
+            if (cnt % n == 0)
+            {
+                cout << ret << "\n";
+                break;
+            }
+            else
+            {
+                cnt = ((cnt * 10) + 1) % n;
+                ret++;
+            }
+        }
+    }
+    return 0;
+}

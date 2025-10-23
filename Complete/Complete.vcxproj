@@ -181,6 +181,7 @@
     <None Include="백준\3_Gold\G3_15684_사다리조작\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_16637_괄호추가하기\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_12851_숨바꼭질2\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G4_12869_뮤탈리스크\Answer.cpp.txt" />
     <None Include="백준\3_Gold\G4_13913_숨바꼭질4\Answer(메모리 초과 버전).cpp.txt" />
     <None Include="백준\3_Gold\G4_13913_숨바꼭질4\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G4_13913_숨바꼭질4\Answer(정답).cpp.txt" />
@@ -216,6 +217,7 @@
     <None Include="백준\2_Silver\S4_1940_주몽\README.md" />
     <None Include="백준\2_Silver\S4_3986_좋은단어\README.md" />
     <None Include="백준\3_Gold\G3_15684_사다리조작\README.md" />
+    <None Include="백준\3_Gold\G4_12869_뮤탈리스크\README.md" />
     <None Include="백준\3_Gold\G4_13913_숨바꼭질4\README.md" />
     <None Include="백준\3_Gold\G4_1987_알파벳\README.md" />
     <None Include="백준\3_Gold\G5_14502_연구소\README.md" />

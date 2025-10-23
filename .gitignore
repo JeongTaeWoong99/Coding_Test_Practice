@@ -34,3 +34,6 @@
 # PDF files (교안 및 문서)
 *.pdf
 nul
+Test/Test.cpp
+Test/Test.cpp
+/Test

@@ -1,0 +1,82 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 987654321; // 무한대 값
+
+int N;                   // SCV 개수
+int scvHP[3];            // SCV 체력 배열 (최대 3개)
+int visited[64][64][64]; // 방문 체크 배열 (BFS용, 각 위치까지의 최소 공격 횟수)
+int damage[6][3] = {     // 6가지 뮤탈리스크 공격 패턴
+    {9, 3, 1}, {9, 1, 3}, {3, 1, 9},
+    {3, 9, 1}, {1, 3, 9}, {1, 9, 3}
+};
+
+// BFS용 상태 구조체
+struct State
+{
+    int a, b, c; // 각 SCV의 체력
+};
+queue<State> q; // BFS 탐색용 큐
+
+// a : 첫 번째 SCV 체력, b : 두 번째 SCV 체력, c : 세 번째 SCV 체력
+int BFS(int a, int b, int c)
+{
+    // 시작 상태 초기화 및 큐에 삽입
+    visited[a][b][c] = 1;  // 시작점 방문 처리 (거리 1로 시작)
+    q.push({a, b, c});     // 초기 상태 큐에 삽입
+
+    // BFS 탐색 시작
+    while(!q.empty())
+    {
+        // 현재 상태 가져오기
+        int cur_a = q.front().a; // 현재 첫 번째 SCV 체력
+        int cur_b = q.front().b; // 현재 두 번째 SCV 체력
+        int cur_c = q.front().c; // 현재 세 번째 SCV 체력
+        q.pop();                 // 큐에서 제거
+
+        // 목표 상태 도달 확인
+        if(visited[0][0][0]) break; // 모든 SCV가 파괴되면 종료
+
+        // 6가지 공격 패턴 시도
+        for(int i = 0; i < 6; i++)
+        {
+            // 각 SCV에 데미지 적용 (음수는 0으로 처리)
+            int na = max(0, cur_a - damage[i][0]); // 첫 번째 SCV에 데미지
+            int nb = max(0, cur_b - damage[i][1]); // 두 번째 SCV에 데미지
+            int nc = max(0, cur_c - damage[i][2]); // 세 번째 SCV에 데미지
+
+            // 이미 방문한 상태면 건너뛰기
+            if(visited[na][nb][nc]) continue;
+
+            // 새로운 상태 방문 처리 및 큐에 추가
+            visited[na][nb][nc] = visited[cur_a][cur_b][cur_c] + 1; // 공격 횟수 누적
+            q.push({na, nb, nc});                                    // 다음 탐색을 위해 큐에 삽입
+        }
+    }
+
+    // 최소 공격 횟수 반환 (시작이 1이므로 1을 빼줌)
+    return visited[0][0][0] - 1;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 배열 초기화
+    memset(visited, 0, sizeof(visited)); // 방문 배열 초기화
+    memset(scvHP,   0, sizeof(scvHP));   // SCV 체력 배열 초기화
+
+    // SCV 개수 입력
+    cin >> N;
+
+    // SCV 체력 입력 (최대 3개)
+    for(int i = 0; i < N; i++)
+    {
+        cin >> scvHP[i];
+    }
+
+    // BFS로 최소 공격 횟수 계산 및 출력
+    cout << BFS(scvHP[0], scvHP[1], scvHP[2]) << "\n";
+
+    return 0;
+}

@@ -1,30 +1,64 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int n;
+const int max_n = 104;     // 배열 최대 크기
+
+int dY[4] = {-1, 0, 1, 0};
+int dX[4] = {0, 1, 0, -1};
+
+int N, M;                  // N = 행(세로), M = 열(가로)
+int arr[max_n][max_n];     // 지도 생성
+int visited[max_n][max_n]; // 방문 여부 + 해당 칸까지 최단 거리
 
 int main() 
 {
-    ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+    ios::sync_with_stdio(false);cin.tie(nullptr);
 
-    while (cin >> n)
+    // 크기 입력
+    cin >> N >> M;
+    
+    // 지도 입력
+    for (int i = 0; i < N; i++) 
     {
-        int cnt = 1;
-        int ret = 1;
-
-        while (true)
+        for (int j = 0; j < M; j++) 
         {
-            if (cnt % n == 0)
-            {
-                cout << ret << endl;
-                break;
-            }
-            else
-            {
-                cnt = ((cnt * 10) + 1) % n;
-                ret++;
-            }
+            char c; 
+            cin >> c;
+            arr[i][j] = c - '0'; // ★ 띄어쓰기 없이 1줄로 오기 때문에, char로 받아서, int로 변환.
         }
     }
+		
+    // BFS 시작(큐)
+    queue<pair<int,int>> q;
+    visited[0][0] = 1;  // 시작 지점 거리 누적 시작 + 방문 체크
+    q.emplace(0, 0);    // BFS를 위해, 큐에 PUSH
+
+    // 큐가 빌 때 까지 진ㄴ행
+    while (!q.empty()) 
+    {
+        // 풀어쓴 버전
+        pair<int,int> cur = q.front(); // 큐 맨 앞 원소 가져오기
+        q.pop();                       // 큐 맨 앞 원소 제거
+        int y = cur.first;             // y 좌표 = pair의 첫 번째
+        int x = cur.second;            // x 좌표 = pair의 두 번째
+
+        // 4방향 탐색
+        for (int i = 0; i < 4; i++) 
+        {
+            int ny = y + dY[i];
+            int nx = x + dX[i];
+
+            if (ny < 0 || nx < 0 || ny >= N || nx >= M) continue; // 범위 나감
+            if (arr[ny][nx] == 0)                       continue; // 벽
+            if (visited[ny][nx])                        continue; // 이미 방문(★ 0이면 false, 0이 아닌 값이면 true)
+						
+            // ★ 처음 방문 → 최단 거리 기록
+            // ★ 새로 방문 자리 저장 값 = 이전 값 + 1
+            visited[ny][nx] = visited[y][x] + 1;
+            q.emplace(ny, nx);
+        }
+    }
+
+    cout << visited[N-1][M-1] << "\n";
     return 0;
 }

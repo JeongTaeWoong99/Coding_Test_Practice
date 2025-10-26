@@ -170,6 +170,7 @@
     <None Include="백준\2_Silver\S1_9934_완전이진트리\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_9934_완전이진트리\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S2_14620_꽃길\Answer(정답).cpp.txt" />
+    <None Include="백준\2_Silver\S2_1012_유기농배추\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_1213_팰린드롬만들기\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_2559_수열\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_2559_수열\Answer(성공).cpp.txt" />
@@ -213,6 +214,7 @@
     <None Include="백준\2_Silver\S1_2529_부등호\README.md" />
     <None Include="백준\2_Silver\S1_9934_완전이진트리\README.md" />
     <None Include="백준\2_Silver\S2_14620_꽃길\README.md" />
+    <None Include="백준\2_Silver\S2_1012_유기농배추\README.md" />
     <None Include="백준\2_Silver\S3_1213_팰린드롬만들기\README.md" />
     <None Include="백준\2_Silver\S3_2559_수열\README.md" />
     <None Include="백준\2_Silver\S3_4375_1(일)\README.md" />

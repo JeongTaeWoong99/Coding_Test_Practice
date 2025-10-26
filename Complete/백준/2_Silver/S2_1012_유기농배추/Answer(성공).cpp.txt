@@ -1,0 +1,81 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// 전역 변수 (큰 배열은 전역으로 선언하여 스택 오버플로우 방지)
+int arr[54][54];             // 배추밭 (1 = 배추 있음, 0 = 배추 없음)
+int vit[54][54];             // 방문 체크 배열
+int dy[4] = {0, 1, 0, -1};   // 상하좌우 Y 방향
+int dx[4] = {1, 0, -1, 0};   // 상하좌우 X 방향
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    int T;  // 테스트 케이스 개수
+    cin >> T;
+
+    while (T--)
+    {
+        // 배열 초기화(매 테스트 케이스 마다 초기화)
+        memset(arr, 0, sizeof(arr));
+        memset(vit, 0, sizeof(vit));
+
+        int M, N, K;            // M = 가로(X 범위), N = 세로(Y 범위), K = 배추 개수(매 테스트 케이스 마다 초기화)
+        int ret = 0;            // 필요한 배추흰지렁이 마리 수(매 테스트 케이스 마다 출력 및 초기화)
+        cin >> M >> N >> K;
+
+        // K개의 배추 위치 입력 (X Y 순서로 입력되지만 Y X로 받음)
+        for (int i = 0; i < K; i++)
+        {
+            int y, x;
+            cin >> y >> x;
+            arr[y][x] = 1;
+        }
+
+        // BFS로 연결된 배추 군집 찾기
+        queue<pair<int, int>> bfsQ;
+
+        for (int i = 0; i < M; i++)
+        {
+            for (int j = 0; j < N; j++)
+            {
+                // 배추가 있고 아직 방문하지 않은 경우 → 새로운 배추 군집 발견
+                if (arr[i][j] == 1 && vit[i][j] == 0)
+                {
+                    vit[i][j] = 1;
+                    bfsQ.emplace(i, j);
+
+                    // BFS로 연결된 모든 배추 방문 처리
+                    while (!bfsQ.empty())
+                    {
+                        auto [currentY, currentX] = bfsQ.front(); // C++ 17부터 가능 문법
+                        bfsQ.pop();
+
+                        // 4방향 탐색
+                        for (int k = 0; k < 4; k++)
+                        {
+                            int ny = currentY + dy[k];
+                            int nx = currentX + dx[k];
+
+                            // 범위 체크
+                            if (ny < 0 || ny >= M || nx < 0 || nx >= N) continue;
+
+                            // 배추 없거나 이미 방문한 경우 스킵
+                            if (arr[ny][nx] == 0 || vit[ny][nx] == 1) continue;
+
+                            // 방문 처리 후 큐에 추가
+                            vit[ny][nx] = 1;
+                            bfsQ.emplace(ny, nx);
+                        }
+                    }
+
+                    ret++;  // 배추 군집 하나 완료 → 지렁이 1마리 필요
+                }
+            }
+        }
+
+        cout << ret << '\n';
+    }
+
+    return 0;
+}

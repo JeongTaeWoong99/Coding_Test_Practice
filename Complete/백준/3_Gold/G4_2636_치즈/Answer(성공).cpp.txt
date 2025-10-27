@@ -13,7 +13,7 @@ int  airCheck[104][104]; // 각 치즈 칸이 외부 공기와 접촉한 변의 
 int main()
 {
     ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-    
+
     cin >> N >> M;
 
     // 입력

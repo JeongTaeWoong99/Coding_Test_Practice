@@ -33,7 +33,8 @@
       "Bash(move:*)",
       "WebFetch(domain:velog.io)",
       "Bash(.test.exe)",
-      "Bash(tree /F /A \"Complete\")"
+      "Bash(tree /F /A \"Complete\")",
+      "Bash(del \"Complete\\백준\\3_Gold\\G4_2636_치즈\\Answer(성공).cpp.txt\")"
     ]
   },
   "outputStyle": "korean-terminal"

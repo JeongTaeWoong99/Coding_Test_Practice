@@ -1,0 +1,62 @@
+// 백준 1068 - 트리
+// Gold 5
+// 트리에서 특정 노드를 삭제한 후 리프 노드의 개수를 구하는 문제
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int         n, removeN, temp, root; // n = 노드 개수, removeN = 삭제할 노드 번호, temp = 임시 입력값, root = 루트 노드 번호
+vector<int> adj[54];                // adj[i] = 노드 i의 자식 노드들 (부모 → 자식 방향 인접리스트)
+
+// DFS로 리프 노드의 개수를 세는 함수
+// here : 현재 방문 중인 노드 번호
+int DFS(int here)
+{
+    int ret   = 0;  // 현재 노드의 서브트리에서 찾은 리프 노드 개수
+    int child = 0;  // 살아있는 자식 노드의 개수
+
+    for(int there : adj[here])
+    {
+        // 삭제할 노드와 그 서브트리는 통째로 제외
+        if(there == removeN) continue;
+
+        ret += DFS(there); // 자식 노드의 서브트리에서 리프 개수 누적
+        child++;           // 살아있는 자식 카운트(리프인지 아닌지 판단용)
+    }
+
+    // 남아있는 자식이 없으면 => 현재 노드가 리프 노드
+    if(child == 0) return 1;
+
+    // 자식이 있으면 => 자식들의 리프 개수 합 반환
+    return ret;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 트리 구조 입력
+    cin >> n;
+    for(int i = 0; i < n; i++)
+    {
+        cin >> temp;  // i번 노드의 부모 번호 입력
+
+        if(temp == -1) root = i;               // 부모가 -1이면 루트 노드
+        else           adj[temp].push_back(i); // 부모의 자식 목록에 현재 노드 추가
+    }
+
+    // 삭제할 노드 입력
+    cin >> removeN;
+
+    // 예외 처리 : 루트 노드 삭제 시
+    if(removeN == root)             // 루트를 삭제하면 트리 전체가 사라짐
+    {
+        cout << 0 << "\n";
+        return 0;
+    }
+
+    // DFS 실행 및 출력
+    cout << DFS(root) << "\n";      // 루트부터 DFS로 리프 노드 개수 계산 후 출력
+
+    return 0;
+}

@@ -1,96 +1,46 @@
-#include <bits/stdc++.h>
+﻿#include <bits/stdc++.h>
 using namespace std;
 
-int dy[4] = {0, 1, 0, -1};
-int dx[4] = {1, 0, -1, 0};
+int N,temp, root, removeN;
+vector<int> adj[54];
 
-int  N, M;               // N = 세로 크기, M = 가로 크기
-int  ret;                // 치즈가 모두 녹는데 걸리는 시간
-int  arr[104][104];      // 치즈 배열 (0 = 공기, 1 = 치즈)
-int  visited[104][104];  // 외부 공기 방문 체크
-int  airCheck[104][104]; // 각 치즈 칸이 외부 공기와 접촉한 변의 개수
-
-int main()
+int DFS(int here)
 {
-    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-    
-    cin >> N >> M;
+    int reef  = 0;
+    int child = 0;
 
-    // 입력
+    for (int current : adj[here])
+    {
+        if (current == removeN) continue;
+
+        reef += DFS(current);
+        child++;
+    }
+
+    if (child == 0) return 1;
+
+    return reef;
+}
+
+int main(int argc, char* argv[])
+{
+    cin >> N;
+    
     for (int i = 0; i < N; i++)
     {
-        for (int j = 0; j < M; j++)
-        {
-            cin >> arr[i][j];
-        }
+        cin >> temp;
+
+        if (temp == -1) root = i;
+        else            adj[temp].emplace_back(i);
     }
 
-    // 시뮬레이션 시작
-    // (0, 0)에서 BFS로 외부 공기만 탐색하여 치즈를 녹임
-    // ※ 치즈 내부 공간은 외부 공기가 아니므로 치즈를 녹이는 데 영향을 주지 않음
-    while (true)
+    cin >> removeN;
+
+    if (removeN == root)
     {
-        // 매 시간마다 방문 배열과 접촉 횟수 초기화
-        memset(visited,  0, sizeof(visited));
-        memset(airCheck, 0, sizeof(airCheck));
-
-        // BFS: (0, 0)에서 시작하여 외부 공기 영역만 탐색
-        queue<pair<int, int>> bfsQ;
-        visited[0][0] = 1;
-        bfsQ.emplace(0, 0);
-
-        while (!bfsQ.empty())
-        {
-            int currentY = bfsQ.front().first;
-            int currentX = bfsQ.front().second;
-            bfsQ.pop();
-
-            // 4방향 탐색
-            for (int i = 0; i < 4; i++)
-            {
-                int ny = currentY + dy[i];
-                int nx = currentX + dx[i];
-
-                // 범위 체크
-                if (ny < 0 || ny >= N || nx < 0 || nx >= M) continue;
-
-                // 이미 방문한 공기
-                if (visited[ny][nx]) continue;
-
-                // 치즈를 만난 경우 : 접촉 횟수 증가 후 탐색 중단
-                if (arr[ny][nx] == 1)
-                {
-                    airCheck[ny][nx]++;
-                    continue;
-                }
-
-                // 공기인 경우 : 방문 처리 후 큐에 추가
-                visited[ny][nx] = 1;
-                bfsQ.emplace(ny, nx);
-            }
-        }
-
-        // 외부 공기와 2변 이상 접촉한 치즈를 녹임
-        bool hasCheese = false;
-        for (int i = 0; i < N; i++)
-        {
-            for (int j = 0; j < M; j++)
-            {
-                if (airCheck[i][j] >= 2)
-                {
-                    arr[i][j] = 0;
-                    hasCheese = true;
-                }
-            }
-        }
-
-        // 더 이상 녹일 치즈가 없으면 종료
-        if (!hasCheese) break;
-
-        // 증감 후, 다시 진행
-        ret++;
+        cout << "0" << endl;
+        return 0;
     }
 
-    // 결과 출력
-    cout << ret << "\n";
+    cout << DFS(root) << endl;
 }

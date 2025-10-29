@@ -1,0 +1,66 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int    N;              // 영상의 크기 (N x N)
+string S;              // 입력받을 한 줄의 문자열
+char   arr[101][101];  // 영상 배열 (arr[y][x] = arr[행][열])
+
+// 쿼드트리 압축을 수행하는 재귀 함수
+// x : 현재 영역의 시작 x좌표 (열)
+// y : 현재 영역의 시작 y좌표 (행)
+// size : 현재 영역의 크기 (size x size)
+string Quard(int x, int y, int size)
+{
+    // 기저 조건 : 크기가 1이면 더 이상 분할할 수 없으므로 해당 문자 반환
+    if (size == 1) return {arr[y][x]};
+
+    // 현재 영역이 모두 같은 값인지 확인하기 위해 왼쪽 위 값을 기준으로 비교
+    char   b = arr[y][x];
+    string ret;
+
+    // 현재 영역을 순회하며 모든 값이 같은지 확인
+    // 행(y)을 먼저 순회하여 Z자 형태로 탐색
+    for (int i = y; i < y + size; i++)
+    {
+        for (int j = x; j < x + size; j++)
+        {
+            // 기준 값과 다른 값을 발견하면 영역을 4개로 분할(시작점 4개)
+            if (arr[i][j] != b)
+            {
+                ret += '(';
+                ret += Quard(x,             y,             size / 2); // 왼쪽 위 영역
+                ret += Quard(x + size / 2,  y,             size / 2); // 오른쪽 위 영역
+                ret += Quard(x,             y + size / 2,  size / 2); // 왼쪽 아래 영역
+                ret += Quard(x + size / 2,  y + size / 2,  size / 2); // 오른쪽 아래 영역
+                ret += ')';
+                return ret;
+            }
+        }
+    }
+
+    // 현재 영역이 모두 같은 값이면 해당 문자 반환
+    return {arr[y][x]};
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력: 영상의 크기 N (N은 2의 제곱수, 1 ≤ N ≤ 64)
+    cin >> N;
+
+    // 입력: N줄의 0과 1로 이루어진 문자열
+    for (int i = 0; i < N; i++)
+    {
+        cin >> S;
+        for (int j = 0; j < N; j++)
+        {
+            arr[i][j] = S[j];
+        }
+    }
+
+    // 쿼드트리 압축 수행 및 결과 출력
+    cout << Quard(0, 0, N) << '\n';
+
+    return 0;
+}

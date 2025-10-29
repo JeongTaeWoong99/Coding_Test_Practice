@@ -1,0 +1,83 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int N;                                      // 식재료 개수
+int mp, mf, ms, mv;                         // 최소 영양성분 (단백질, 지방, 탄수화물, 비타민)
+int p[20], f[20], s[20], v[20], c[20];      // 각 식재료의 영양성분과 가격
+int minCost = INT_MAX;                      // 최소 비용
+vector<int> answer;                         // 정답 식재료 번호 (1-based)
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> N;
+    cin >> mp >> mf >> ms >> mv;
+    for(int i = 0; i < N; i++)
+    {
+        cin >> p[i] >> f[i] >> s[i] >> v[i] >> c[i];
+    }
+
+    // 1개 선택부터 N개 선택까지 모든 조합 확인
+    for(int cnt = 1; cnt <= N; cnt++)
+    {
+        // next_permutation을 활용한 조합 생성
+        vector<int> combi(N, 1);                      // 모두 1로 초기화 (미선택)
+        fill_n(combi.begin(), cnt, 0);   // 앞 cnt개만 0으로 변경 (선택)
+        
+        do
+        {
+            // 선택된 식재료의 영양분 합계와 비용 계산
+            int sumP = 0, sumF = 0, sumS = 0, sumV = 0, sumC = 0;
+            vector<int> selected; // 선택된 식재료 번호 (1-based)
+
+            for(int i = 0; i < N; i++)
+            {
+                if(combi[i] == 0) // 0 = 선택됨
+                {
+                    sumP += p[i];
+                    sumF += f[i];
+                    sumS += s[i];
+                    sumV += v[i];
+                    sumC += c[i];
+                    selected.push_back(i + 1);  // 1-based 인덱스
+                }
+            }
+
+            // 조건 만족 여부 확인
+            if(sumP >= mp && sumF >= mf && sumS >= ms && sumV >= mv)
+            {
+                // 최소 비용 갱신
+                if(sumC < minCost)
+                {
+                    minCost = sumC;
+                    answer  = selected;
+                }
+                // 같은 비용이면 사전순으로 빠른 것 선택
+                else if(sumC == minCost && selected < answer)
+                {
+                    answer = selected;
+                }
+            }
+
+        }while(next_permutation(combi.begin(), combi.end()));
+    }
+
+    // 결과 출력
+    if(minCost == INT_MAX)
+    {
+        cout << -1 << "\n";
+    }
+    else
+    {
+        cout << minCost << "\n";
+        for(int num : answer)
+        {
+            cout << num << " ";
+        }
+        cout << "\n";
+    }
+
+    return 0;
+}

@@ -1,80 +1,102 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-const int INF = 987654321;
-const int dy[] = {-1, 0, 1, 0};
-const int dx[] = {0, 1, 0, -1};
+const int dY[4] = {0,-1,0,1};
+const int dX[4] = {0,1,0,-1};
 
-int    N;            // 동전판의 크기 (N x N)
-int    arr[44];      // 각 행의 상태를 비트마스킹으로 저장 (T=1, H=0)
-int    ret = INF;    // 최소 T(뒷면) 개수
-string S;            // 입력받을 한 행의 문자열 
+int R, C, isPossible;
+int arr[1004][1004];
+int vsitiedFire[1004][1004];
+int vsitiedJihoon[1004][1004];
+queue<pair<int, int>> fireQ;
+queue<pair<int, int>> jihoonQ;
 
-// here : 현재 확인 중인 행 번호
-// 각 행을 뒤집을지 말지 결정하는 재귀 함수 (2^N 가지 경우 탐색)
-void GO(int here)
+int main(int argc, char* argv[])
 {
-    // 모든 행에 대한 뒤집기 결정 완료
-    if(here == N + 1)
+    ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+
+    cin >> R >> C;
+
+    for (int i = 0; i < R; i++)
     {
-        int sum = 0;  // 현재 상태에서 T(뒷면)의 최소 개수
-
-        // 각 열(비트 위치)을 순회하면서 T 개수 확인
-        // i는 비트마스크 (1, 2, 4, 8, ... 즉 2^0, 2^1, 2^2, ...)
-        for(int i = 1; i <= (1 << (N - 1)); i *= 2)
+        string temp;
+        cin >> temp;
+        
+        for (int j = 0; j < C; j++)
         {
-            int cnt = 0;  // 현재 열에서 T(1)의 개수
+            arr[i][j] = temp[j];
 
-            // 각 행을 확인하면서 현재 열의 비트가 1인지 확인
-            for(int j = 1; j <= N; j++)
+            if (arr[i][j] == 'J')
             {
-                if(arr[j] & i)  // j번째 행의 i번째 비트가 1(T)인지 확인
-                    cnt++;
+                jihoonQ.emplace(i, j);
+            }
+            else if (arr[i][j] == 'F')
+            {
+                fireQ.emplace(i, j);
+            }
+        }
+    }
+
+    // 불 먼저 기록
+    while (!fireQ.empty())
+    {
+        int fireY = fireQ.front().first;
+        int fireX = fireQ.front().second;
+        fireQ.pop();
+
+        for (int i = 0; i < 4; i++)
+        {
+            int nY = fireY + dY[i];
+            int nX = fireX + dX[i];
+
+            // 범위 체크
+            if (nY < 0 || nY >= R || nX < 0 || nX >= C) continue;
+
+            // 벽 체크
+            if (arr[nY][nX] == '#') continue;
+            
+            // 처음 방문
+            if (vsitiedFire[nY][nX] == 0)
+            {
+                vsitiedFire[nY][nX] = vsitiedFire[fireY][fireX] + 1; // 누적   
+                fireQ.emplace(nY, nX);
+            }
+        }
+    }
+
+    // 지훈 체크
+    while (!jihoonQ.empty())
+    {
+        int jihoonY = jihoonQ.front().first;
+        int jihoonX = jihoonQ.front().second;
+        jihoonQ.pop();
+
+        for (int i = 0; i < 4; i++)
+        {
+            int nY = jihoonY + dY[i];
+            int nX = jihoonX + dX[i];
+
+            // 범위 체크 = 지훈이가 범위를 나가는 것은 탈출을 의미!
+            if (nY < 0 || nY >= R || nX < 0 || nX >= C)
+            {
+                isPossible = 1;
+                cout << (vsitiedJihoon[jihoonY][jihoonX] + 1);
+                break;
             }
 
-            // 열을 뒤집을지 말지는 그리디하게 결정
-            // T가 많으면 열을 뒤집어서 H로 만드는게 유리
-            sum += min(cnt, N - cnt);
-        }
-
-        ret = min(ret, sum);  // 최소값 갱신
-
-        return;
-    }
-
-    // here번째 행을 뒤집지 않는 경우
-    GO(here + 1);
-
-    // here번째 행을 뒤집는 경우 (NOT 연산으로 모든 비트 반전)
-    arr[here] = ~arr[here];
-    GO(here + 1);
-}
-
-int main()
-{
-    ios_base::sync_with_stdio(false);cin.tie(NULL); cout.tie(NULL);
-
-    // 입력 처리
-    cin >> N;
-    for(int i = 1; i <= N; i++)
-    {
-        cin >> S;  // i번째 행의 동전 상태 (예 : "HHT")
-
-        int value = 1;  // 비트 위치 (1, 2, 4, 8, ... 즉 2^0, 2^1, 2^2, ...)
-        for (char j : S)
-        {
-            if(j == 'T')
-                arr[i] |= value;  // T면 해당 비트를 1로 설정 (OR 연산)
-
-           value *= 2;  // 다음 비트 위치로 이동 (왼쪽으로 shift)
+            // 벽 체크
+            if (arr[nY][nX] == '#') continue;
+            
+            // 처음 방문 && 도착값이 불 도착 시간보다 작을 때, 기록
+            if (vsitiedJihoon[nY][nX] == 0 && (vsitiedJihoon[jihoonY][jihoonX] + 1) < vsitiedFire[nY][nX])
+            {
+                vsitiedJihoon[nY][nX] = vsitiedJihoon[jihoonY][jihoonX] + 1; // 누적   
+                jihoonQ.emplace(nY, nX);
+            }
         }
     }
 
-    // 알고리즘 실행 : 1번 행부터 시작
-    GO(1);
-
-    // 결과 출력 : 최소 T(뒷면) 개수
-    cout << ret << "\n";
+    if (isPossible == 0) cout << "IMPOSSIBLE";
 
     return 0;
 }

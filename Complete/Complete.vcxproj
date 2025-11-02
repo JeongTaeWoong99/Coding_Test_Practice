@@ -167,6 +167,7 @@
     <None Include="백준\2_Silver\S1_1992_쿼드트리\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_1629_곱셈\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_2178_미로탐색\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S1_2468_안전영역\Answer.cpp.txt" />
     <None Include="백준\2_Silver\S1_2529_부등호\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_9934_완전이진트리\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_9934_완전이진트리\Answer(성공).cpp.txt" />
@@ -218,6 +219,7 @@
     <None Include="백준\2_Silver\S1_1992_쿼드트리\README.md" />
     <None Include="백준\2_Silver\S1_1629_곱셈\README.md" />
     <None Include="백준\2_Silver\S1_2178_미로탐색\README.md" />
+    <None Include="백준\2_Silver\S1_2468_안전영역\README.md" />
     <None Include="백준\2_Silver\S1_2529_부등호\README.md" />
     <None Include="백준\2_Silver\S1_9934_완전이진트리\README.md" />
     <None Include="백준\2_Silver\S2_14620_꽃길\README.md" />

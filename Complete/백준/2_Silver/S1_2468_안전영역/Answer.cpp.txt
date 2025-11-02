@@ -1,0 +1,89 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int dy[4] = {-1, 0, 1, 0};
+const int dx[4] = {0, 1, 0, -1};
+
+int n;
+int arr[104][104];
+int visited[104][104];
+
+// height : 비의 높이 (이 높이 이하는 물에 잠김)
+int BFS(int height)
+{
+    // visited 배열 초기화
+    memset(visited, 0, sizeof(visited));
+
+    int cnt = 0; // 안전 영역 개수
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            // 방문 안한 구역 && height보다 큰 높이 (물에 잠기지 않음)
+            if (visited[i][j] == 0 && arr[i][j] > height)
+            {
+                queue<pair<int, int>> bfsQ;
+                visited[i][j] = 1;
+                bfsQ.emplace(i, j);
+
+                cnt++; // 새로운 안전 영역 발견
+
+                while (!bfsQ.empty())
+                {
+                    int cy = bfsQ.front().first;
+                    int cx = bfsQ.front().second;
+                    bfsQ.pop();
+
+                    for (int k = 0; k < 4; k++)
+                    {
+                        int ny = cy + dy[k];
+                        int nx = cx + dx[k];
+
+                        // 범위 체크
+                        if (ny < 0 || ny >= n || nx < 0 || nx >= n) continue;
+
+                        // 이미 방문 || 물에 잠김
+                        if (visited[ny][nx] || arr[ny][nx] <= height) continue;
+
+                        // 방문 처리 및 큐에 추가
+                        visited[ny][nx] = 1;
+                        bfsQ.emplace(ny, nx);
+                    }
+                }
+            }
+        }
+    }
+
+    return cnt;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    int maxHeight = 0;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            cin >> arr[i][j];
+            maxHeight = max(maxHeight, arr[i][j]);
+        }
+    }
+
+    int ret = 1; // 아무 지역도 물에 잠기지 않는 경우 (height = 0)
+
+    // 모든 가능한 비의 높이를 시도 (1부터 maxHeight-1까지)
+    for (int height = 1; height < maxHeight; height++)
+    {
+        int safeAreas = BFS(height);
+        ret = max(ret, safeAreas);
+    }
+
+    cout << ret << '\n';
+
+    return 0;
+}

@@ -200,6 +200,7 @@
     <None Include="백준\3_Gold\G4_19942_다이어트\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_1987_알파벳\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_1068_트리\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G5_2589_보물섬\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G5_14502_연구소\Answer(3중 for문 조합 정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_14502_연구소\Answer(next_permutation 순열 메서드를 조합으로 응용한 정답).cpp.txt" />
     <None Include="백준\4_Platinum\P5_17071_숨바꼭질5\Answer(정답).cpp.txt" />
@@ -242,6 +243,7 @@
     <None Include="백준\3_Gold\G4_19942_다이어트\README.md" />
     <None Include="백준\3_Gold\G4_1987_알파벳\README.md" />
     <None Include="백준\3_Gold\G5_1068_트리\README.md" />
+    <None Include="백준\3_Gold\G5_2589_보물섬\README.md" />
     <None Include="백준\3_Gold\G5_14502_연구소\README.md" />
     <None Include="백준\4_Platinum\P5_17071_숨바꼭질5\README.md" />
     <None Include="백준\4_Platinum\P5_3197_백조의호수\README.md" />

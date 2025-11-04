@@ -184,7 +184,7 @@
     <None Include="백준\2_Silver\S4_1940_주몽\Answer(투포인터 최적화 정답).cpp.txt" />
     <None Include="백준\2_Silver\S4_3986_좋은단어\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G1_1285_동전뒤집기\Answer(정답).cpp.txt" />
-    <None Include="백준\3_Gold\G3_2109_순회강연\Answer.cpp.txt" />
+    <None Include="백준\3_Gold\G3_2109_순회강연\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_15684_사다리조작\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_16637_괄호추가하기\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_12851_숨바꼭질2\Answer(정답).cpp.txt" />

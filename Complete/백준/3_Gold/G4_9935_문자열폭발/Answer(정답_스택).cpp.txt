@@ -1,0 +1,68 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// S   : 입력 문자열
+// T   : 폭발 문자열
+// ret : 결과 문자열 (스택 역할)
+string S, T, ret;
+stack<char> stk;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> S >> T;
+    
+    for(char a : S)
+    { 
+        stk.push(a);
+
+        // T 이상 쌓임 && 스택의 맨 위 값이 폭발 문자열의 마지막 문자와 동일
+        // => 끄집어 내서 확인
+        // ex) 스택 123C4 / 폭발 문자 C4
+        // 스택 top인 '4'와 폭발 문자 마지막 '4' 동일 
+        if(stk.size() >= T.size() && stk.top() == T[T.size() - 1])
+        {
+            string ss = "";
+
+            // T 길이 만큼, 스택 뽑아오기
+            for(char i : T)
+            {
+                ss += stk.top();
+                stk.pop();
+            }
+
+            // 뒤집기
+            reverse(ss.begin(), ss.end());
+
+            // 동일한지 확인
+            // 다름 => 다시 push 넣어주기
+            // 같음 => 다시 넣을 필요 없음
+            if(T != ss)
+            {
+                for(int i : ss)
+                {
+                    stk.push(i);
+                }
+            }
+        }  
+    }
+    
+    if(stk.empty())
+    {
+        cout << "FRULA" << "\n";;
+    }
+    else
+    {
+        while(!stk.empty())
+        {
+            ret += stk.top();
+            stk.pop();
+        }
+        
+        reverse(ret.begin(), ret.end()); 
+        cout << ret << "\n";
+    }
+    
+    return 0;
+}

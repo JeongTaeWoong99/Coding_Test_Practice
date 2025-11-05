@@ -1,0 +1,34 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// S   : 입력 문자열
+// T   : 폭발 문자열
+// ret : 결과 문자열 (스택 역할)
+string S, T, ret;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> S >> T;
+
+    // 문자열 하나씩 추가하면서 폭발 문자열 체크
+    for(char a : S)
+    {
+        ret += a; // 문자 추가
+
+        // 폭발 문자열이 완성되었는지 확인
+        // T개 이상 쌓임 && 비교 동일함 => erase
+        if(ret.size() >= T.size() && ret.substr(ret.size() - T.size(), T.size()) == T)
+        {
+            ret.erase(ret.end() - T.size(), ret.end()); // 폭발 문자열 제거
+        }
+    }
+
+    // 결과 출력
+    if(ret.empty()) cout << "FRULA" << "\n";
+    else            cout << ret     << "\n";
+
+    return 0;
+}

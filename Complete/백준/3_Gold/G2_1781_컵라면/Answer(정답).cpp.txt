@@ -1,0 +1,47 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int                                            N, ret; // N : 문제 개수, ret : 최대 컵라면 수
+priority_queue<int, vector<int>, greater<int>> pq;     // 최소 힙 (가장 적은 컵라면 수를 top에)
+vector<pair<int, int>>                         v;      // {데드라인, 컵라면 수}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+
+    cin >> N;
+
+    // 입력 받기
+    for (int i = 0; i < N; i++)
+    {
+        int deadline, ramen;
+        cin >> deadline >> ramen;
+        v.emplace_back(deadline, ramen);
+    }
+
+    // 데드라인 기준 오름차순 정렬
+    sort(v.begin(), v.end());
+
+    // 그리디 알고리즘 : 데드라인이 빠른 순서대로 처리
+    for (int i = 0; i < N; i++)
+    {
+        pq.push(v[i].second);  // 컵라면 수를 우선순위 큐에 추가
+
+        // 현재 데드라인보다 많은 문제를 선택했다면, 가장 적은 보상 제거
+        if (pq.size() > v[i].first)
+        {
+            pq.pop();
+        }
+    }
+
+    // 우선순위 큐에 남은 컵라면 수 합산
+    while (!pq.empty())
+    {
+        ret += pq.top();
+        pq.pop();
+    }
+
+    cout << ret << "\n";
+
+    return 0;
+}

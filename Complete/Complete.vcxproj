@@ -169,6 +169,7 @@
     <None Include="백준\2_Silver\S1_2178_미로탐색\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_2468_안전영역\Answer.cpp.txt" />
     <None Include="백준\2_Silver\S1_2529_부등호\Answer(정답).cpp.txt" />
+    <None Include="백준\2_Silver\S1_2583_영역구하기\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_9934_완전이진트리\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_9934_완전이진트리\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S2_14620_꽃길\Answer(정답).cpp.txt" />
@@ -226,6 +227,7 @@
     <None Include="백준\2_Silver\S1_2178_미로탐색\README.md" />
     <None Include="백준\2_Silver\S1_2468_안전영역\README.md" />
     <None Include="백준\2_Silver\S1_2529_부등호\README.md" />
+    <None Include="백준\2_Silver\S1_2583_영역구하기\README.md" />
     <None Include="백준\2_Silver\S1_9934_완전이진트리\README.md" />
     <None Include="백준\2_Silver\S2_14620_꽃길\README.md" />
     <None Include="백준\2_Silver\S2_1012_유기농배추\README.md" />

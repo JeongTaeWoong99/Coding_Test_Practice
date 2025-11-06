@@ -37,7 +37,8 @@
       "Bash(del \"Complete\\백준\\3_Gold\\G4_2636_치즈\\Answer(성공).cpp.txt\")",
       "Bash(echo:*)",
       "Bash(\"C:\\Users\\ASUS\\Desktop\\Code\\CoTe\\Coding-Test-Practice\\Complete\\백준\\2_Silver\\S1_2468_안전영역\\Answer.cpp.txt\")",
-      "Bash(./verify.exe:*)"
+      "Bash(./verify.exe:*)",
+      "Bash(git rm:*)"
     ]
   },
   "outputStyle": "korean-terminal"

@@ -34,9 +34,6 @@
 # PDF files (교안 및 문서)
 *.pdf
 nul
+
+# Test 연습장 (Git 추적 제외)
 Test/Test.cpp
-Test/Test.cpp
-/Test
-Test/Test.cpp
-Test/Test.cpp
-/Test

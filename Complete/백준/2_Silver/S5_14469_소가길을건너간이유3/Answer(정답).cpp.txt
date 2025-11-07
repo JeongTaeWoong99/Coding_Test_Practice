@@ -1,0 +1,38 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int N;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> N;
+    
+    vector<pair<int, int>> cows(N); // 동적 크기 할당 => first : 도착 시간, second : 검문 시간
+
+    // 입력
+    for (int i = 0; i < N; i++)
+        cin >> cows[i].first >> cows[i].second;
+
+    // 핵심 : 도착 시간 순으로 정렬 (그리디 알고리즘)
+    // 먼저 도착한 소부터 처리해야 대기 시간 최소화
+    sort(cows.begin(), cows.end());
+
+    // 첫 번째 소는 바로 검문 시작 가능
+    int realTime = cows[0].first + cows[0].second;
+
+    // 두 번째 소부터는 이전 소의 검문 종료 시간과 자신의 도착 시간 중 더 늦은 시간부터 검문 시작
+    // 라인 스위핑 문제 = 이어 붙이기
+    for (int i = 1; i < N; i++)
+    {
+        // 검문 시작 시간 = max(이전 소 검문 종료 시간, 현재 소 도착 시간)
+        realTime  = max(realTime, cows[i].first);
+        // 검문 종료 시간 = 검문 시작 시간 + 검문 소요 시간
+        realTime += cows[i].second;
+    }
+
+    cout << realTime << "\n";
+
+    return 0;
+}

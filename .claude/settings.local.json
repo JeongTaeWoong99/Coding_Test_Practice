@@ -38,7 +38,8 @@
       "Bash(echo:*)",
       "Bash(\"C:\\Users\\ASUS\\Desktop\\Code\\CoTe\\Coding-Test-Practice\\Complete\\백준\\2_Silver\\S1_2468_안전영역\\Answer.cpp.txt\")",
       "Bash(./verify.exe:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(\"Complete\\백준\\2_Silver\\S5_14469_소가길을건너간이유3\\Answer.cpp.txt\")"
     ]
   },
   "outputStyle": "korean-terminal"

@@ -184,6 +184,7 @@
     <None Include="백준\2_Silver\S4_1940_주몽\Answer(조합 성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_1940_주몽\Answer(투포인터 최적화 정답).cpp.txt" />
     <None Include="백준\2_Silver\S4_3986_좋은단어\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S5_14469_소가길을건너간이유3\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G1_1285_동전뒤집기\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G2_1781_컵라면\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_2109_순회강연\Answer(정답).cpp.txt" />
@@ -239,6 +240,7 @@
     <None Include="백준\2_Silver\S4_1620_나는야포켓몬마스터이다솜\README.md" />
     <None Include="백준\2_Silver\S4_1940_주몽\README.md" />
     <None Include="백준\2_Silver\S4_3986_좋은단어\README.md" />
+    <None Include="백준\2_Silver\S5_14469_소가길을건너간이유3\README.md" />
     <None Include="백준\3_Gold\G1_1285_동전뒤집기\README.md" />
     <None Include="백준\3_Gold\G2_1781_컵라면\README.md" />
     <None Include="백준\3_Gold\G3_2109_순회강연\README.md" />

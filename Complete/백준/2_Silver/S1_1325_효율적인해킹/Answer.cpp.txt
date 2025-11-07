@@ -1,0 +1,71 @@
+﻿ï»¿#include <bits/stdc++.h>
+using namespace std;
+
+int         N, M;            // N개 번호까지, M개 테스트 케이스      
+vector<int> vec[10004];      // N <= 10000
+int         vit[10004];      // 방문 체크
+int         maxRet = -123;   // 음수에서 시작
+vector<int> maxComputersNum; // 최대 해킹 가능 컴퓨터 번호 저장(중복 존재 저장)
+
+int main(int argc, char* argv[])
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> N >> M;
+
+    // M 테스트 케이스 만큼 넣기
+    for (int i = 1; i <= M; i++)
+    {
+        int a, b;
+        cin >> a >> b;
+        vec[b].emplace_back(a);
+    }
+
+    // N 컴퓨터 각각 확인
+    for (int i = 1; i <= N; i++)
+    {
+        // 매번 방문 초기화
+        memset(vit,0,sizeof(vit));
+        int comCount = 1;
+        vit[i]       = 1;
+
+        // BFS 시작 (i번 컴퓨터부터)
+        queue<int> bfsQ;
+        bfsQ.emplace(i);
+
+        // 확인
+        while (!bfsQ.empty())
+        {
+            int cur = bfsQ.front();
+            bfsQ.pop();
+
+            for (int next : vec[cur])
+            {
+                if (vit[next] == 1) continue;
+
+                comCount++;
+                vit[next] = 1;
+                bfsQ.emplace(next);
+            }
+        }
+
+        // 최대값 갱신 및 컴퓨터 번호 저장
+        if (comCount > maxRet)
+        {
+            maxRet = comCount;           // 새로운 최대값 발견
+            maxComputersNum.clear();           // 이전 컴퓨터들 삭제
+            maxComputersNum.emplace_back(i);   // 현재 컴퓨터 추가
+        }
+        // 동일한 최대값이면 추가
+        else if (comCount == maxRet)
+        {
+            maxComputersNum.emplace_back(i);
+        }
+    }
+
+    // 결과 출력 (오름차순으로 저장되어 있음)
+    for (int comp : maxComputersNum)
+        cout << comp << " ";
+
+    return 0;
+}

@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// 전역 변수 선언
+int N;              // 회의의 수
+int from, to;       // 회의 시작 시간, 끝나는 시간
+int idx  = 0;       // 현재 선택한 회의의 인덱스
+int ret  = 1;       // 선택할 수 있는 회의의 최대 개수 (첫 회의는 무조건 선택)
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+
+    cin >> N;
+
+    // 회의 정보를 저장할 벡터 (끝나는 시간, 시작 시간) 순서로 저장
+    vector<pair<int, int>> v;
+
+    for(int i = 0; i < N; i++)
+    {
+        cin >> from >> to;
+        v.emplace_back(to, from);  // (끝나는 시간, 시작 시간) 순서로 저장 → sort 활용
+    }
+
+    // ※ 정렬 (끝나는 시간 우선, 같으면 시작 시간 순)
+    sort(v.begin(), v.end());
+
+    // 첫 번째 회의 선택
+    from = v[0].second;  // 첫 회의의 시작 시간
+    to   = v[0].first;   // 첫 회의의 끝나는 시간
+
+    // 두 번째 회의부터 탐색
+    for(int i = 1; i < N; i++)
+    {
+        // 현재 회의의 시작 시간이 이전 회의 끝나는 시간보다 빠르면 선택 불가
+        if(v[i].second < to) continue;
+
+        // 선택 가능한 회의이면 갱신
+        from = v[i].second;  // 새로운 회의의 시작 시간
+        to   = v[i].first;   // 새로운 회의의 끝나는 시간
+        ret++;               // 선택한 회의 개수 증가
+    }
+
+    cout << ret << '\n';
+
+    return 0;
+}

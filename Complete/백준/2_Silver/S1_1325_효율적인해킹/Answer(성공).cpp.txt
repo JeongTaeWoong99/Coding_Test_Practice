@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
         // 최대값 갱신 및 컴퓨터 번호 저장
         if (comCount > maxRet)
         {
-            maxRet = comCount;           // 새로운 최대값 발견
+            maxRet = comCount;                 // 새로운 최대값 발견
             maxComputersNum.clear();           // 이전 컴퓨터들 삭제
             maxComputersNum.emplace_back(i);   // 현재 컴퓨터 추가
         }

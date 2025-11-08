@@ -184,7 +184,7 @@
     <None Include="백준\2_Silver\S4_1940_주몽\Answer(조합 성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_1940_주몽\Answer(투포인터 최적화 정답).cpp.txt" />
     <None Include="백준\2_Silver\S4_3986_좋은단어\Answer(성공).cpp.txt" />
-    <None Include="백준\2_Silver\S1_1325_효율적인해킹\Answer.cpp.txt" />
+    <None Include="백준\2_Silver\S1_1325_효율적인해킹\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S5_14469_소가길을건너간이유3\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G1_1285_동전뒤집기\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G2_1781_컵라면\Answer(정답).cpp.txt" />
@@ -207,6 +207,7 @@
     <None Include="백준\3_Gold\G4_1987_알파벳\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_9935_문자열폭발\Answer(정답_스택).cpp.txt" />
     <None Include="백준\3_Gold\G5_1068_트리\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G5_1931_회의실배정\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_2589_보물섬\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G5_14502_연구소\Answer(3중 for문 조합 정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_14502_연구소\Answer(next_permutation 순열 메서드를 조합으로 응용한 정답).cpp.txt" />
@@ -256,6 +257,7 @@
     <None Include="백준\3_Gold\G4_19942_다이어트\README.md" />
     <None Include="백준\3_Gold\G4_1987_알파벳\README.md" />
     <None Include="백준\3_Gold\G5_1068_트리\README.md" />
+    <None Include="백준\3_Gold\G5_1931_회의실배정\README.md" />
     <None Include="백준\3_Gold\G5_2589_보물섬\README.md" />
     <None Include="백준\3_Gold\G5_14502_연구소\README.md" />
     <None Include="백준\4_Platinum\P5_17071_숨바꼭질5\README.md" />

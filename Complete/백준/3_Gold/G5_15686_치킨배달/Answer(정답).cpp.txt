@@ -1,0 +1,60 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int N, M;                             // N : 도시 크기, M : 살릴 치킨집 개수
+int arr[54][54];                      // 도시 정보
+int finalRet = 987654321;             // 최소 치킨 거리
+vector<pair<int, int>> customerHomes; // 고객집 좌표
+vector<pair<int, int>> chickenHomes;  // 치킨집 좌표
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> N >> M;
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < N; j++)
+        {
+            cin >> arr[i][j];
+            if(arr[i][j] == 1) customerHomes.emplace_back(i, j);   // 집 저장
+            if(arr[i][j] == 2) chickenHomes.emplace_back(i, j);    // 치킨집 저장
+        }
+    }
+
+    // next_permutation을 이용한 조합 생성
+    int chickenSize = chickenHomes.size();
+    vector<int> combi(chickenSize, 1);          // 1로 초기화 (미선택)
+    fill_n(combi.begin(), M, 0);                // 앞 m개를 0으로 (선택)
+
+    // 모든 조합에 대해 치킨 거리 계산
+    do
+    {
+        int currentCombiRet = 0;  // 현재 조합의 도시 치킨 거리 합
+
+        // 각각 모든 집에 대해, 치킨집들까지 거리 확인
+        // 그 중, 제일 가까운 값 저장하고 더함
+        for(pair<int, int> home : customerHomes)
+        {
+            int _min = 987654321;  // 현재 집의 최소 치킨 거리
+
+            // 선택된 치킨집 중 가장 가까운 거리 찾기
+            for(int i = 0; i < chickenSize; i++)
+            {
+                if(combi[i] == 0)  // 0이면 선택된 치킨집
+                {
+                    // 맨해튼 거리 계산
+                    int _dist = abs(home.first - chickenHomes[i].first) + abs(home.second - chickenHomes[i].second);
+                    _min = min(_min, _dist);
+                }
+            }
+            currentCombiRet += _min;  // 도시 치킨 거리에 누적
+        }
+        finalRet = min(finalRet, currentCombiRet);  // 최소값 갱신
+
+    }while(next_permutation(combi.begin(), combi.end()));  // 다음 조합으로
+
+    cout << finalRet << "\n";
+
+    return 0;
+}

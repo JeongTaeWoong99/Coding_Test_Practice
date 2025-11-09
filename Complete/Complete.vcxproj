@@ -201,6 +201,7 @@
     <None Include="백준\3_Gold\G4_14497_주난의난\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G4_14497_주난의난\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_14497_주난의난\README.md" />
+    <None Include="백준\3_Gold\G4_16234_인구이동\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G4_2636_치즈\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G4_4179_불\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G4_9935_문자열폭발\Answer(정답_erase).cpp.txt" />
@@ -257,6 +258,7 @@
     <None Include="백준\3_Gold\G4_12851_숨바꼭질2\README.md" />
     <None Include="백준\3_Gold\G4_12869_뮤탈리스크\README.md" />
     <None Include="백준\3_Gold\G4_13913_숨바꼭질4\README.md" />
+    <None Include="백준\3_Gold\G4_16234_인구이동\README.md" />
     <None Include="백준\3_Gold\G4_2636_치즈\README.md" />
     <None Include="백준\3_Gold\G4_4179_불\README.md" />
     <None Include="백준\3_Gold\G4_9935_문자열폭발\README.md" />

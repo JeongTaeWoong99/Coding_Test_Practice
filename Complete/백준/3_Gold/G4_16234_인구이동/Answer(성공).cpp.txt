@@ -1,0 +1,123 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int dy[4] = {-1, 0, 1, 0};
+const int dx[4] = {0, 1, 0, -1};
+
+int N, L, R;
+int arr[54][54];
+int vit[54][54];
+vector<pair<int, int>> currentAlliance;   // 현재 연합
+int moveCount;
+
+// BFS : 연합 탐색 및 인구 재분배
+bool BFS(int y, int x)
+{
+    bool flag = false;
+    currentAlliance.clear();    // 구역 탐색마다, 연합 비우기
+
+    int allSum = arr[y][x];             // 연합 총 합 초기화(시작점 더해주기)
+    currentAlliance.emplace_back(y, x); // 연합 추가
+
+    queue<pair<int, int>> bfsQ;
+    bfsQ.emplace(y, x);
+    vit[y][x] = 1;
+
+    while (!bfsQ.empty())
+    {
+        int cY = bfsQ.front().first;
+        int cX = bfsQ.front().second;
+        bfsQ.pop();
+
+        for (int i = 0; i < 4; i++)
+        {
+            int nY = cY + dy[i];
+            int nX = cX + dx[i];
+
+            // 배열 범위 체크
+            if (nY < 0 || nY >= N || nX < 0 || nX >= N) continue;
+
+            // 이미 방문
+            if (vit[nY][nX]) continue;
+
+            // 인구수 차이 범위 확인(범위 밖이면 continue)
+            int diff = abs(arr[cY][cX] - arr[nY][nX]);
+            if (diff < L || diff > R) continue;
+
+            vit[nY][nX] = 1;                        // 방문 체크
+            bfsQ.emplace(nY, nX);                   // 큐에 추가
+            
+            currentAlliance.emplace_back(nY, nX);   // 현재 연합에 추가
+            allSum += arr[nY][nX];                  // 연합 총합
+        }
+    }
+
+    // 1개 이상의 연합이 형성되었다면
+    if (currentAlliance.size() > 1)
+    {
+        flag = true;
+
+        // 평균 계산
+        int averageP = allSum / currentAlliance.size();
+
+        // 연합의 각 칸에 평균 인구 할당
+        for (int i = 0; i < currentAlliance.size(); i++)
+        {
+            int y = currentAlliance[i].first;
+            int x = currentAlliance[i].second;
+            arr[y][x] = averageP;
+        }
+    }
+
+    // 연합 있음(= 인구 이동 있음)
+    return flag;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> N >> L >> R;
+
+    // 배열 입력
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            int people;
+            cin >> people;
+            arr[i][j] = people;
+        }
+    }
+
+    // 인구 이동 시뮬레이션
+    while (true)
+    {
+        // 시작 초기화
+        bool isAlliance = false;     // 연합 상태
+        
+        memset(vit, 0, sizeof(vit)); // 방문 초기화
+
+        // 전체 탐색
+        for (int i = 0; i < N; i++)
+        {
+            for (int j = 0; j < N; j++)
+            {
+                if (!vit[i][j])  // 아직 방문하지 않은 칸만
+                {
+                    if (BFS(i, j)) isAlliance = true;
+                }
+            }
+        }
+
+        // 인구 이동이 없었다면 종료
+        if (!isAlliance) break;
+
+        // 이동 횟수 증가
+        moveCount++;
+    }
+
+    cout << moveCount;
+
+    return 0;
+}

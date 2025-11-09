@@ -37,3 +37,6 @@ nul
 
 # Test 연습장 (Git 추적 제외)
 Test/Test.cpp
+
+# Personal study notes (Git 추적 제외)
+SPECIAL.md

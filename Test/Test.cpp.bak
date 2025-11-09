@@ -1,0 +1,80 @@
+﻿// N개 보석
+// 무게 - 가격
+// 가방 K개
+// 최대 무개 C
+// 가방에는 1개의 보석 가능
+
+// N개 보석 - K 가방 수
+// 각 무게 - 가격
+// ~~~
+// 각 가방에 담을 수 있는 최대 무게
+
+// 최대 합 출력
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int N, M;                // 반복 수 입력 수, 가방 수
+int maxWeight;            // 가능 최대 무게
+vector<pair<int,int>> v; // 무게 - 가격
+int ret;
+
+int main(int argc, char* argv[])
+{
+    ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+    
+    cin >> N >> M;
+
+    for (int i = 0; i < N; ++i)
+    {
+        int weight, price;
+        cin >> weight >> price;
+        
+        v.emplace_back(price,weight);   // 가격 - 무게 순서로 넣기
+    }
+
+    cin >> maxWeight;
+
+    // 가격 오름차순
+    sort(v.begin(), v.end());
+
+    // cout << "------------------" << endl;
+    // for (int i = 0; i < N; ++i)
+    // {
+    //     cout << v[i].first << " " << v[i].second << endl;
+    // }
+    // cout << "------------------" << endl;
+
+    // 뒤집기 -> 가격 내침차순
+    reverse(v.begin(), v.end());
+
+    // cout << "------------------" << endl;
+    // for (int i = 0; i < N; ++i)
+    // {
+    //     cout << v[i].first << " " << v[i].second << endl;
+    // }
+    // cout << "------------------" << endl;
+
+    // 합산 시작
+    // 내림 차순이라 가격이 높은 순서대로 확인
+    for (int i = 0; i < N; ++i)
+    {
+        // 남은 가방 없음 -> 탈출
+        if (M <= 0)
+        {
+            //cout << "탈출" << endl;
+            break;
+        }
+        
+        // 무게가 최대 무게보다 작으면, 합산
+        if (v[i].second < maxWeight)
+        {
+            //cout << v[i].second << " < " << maxWeight << endl;
+            M--; // 가방 수 감소
+            ret += v[i].first;
+        }
+    }
+
+    cout << ret;
+    return 0;
+}

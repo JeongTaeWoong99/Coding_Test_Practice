@@ -1,0 +1,70 @@
+﻿// N개 보석 - 각각 무게, 가격
+// K개 가방 - 각각 최대 무게 제한
+// 가방 1개당 보석 1개만 가능
+// 훔칠 수 있는 보석 최대 가격 합
+
+// 핵심 : 작은 가방부터 처리, 담을 수 있는 것 중 가장 비싼 것 선택
+// 우선순위 큐 (최대힙) 사용
+
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+ll N, K;                            // 보석 수, 가방 수
+ll ret = 0;                         // 최대 가격 합 (오버플로우 방지)
+vector<pair<ll,ll>> jewels;         // {무게, 가격}
+vector<ll> bags;                    // 가방 용량
+priority_queue<ll> pq;              // 최대힙 (가격)
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+
+    cin >> N >> K;
+
+    // 보석 입력
+    jewels.resize(N);
+    for (int i = 0; i < N; i++)
+    {
+        cin >> jewels[i].first >> jewels[i].second;  // 무게, 가격
+    }
+
+    // 가방 입력
+    bags.resize(K);
+    for (int i = 0; i < K; i++)
+    {
+        cin >> bags[i];
+    }
+
+    // 정렬
+    sort(jewels.begin(), jewels.end());  // 보석 무게 오름차순
+    sort(bags.begin(), bags.end());      // 가방 용량 오름차순
+
+    int jewelIdx = 0;  // 현재 확인할 보석 인덱스
+
+    // 가방 K개 별로 처리 (작은 가방부터)
+    for (int i = 0; i < K; i++)
+    {
+        // 현재 가방에 담을 수 있는 모든 보석을 pq에 추가
+        // 현재 구간에서 담을 수 있는 걸 모두 담고, while 탈출.
+        // 보석 범위 안 && 무게 작거나 같은 
+        while (jewelIdx < N && jewels[jewelIdx].first <= bags[i])
+        {
+            pq.push(jewels[jewelIdx].second);  // 가격만 추가
+            jewelIdx++;                        // 확인 보석 구간
+        }
+
+        // 담을 수 있는 보석 중 가장 비싼 것 선택. -> 각 가방당 1개씩(만족하는게 없을 수도 있음 => empty)
+        // 큐에 들어있는 값이 있으면, 1회 최대값 1개 더해주고 pop.
+        // 큐는 제거된 것 이외에는 남겨둠. 다음에 선택 가능하도록!
+        if (!pq.empty())
+        {
+            ret += pq.top();
+            pq.pop();
+        }
+    }
+
+    cout << ret << "\n";
+    return 0;
+}

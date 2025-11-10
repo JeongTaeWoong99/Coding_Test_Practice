@@ -47,7 +47,9 @@
       "Bash(cmd /c \"npm list -g @anthropic-ai/claude-code 2>&1\")",
       "Bash(nul)",
       "Bash(del \"C:\\Users\\ASUS\\Desktop\\Code\\CoTe\\Coding-Test-Practice\\convert-utf8-bom.ps1\")",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(printf:*)",
+      "Bash(\"Complete\\백준\\2_Silver\\S5_2828_사과담기게임\\Answer.cpp.txt\")"
     ]
   },
   "outputStyle": "korean-terminal"

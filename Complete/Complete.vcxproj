@@ -186,6 +186,7 @@
     <None Include="백준\2_Silver\S4_3986_좋은단어\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_1325_효율적인해킹\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S5_14469_소가길을건너간이유3\Answer(정답).cpp.txt" />
+    <None Include="백준\2_Silver\S5_2828_사과담기게임\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G1_1016_제곱ㄴㄴ수\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G1_1285_동전뒤집기\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G2_1202_보석도둑\Answer(정답).cpp.txt" />
@@ -248,6 +249,7 @@
     <None Include="백준\2_Silver\S4_3986_좋은단어\README.md" />
     <None Include="백준\2_Silver\S1_1325_효율적인해킹\README.md" />
     <None Include="백준\2_Silver\S5_14469_소가길을건너간이유3\README.md" />
+    <None Include="백준\2_Silver\S5_2828_사과담기게임\README.md" />
     <None Include="백준\3_Gold\G1_1016_제곱ㄴㄴ수\README.md" />
     <None Include="백준\3_Gold\G1_1285_동전뒤집기\README.md" />
     <None Include="백준\3_Gold\G2_1202_보석도둑\README.md" />

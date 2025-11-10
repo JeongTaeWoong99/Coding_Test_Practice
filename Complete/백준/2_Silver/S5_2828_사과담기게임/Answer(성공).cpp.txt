@@ -1,0 +1,49 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int N, M, J;      // N 레일 길이, M 바구니 범위, J 테스트 반복 수
+int lPos, rPos;   // L R 양쪽 위치
+int fallPos, ret; // fallPos 떨어지는 위치
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력 처리
+    cin >> N >> M >> J;
+
+    // 바구니 초기 위치 (왼쪽 끝)
+    lPos = 1;
+
+    // 각 사과 처리
+    for(int i = 0; i < J; i++)
+    {
+        // 바구니 오른쪽 위치 계산(lPos + 범위 - 보정)
+        rPos = lPos + M - 1;
+
+        // 사과 떨어지는 위치 입력
+        cin >> fallPos;
+
+        // 사과가 바구니 범위 안에 있으면 이동 불필요
+        if(fallPos >= lPos && fallPos <= rPos)
+            continue;
+
+        // 사과가 왼쪽에 있으면
+        if(fallPos < lPos)
+        {
+            ret  += (lPos - fallPos); // 이동 거리 추가(거리 차이 만큼 더해주기)
+            lPos  = fallPos;          // ★ 바구니 왼쪽 끝 이동(M 범위에 영향 X이기 때문에, =로 변경.)
+        }
+        // 사과가 오른쪽에 있으면
+        else
+        {
+            ret  += (fallPos - rPos);   // 이동 거리 추가(거리 차이 만큼 더해주기)
+            lPos += (fallPos - rPos);   // ★ 바구니 왼쪽 끝 이동(M 범위에 영향을 받기 때문에, fallPos - rPos로 lPos 변경)
+        }
+    }
+
+    // 결과 출력
+    cout << ret << "\n";
+
+    return 0;
+}

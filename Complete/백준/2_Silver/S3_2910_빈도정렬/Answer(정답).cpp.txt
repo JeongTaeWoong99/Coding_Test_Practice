@@ -1,0 +1,56 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int N, C;                  // n: 숫자 개수, c: 숫자의 최대 종류 수 (여기서는 사용하지 않음)
+int arr[1004];             // 입력 숫자들을 저장할 배열
+vector<pair<int, int>> v;  // {빈도수, 값} 쌍을 담을 벡터
+map<int, int> mp;          // mp[value] = 해당 숫자의 등장 횟수
+map<int, int> mp_first;    // mp_first[value] = 해당 숫자의 "최초 등장 위치 (1-based)"
+
+bool CMP(pair<int,int> a, pair<int, int> b)
+{
+    // 빈도수가 같다면 → 먼저 등장한 숫자가 앞에 오도록 -> 
+    // -> a가 b보다 작으면 a를 앞에 -> ☆ 등장 순서 mp_first가 작아야, 먼저 나왔다는 뜻
+    if(a.first == b.first)
+        return mp_first[a.second] < mp_first[b.second];
+
+    // 빈도수가 다르면 → 더 자주 등장한 숫자가 앞에 오도록 
+    // -> a가 b보다 크면 a를 앞에 -> 빈도수가 더 높은걸 앞에
+    return a.first > b.first;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(NULL); cout.tie(NULL);
+
+    cin >> N >> C;
+
+    for(int i = 0; i < N; i++)
+    {
+        cin >> arr[i];
+        mp[arr[i]]++; // 해당 숫자의 등장 횟수 증가(키를 통해서, 벨류를 누적)
+
+        // 최초 등장 위치 저장 (1-based)
+        // 같은 숫자가 두 번 이상 나오면, 처음 위치만 기록되도록 함
+        if(mp_first[arr[i]] == 0)
+            mp_first[arr[i]] = i + 1;
+    }
+
+    // map 순회하면서 {빈도수, 값} 쌍으로 v에 저장
+    for(auto it : mp)
+        v.emplace_back(it.second, it.first);
+
+    // 정렬 : 빈도수 내림차순, 빈도 같으면 최초 등장순 오름차순
+    sort(v.begin(), v.end(), CMP);
+
+    // 정렬된 결과를 빈도수만큼 출력
+    for(auto i : v)
+    {
+        for(int j = 0; j < i.first; j++)
+        {
+            cout << i.second << " ";
+        }
+    }
+
+    return 0;
+}

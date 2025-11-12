@@ -1,0 +1,60 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+bool         che[4000001];  // 에라토스테네스의 체 (true : 소수 아님)
+vector<int>  primes;        // 소수 저장 벡터
+int          N;             // 입력값
+int          LP, RP;        // LP : 왼쪽 포인터, RP : 오른쪽 포인터
+int          ret = 0;       // 경우의 수
+int          sum = 0;       // 현재 구간 합
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> N;
+
+    // 에라토스테네스의 체로 소수 판별 및 저장
+    for(int i = 2; i <= N; i++)
+    {
+        // 소수 아님 true => 패스
+        if(che[i]) continue;
+
+        primes.push_back(i);  // 소수 발견 즉시 벡터에 저장
+
+        // i의 배수들을 모두 소수가 아닌 것으로 표시 (2i, 3i, 4i, ...)
+        for(int j = 2 * i; j <= N; j += i)
+        {
+            che[j] = true;
+        }
+    }
+
+    // 투 포인터로 연속된 소수의 합 찾기
+    while(true)
+    {
+        // 오른쪽 포인터가 끝에 도달 && 그런데도, 총합이 N보다 작음 => 종료
+        if(RP == primes.size() && sum < N)
+            break;
+    
+        if (sum >= N)           // 합이 크거나 같으면 왼쪽 포인터 이동
+        {
+            sum -= primes[LP];  // 현재 자리값 빼주고
+            LP++;               // 포인터 이동
+        }
+        else                    // 합이 작으면 오른쪽 포인터 이동
+        {
+            sum += primes[RP];  // 현재 자리값 더해주고
+            RP++;               // 포인터 이동
+        }
+
+        // 합이 N과 같으면 경우의 수 증가
+        if(sum == N)
+            ret++;
+    }
+
+    // 출력
+    cout << ret << "\n";
+
+    return 0;
+}

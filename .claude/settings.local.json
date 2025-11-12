@@ -50,7 +50,11 @@
       "Bash(git restore:*)",
       "Bash(printf:*)",
       "Bash(\"Complete\\백준\\2_Silver\\S5_2828_사과담기게임\\Answer.cpp.txt\")",
-      "Bash(\"Complete/백준/2_Silver/S3_4659_비밀번호발음하기/Answer.cpp.txt\")"
+      "Bash(\"Complete/백준/2_Silver/S3_4659_비밀번호발음하기/Answer.cpp.txt\")",
+      "Write(Complete/**/*.cpp.txt)",
+      "Write(Complete/**/*.md)",
+      "Edit(Complete/Complete.vcxproj)",
+      "Bash(mkdir:*)"
     ]
   },
   "outputStyle": "korean-terminal"

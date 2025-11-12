@@ -1,0 +1,66 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 전역 변수 (자동으로 0/false로 초기화)
+string S;
+bool   flag1, flag2, flag3;  // 조건 체크 플래그
+char   previousC;            // 이전 문자 저장
+int    vowel_cnt;            // 모음 연속 카운트
+int    consonant_cnt;        // 자음 연속 카운트
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    while(true)
+    {
+        cin >> S;
+
+        if(S == "end") break;
+
+        // 매 테스트케이스마다 초기화
+        flag1         = false;  // 모음(a,e,i,o,u) 하나를 반드시 포함하여야 한다.
+        flag2         = true;   // 모음이 3개 혹은 자음이 3개 연속으로 오면 안 된다.
+        flag3         = true;   // 같은 글자가 연속적으로 두번 오면 안되나, ee 와 oo는 허용한다.
+        previousC     = '\0';
+        vowel_cnt     = 0;
+        consonant_cnt = 0;
+
+        for(char c : S)
+        {
+            // 조건 3번: 같은 글자 연속 2번 체크 (ee, oo는 허용)
+            if(previousC == c && c != 'e' && c != 'o')
+            {
+                flag3 = false;
+            }
+
+            // 이전 문자 저장
+            previousC = c;
+
+            // 조건 1번, 2번: 모음/자음 체크
+            if(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u')
+            {
+                consonant_cnt = 0;
+                ++vowel_cnt;
+                flag1 = true;  // 모음 1개 이상 포함
+            }
+            else
+            {
+                vowel_cnt = 0;
+                ++consonant_cnt;
+            }
+
+            // 조건 2번: 모음 또는 자음 3개 연속 체크
+            if(vowel_cnt == 3 || consonant_cnt == 3)
+            {
+                flag2 = false;
+            }
+        }
+
+        // 결과 출력
+        if(flag1 && flag2 && flag3) cout << "<" << S << "> is acceptable.\n";
+        else                        cout << "<" << S << "> is not acceptable.\n";
+    }
+
+    return 0;
+}

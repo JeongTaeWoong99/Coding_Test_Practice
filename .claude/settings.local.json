@@ -49,7 +49,8 @@
       "Bash(del \"C:\\Users\\ASUS\\Desktop\\Code\\CoTe\\Coding-Test-Practice\\convert-utf8-bom.ps1\")",
       "Bash(git restore:*)",
       "Bash(printf:*)",
-      "Bash(\"Complete\\백준\\2_Silver\\S5_2828_사과담기게임\\Answer.cpp.txt\")"
+      "Bash(\"Complete\\백준\\2_Silver\\S5_2828_사과담기게임\\Answer.cpp.txt\")",
+      "Bash(\"Complete/백준/2_Silver/S3_4659_비밀번호발음하기/Answer.cpp.txt\")"
     ]
   },
   "outputStyle": "korean-terminal"

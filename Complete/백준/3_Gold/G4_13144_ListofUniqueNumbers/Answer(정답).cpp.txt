@@ -1,0 +1,48 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 전역 변수
+long long N;               // 수열의 길이
+long long arr[100001];     // 입력 수열
+bool      vit[100001];     // 각 숫자의 등장 여부
+long long sP = 0, eP = 0;  // sP : 시작 포인터, eP : 끝 포인터
+long long ret = 0;         // 조건을 만족하는 경우의 수
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력 처리
+    cin >> N;
+    for(int i = 0; i < N; i++)
+        cin >> arr[i];
+
+    // 두 포인터 알고리즘
+    // 구간 sP~eP에서 중복 없는 부분 수열 찾기
+    while(eP < N)
+    {
+        // 현재 숫자 arr[eP]가 구간에 없으면
+        if(!vit[arr[eP]])
+        {
+            vit[arr[eP]] = true;  // 등장 표시
+            eP++;                 // 오른쪽 포인터 확장
+        }
+        // 중복이 발견되면
+        else
+        {
+            ret += (eP - sP);        // sP 시작점의 모든 부분 수열 개수 추가
+            vit[arr[sP]] = false;    // 왼쪽 숫자 제거
+            sP++;                    // 왼쪽 포인터 이동
+        }
+    }
+
+    // 마지막 남은 구간 [sP, eP)의 모든 부분 수열 개수 추가
+    // 길이 k인 구간의 부분 수열 개수 : k * (k + 1) / 2 (등차수열 합)
+    long long k = eP - sP;
+    ret += k * (k + 1) / 2;
+
+    // 결과 출력
+    cout << ret << "\n";
+    
+    return 0;
+}

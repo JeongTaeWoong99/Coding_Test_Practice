@@ -180,6 +180,7 @@
     <None Include="백준\2_Silver\S4_2870_수학숙제\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_2910_빈도정렬\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_3273_두수의합\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S3_3474_교수가된현우\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_4375_1(일)\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S5_4659_비밀번호발음하기\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_9375_패션왕신해빈\Answer(성공).cpp.txt" />
@@ -252,6 +253,7 @@
     <None Include="백준\2_Silver\S3_2559_수열\README.md" />
     <None Include="백준\2_Silver\S4_2870_수학숙제\README.md" />
     <None Include="백준\2_Silver\S3_2910_빈도정렬\README.md" />
+    <None Include="백준\2_Silver\S3_3474_교수가된현우\README.md" />
     <None Include="백준\2_Silver\S3_4375_1(일)\README.md" />
     <None Include="백준\2_Silver\S5_4659_비밀번호발음하기\README.md" />
     <None Include="백준\2_Silver\S3_9375_패션왕신해빈\README.md" />

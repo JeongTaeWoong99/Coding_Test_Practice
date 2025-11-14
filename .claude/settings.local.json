@@ -54,7 +54,8 @@
       "Write(Complete/**/*.cpp.txt)",
       "Write(Complete/**/*.md)",
       "Edit(Complete/Complete.vcxproj)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(\"Complete/백준/2_Silver/S6_10709_기상캐스터/Answer.cpp.txt\")"
     ]
   },
   "outputStyle": "korean-terminal"

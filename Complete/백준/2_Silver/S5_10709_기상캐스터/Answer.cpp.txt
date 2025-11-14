@@ -1,0 +1,56 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, m;
+int arr[104][104];
+string s;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m;
+
+    // 배열 입력
+    for(int i = 0; i < n; i++)
+    {
+        cin >> s;
+        for(int j = 0; j < m; j++)
+        {
+            if(s[j] == '.')arr[i][j] = -1; // .은 -1으로 시작함.
+            else           arr[i][j] =  0; // C는 0으로 시작함.
+        }
+    }
+
+    // 배열 숫자로 변환 작업
+    // 오른쪽으로 이동하면서, 확인
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < m; j++)
+        {
+            // 구름인지 확인
+            if(arr[i][j] == 0)
+            {
+                int cnt = 1; // 다음 자리 증감값
+
+                // 오른쪽 자리가 체크한 자리인지 아닌지 확인
+                // 체크 안한, -1값 자리면, cnt값 증가하고, 더해줌.
+                while(arr[i][j + 1] == -1)
+                {
+                    arr[i][j + 1] = cnt++;  // 더한 후, 다음부터 적용
+                    j++;                    // 다음 자리 이동
+                }
+            }
+        }
+    }
+
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < m; j++)
+            cout << arr[i][j] << " ";
+
+        cout << "\n";
+    }
+
+    return 0;
+}

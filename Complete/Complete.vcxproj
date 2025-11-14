@@ -177,7 +177,9 @@
     <None Include="백준\2_Silver\S3_1213_팰린드롬만들기\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_2559_수열\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_2559_수열\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S4_2870_수학숙제\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_2910_빈도정렬\Answer(정답).cpp.txt" />
+    <None Include="백준\2_Silver\S3_3273_두수의합\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_4375_1(일)\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S5_4659_비밀번호발음하기\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_9375_패션왕신해빈\Answer(성공).cpp.txt" />
@@ -246,6 +248,7 @@
     <None Include="백준\2_Silver\S2_1012_유기농배추\README.md" />
     <None Include="백준\2_Silver\S3_1213_팰린드롬만들기\README.md" />
     <None Include="백준\2_Silver\S3_2559_수열\README.md" />
+    <None Include="백준\2_Silver\S4_2870_수학숙제\README.md" />
     <None Include="백준\2_Silver\S3_2910_빈도정렬\README.md" />
     <None Include="백준\2_Silver\S3_4375_1(일)\README.md" />
     <None Include="백준\2_Silver\S5_4659_비밀번호발음하기\README.md" />
@@ -275,6 +278,7 @@
     <None Include="백준\3_Gold\G4_4179_불\README.md" />
     <None Include="백준\3_Gold\G4_9935_문자열폭발\README.md" />
     <None Include="백준\3_Gold\G4_17298_오큰수\README.md" />
+    <None Include="백준\2_Silver\S3_3273_두수의합\README.md" />
     <None Include="백준\3_Gold\G4_19942_다이어트\README.md" />
     <None Include="백준\3_Gold\G4_1987_알파벳\README.md" />
     <None Include="백준\3_Gold\G5_1068_트리\README.md" />

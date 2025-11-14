@@ -1,0 +1,49 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, x, ret;
+vector<int> v;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력 처리
+    cin >> n;
+
+    for (int i = 0; i < n; i++)
+    {
+        int temp;
+        cin >> temp;
+        v.emplace_back(temp);
+    }
+
+    cin >> x;
+
+    // 투 포인터 알고리즘
+    sort(v.begin(), v.end()); // 정렬
+
+    int LP = 0;               // 왼쪽 포인터
+    int RP = v.size() - 1;    // 오른쪽 포인터
+
+    while (LP < RP)
+    {
+        int sum = v[LP] + v[RP];
+
+        if (sum == x)         // 찾음
+        {
+            ret++;
+            RP--;
+            LP++;
+        }
+        else if (sum > x)     // 더 큼
+            RP--;
+        else if(sum < x)      // 더 작음
+            LP++;
+    }
+
+    // 결과 출력
+    cout << ret << "\n";
+
+    return 0;
+}

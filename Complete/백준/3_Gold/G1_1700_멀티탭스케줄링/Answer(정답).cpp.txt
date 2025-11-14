@@ -1,0 +1,74 @@
+﻿#include<bits/stdc++.h>
+using namespace std;
+
+const int INF = 987654321;
+
+int         k, n, cnt;     // k : 멀티탭 구멍 개수, n : 전기용품 사용 횟수, cnt : 플러그를 뺀 횟수
+int         arr[104];      // arr : 전기용품 사용 순서
+int         visited[104];  // visited : 현재 멀티탭에 꽂혀있는지 여부 (1: 꽂힌 상태)
+vector<int> currentTap;    // 현재 멀티탭에 꽂혀있는 전기용품 번호들
+
+int main()
+{
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+    // 입력 : 멀티탭 구멍 개수, 전기용품 사용 횟수
+    cin >> k >> n;
+
+    // 입력 : 전기용품 사용 순서
+    for(int i = 0; i < n; i++)
+        cin >> arr[i];
+
+    // 전기용품을 순서대로 사용
+    for(int i = 0; i < n; i++)
+    {
+        // 이미 멀티탭에 꽂혀있으면 패스
+        if(!visited[arr[i]])
+        {
+            // 멀티탭이 가득 찼으면 하나를 빼야 함
+            if(currentTap.size() == k)
+            {
+                int last_idx = 0;  // 가장 나중에 사용되는 인덱스
+                int eraseNum;      // 제거할 전기용품 번호
+
+                // 현재 꽂혀있는 각 전기용품에 대해
+                for(int tap : currentTap)
+                {
+                    int here_pick = INF;  // 이 전기용품이 다시 사용되는 인덱스 (없으면 INF)
+
+                    // 앞으로 이 전기용품이 언제 다시 사용되는지 찾기
+                    // 제일 마지막 사용값 저장됨...
+                    for(int j = i + 1; j < n; j++)
+                    {
+                        if(tap == arr[j])
+                        {
+                            here_pick = j;  // 다시 사용되는 인덱스 저장
+                            break;
+                        }
+                    }
+
+                    // 가장 나중에 사용되는 전기용품을 찾음 (또는 앞으로 사용되지 않는 전기용품)
+                    if(last_idx < here_pick)
+                    {
+                        last_idx = here_pick;
+                        eraseNum = tap;
+                    }
+                }
+
+                // 가장 나중에 사용될 전기용품을 멀티탭에서 제거
+                visited[eraseNum] = 0;
+                cnt++;
+                currentTap.erase(find(currentTap.begin(), currentTap.end(), eraseNum));
+            }
+
+            // 현재 전기용품을 멀티탭에 꽂음
+            currentTap.push_back(arr[i]);
+            visited[arr[i]] = 1;
+        }
+    }
+
+    // 결과 출력 : 플러그를 뺀 최소 횟수
+    cout << cnt << "\n";
+
+    return 0;
+}

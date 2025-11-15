@@ -1,0 +1,61 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+string s;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 한 줄씩 입력 (공백 포함)
+    while (getline(cin, s))
+    {
+        // 온점 하나만 있으면 종료
+        if (s == ".")
+            break;
+
+        // 매번 초기화
+        stack<char> st;  // 스택
+        bool ok = true;  // 괄호 균형 여부
+
+        // 문자열의 각 문자 검사
+        for (char c : s)
+        {
+            // 여는 괄호는 스택에 push
+            if (c == '(' || c == '[')
+            {
+                st.push(c);
+            }
+            // 닫는 소괄호 검사
+            else if (c == ')')
+            {
+                // 스택이 비었거나 짝이 맞지 않으면 실패
+                if (st.empty() || st.top() \!= '(')
+                {
+                    ok = false;
+                    break;
+                }
+                st.pop();
+            }
+            // 닫는 대괄호 검사
+            else if (c == ']')
+            {
+                // 스택이 비었거나 짝이 맞지 않으면 실패
+                if (st.empty() || st.top() \!= '[')
+                {
+                    ok = false;
+                    break;
+                }
+                st.pop();
+            }
+        }
+
+        // 괄호가 모두 균형잡혔고 스택이 비어있으면 yes
+        if (ok && st.empty()) cout << "yes" << '
+';
+        else                  cout << "no"  << '
+';
+    }
+    
+    return 0;
+}

@@ -1,0 +1,175 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int dy1[] = {0, -1, 0, 1};  // 상단 y 방향 (우→상→좌→하)
+int dx1[] = {1, 0, -1, 0};  // 상단 x 방향
+int dy2[] = {0, 1, 0, -1};  // 하단 y 방향 (우→하→좌→상)
+int dx2[] = {1, 0, -1, 0};  // 하단 x 방향
+
+int n, m, t;                   // n : 행 크기, m : 열 크기, t : 시간
+int arr[54][54];               // 격자판 (미세먼지 양)
+int temp[54][54];              // 확산량 임시 저장
+int ret = 0;                   // 결과값 (남은 미세먼지 총합)
+vector<pair<int, int>> v1, v2; // v1 : 상단 공기청정기 경로, v2 : 하단 공기청정기 경로
+
+// BFS 방법을 응용해서 확산
+void BFS(int dy[], int dx[])
+{
+    // 초기화
+    fill_n(&temp[0][0], 54 * 54, 0);
+    queue<pair<int, int>> q;
+
+    // 모든 미세먼지 위치 큐에 삽입
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < m; j++)
+        {
+            // -1이 아니고, 값이 들어가 있으면, 확산 q에 넣기
+            if(arr[i][j] != -1 && arr[i][j])
+            {
+                q.emplace(i, j);
+            }
+        }
+    }
+
+    // 확산 처리
+    while(!q.empty())
+    {
+        int y, x;
+        tie(y, x) = q.front();
+        q.pop();
+        int spread = arr[y][x] / 5;           // 문제 확산 공식
+
+        for(int i = 0; i < 4; i++)
+        {
+            int ny = y + dy[i];
+            int nx = x + dx[i];
+
+            // 범위 체크
+            if(ny < 0 || ny >= n || nx < 0 || nx >= m) continue;
+
+            // 공기청정기 위치 체크
+            if (arr[ny][nx] == -1) continue;
+
+            temp[ny][nx] += spread; // 확산된 양 누적(임시에 저장해야, 원본값에서 확산 처리 가능)
+            arr[y][x]    -= spread; // 원래 위치에서 감소
+
+            // 원본에서 확산만 하면 되기 때문에, 큐에 넣을 필요 없다.
+            // 미리 계산된 q만 처리하면 됨.
+        }
+    }
+
+    // 확산량 반영(후처리)
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < m; j++)
+        {
+            arr[i][j] += temp[i][j]; // temp에 누적된 값에 따라, 원본에 반영
+        }
+    }
+}
+
+// -1의 x,y 자리에서 dy dx에 따라 경로 계산
+vector<pair<int, int>> WayPoint(int sy, int sx, int dy[], int dx[])
+{
+    vector<pair<int, int>> v;
+    int cnt = 0;   // 방향 인덱스(1 2 3 4 방향대로 이동)
+    int y   = sy;
+    int x   = sx;
+
+    while(true)
+    {
+        int ny = y + dy[cnt];
+        int nx = x + dx[cnt];
+
+        // 시작점으로 돌아옴 => 이동 종료
+        if(ny == sy && nx == sx) break;
+
+        // 범위 벗어나면 방향 전환
+        if(ny < 0 || ny >= n || nx < 0 || nx >= m)
+        {
+            cnt++;
+            ny = y + dy[cnt];
+            nx = x + dx[cnt];
+        }
+
+        // 방향 전환 후 시작점 체크
+        if(ny == sy && nx == sx) break;
+
+        y = ny;
+        x = nx;
+        v.emplace_back(ny, nx);
+    }
+
+    return v;
+}
+
+void AirOperation(vector<pair<int, int>> &v)
+{
+    // 뒤에서 부터, 앞으로 땡기기
+    for(int i = v.size() - 1; i > 0; i--)
+    {
+        // 현재 자리 = 이전 자리
+        arr[v[i].first][v[i].second] = arr[v[i - 1].first][v[i - 1].second];
+    }
+
+    // 맨 0,0 자리는 공기청정기에서 나온 값
+    // 공기청정기에서 나오는 바람은 깨끗함 = 0
+    arr[v[0].first][v[0].second] = 0;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m >> t;
+
+    // 상단 하단 이동경로 생성
+    bool flag = true;
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < m; j++)
+        {
+            // 입력
+            cin >> arr[i][j];
+
+            // 공기청정기 위치인지 확인
+            if(arr[i][j] == -1)
+            {
+                // 처음 찾은 -1 자리 => 반시계 경로 생성 및 저장
+                if(flag)
+                {
+                    v1 = WayPoint(i, j, dy1, dx1);          // 상단 공기청정기 경로
+                    flag = false;
+                }
+                // 다음 찾은 -1 자리 => 시계 방향 경로 생성 및 저장
+                else
+                {
+                    v2 = WayPoint(i, j, dy2, dx2);          // 하단 공기청정기 경로
+                }
+            }
+        }
+    }
+
+    // T초 동안 시뮬레이션
+    while(t--)
+    {
+        BFS(dy1, dx1);         // 1. 미세먼지 확산(dxy1 or dxy2 아무거나 사용)
+        AirOperation(v1);   // 2. 상단 공기청정기 작동
+        AirOperation(v2);   // 3. 하단 공기청정기 작동
+    }
+
+    // 결과 계산
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < m; j++)
+        {
+            if(arr[i][j] != -1)
+                ret += arr[i][j];
+        }
+    }
+
+    cout << ret << "\n";
+
+    return 0;
+}

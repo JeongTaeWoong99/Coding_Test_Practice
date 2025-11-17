@@ -224,6 +224,7 @@
     <None Include="백준\3_Gold\G4_1987_알파벳\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_9935_문자열폭발\Answer(정답_스택).cpp.txt" />
     <None Include="백준\3_Gold\G5_1068_트리\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G5_1911_흙길보수하기\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_15686_치킨배달\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_1931_회의실배정\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_2589_보물섬\Answer(성공).cpp.txt" />
@@ -294,6 +295,7 @@
     <None Include="백준\3_Gold\G4_19942_다이어트\README.md" />
     <None Include="백준\3_Gold\G4_1987_알파벳\README.md" />
     <None Include="백준\3_Gold\G5_1068_트리\README.md" />
+    <None Include="백준\3_Gold\G5_1911_흙길보수하기\README.md" />
     <None Include="백준\3_Gold\G5_15686_치킨배달\README.md" />
     <None Include="백준\3_Gold\G5_1931_회의실배정\README.md" />
     <None Include="백준\3_Gold\G5_2589_보물섬\README.md" />

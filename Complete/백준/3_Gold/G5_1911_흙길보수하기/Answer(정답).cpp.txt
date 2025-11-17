@@ -1,0 +1,67 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// n     : 웅덩이 개수
+// L     : 널빤지 길이
+// idx   : 현재까지 덮인 마지막 위치
+// ret   : 필요한 널빤지 개수
+// cnt   : 현재 웅덩이를 덮는데 필요한 널빤지 개수
+int n, L;
+int idx = 0, ret = 0, cnt = 0;
+vector<pair<int, int>> puddles; // {시작, 끝}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력 처리
+    cin >> n >> L;
+    puddles.resize(n);
+    for(int i = 0; i < n; i++)
+    {
+        cin >> puddles[i].first >> puddles[i].second;
+    }
+
+    // 웅덩이를 시작 위치 기준으로 정렬
+    sort(puddles.begin(), puddles.end());
+
+    // 각 웅덩이를 순서대로 처리
+    for(int i = 0; i < n; i++)
+    {
+        int start = puddles[i].first;  // 웅덩이 시작
+        int end   = puddles[i].second; // 웅덩이 끝
+
+        // idx : 현재까지 덮인 마지막 위치
+        // 이미 다 덮인 웅덩이는 스킵
+        if(end <= idx) continue;
+
+        // idx 마지막 위치가 start보다 뒤에 있으면, 완전히 새로운 start에서 덮기 시작.
+        // 이 경우, length = end - start로 덮어야 하는 길이 확인.
+        // 마지막 위치도 idx = start + cnt * L;
+        if(idx < start)
+        {
+            // 웅덩이 시작 전까지 덮이지 않음 -> 처음부터 덮기
+            int length = end - start;                       // 웅덩이 전체 길이
+            cnt = length / L + (length % L ? 1 : 0);        // 필요한 널빤지 개수 (length / L로 필요한 갯수를 구하고,
+                                                            //                 length % L ? 1 : 0를 통해서, 나머지가 있으면, 널빤지 1개 더 추가.)
+            idx = start + cnt * L;                          // 덮인 마지막 위치 업데이트
+        }
+        // idx 마지막 위치가 start보다 앞에 있으면, 일부분이 덮혀 있음.
+        // 이 경우, length = end - idx로 덮어야 하는 길이 확인.
+        // 마지막 위치도 idx = idx + cnt * L;
+        else
+        {
+            int length = end - idx;                         // 남은 길이
+            cnt = length / L + (length % L ? 1 : 0);        // 필요한 널빤지 개수 (올림)
+            idx = idx + cnt * L;                            // 덮인 마지막 위치 업데이트
+        }
+
+        // 총 널빤지 개수에 추가
+        ret += cnt;
+    }
+
+    // 결과 출력
+    cout << ret << "\n";
+    
+    return 0;
+} 

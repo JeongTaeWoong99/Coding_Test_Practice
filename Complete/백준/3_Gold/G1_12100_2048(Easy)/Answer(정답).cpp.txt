@@ -1,0 +1,125 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// sum : 최대 블록 값, N : 보드 크기
+int sum, N;
+int board[24][24];  // 게임 보드 배열
+
+// currentBoard : 회전할 보드
+// 보드를 시계방향으로 90도 회전
+void Rotate(int currentBoard[24][24]) // ★ 배열은 자동 포인터 전달
+{
+    // 임시 저장하며, 새로 만들 배열
+    int temp[24][24] = {0};
+
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < N; j++)
+        {
+            temp[i][j] = currentBoard[N - 1 - j][i];
+        }
+    }
+
+    memcpy(currentBoard, temp, sizeof(temp));
+}
+
+// currentBoard : 이동시킬 보드
+// 보드를 왼쪽으로 이동 (같은 숫자는 합침)
+void Move(int currentBoard[24][24]) // ★ 배열은 자동 포인터 전달
+{
+    // 임시 저장하며, 새로 만들 배열
+    int temp[24][24] = {0};
+
+    // 왼쪽으로 이동하기 때문에, 가로줄 1개씩 처리
+    // N개의 세로
+    for(int i = 0; i < N; i++)
+    {
+        // 현재 채울 세로 라인(왼쪽 세로에서 오른쪽으로 이동)
+        int cnt = 0;
+
+        // 가로 이동 확인
+        for(int j = 0; j < N; j++)
+        {
+            // 빈 칸은 건너뜀
+            if(currentBoard[i][j] == 0) continue;
+
+            // 왼쪽 이동(빈 공간) : 현재 위치가 비어있으면 값 추가
+            if(temp[i][cnt] == 0)
+            {
+                temp[i][cnt] = currentBoard[i][j];
+            }
+            // 병합 : 현재 위치와 같은 값이면 합침
+            else if(temp[i][cnt] == currentBoard[i][j])
+            {
+                temp[i][cnt] *= 2;  // 병합 값 저장
+                cnt++;              // 후 세로 라인 변경
+            }
+            // 왼쪽 이동(다른 값) : 다른 값이면 다음 위치에 추가
+            else
+            {
+                cnt++;                              // 선 세로 라인 변경
+                temp[i][cnt] = currentBoard[i][j];  // 값 저장
+            }
+        }
+    }
+
+    memcpy(currentBoard, temp, sizeof(temp));
+}
+
+// currentBoard : 최대값을 찾을 보드
+// 보드에서 최대값 찾기
+void Counting(int currentBoard[24][24]) // ★ 배열은 자동 포인터 전달
+{
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < N; j++)
+        {
+            sum = max(sum, currentBoard[i][j]);
+        }
+    }
+}
+
+// here : 현재 이동 횟수, currentBoard : 현재 보드 상태
+// 최대 5번 이동해서 만들 수 있는 가장 큰 블록 찾기
+void GO(int here, int currentBoard[24][24]) // ★ 배열은 자동 포인터 전달
+{
+    // 5번 이동했으면 최대값 갱신
+    if(here == 5)
+    {
+        Counting(currentBoard);
+        return;
+    }
+
+    // 4방향(상하좌우) 모두 시도
+    for(int i = 0; i < 4; i++)
+    {
+        int cpy[24][24];
+        memcpy(cpy, currentBoard, sizeof(cpy));  // 보드 복사
+        Move(cpy);                                   // 이동
+        GO(here + 1, cpy);                           // 재귀 호출
+        Rotate(currentBoard);                        // 다음 방향을 위해 회전
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력 처리
+    cin >> N;
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < N; j++)
+        {
+            cin >> board[i][j];
+        }
+    }
+
+    // 알고리즘 로직
+    GO(0, board);
+
+    // 결과 출력
+    cout << sum << "\n";
+    
+    return 0;
+}

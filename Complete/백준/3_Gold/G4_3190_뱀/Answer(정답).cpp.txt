@@ -1,0 +1,95 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 방향 벡터 (상, 우, 하, 좌)
+const int dy[] = {-1, 0, 1, 0};
+const int dx[] = { 0, 1, 0,-1};
+
+// 보드 및 방문 배열
+int arr[104][104]; // 사과 위치 (1: 사과, 0: 빈칸)
+int vit[104][104]; // 뱀의 몸통 위치
+
+// 입력 변수
+int  n, k, l;     // n: 보드 크기, k: 사과 개수, l: 방향 전환 횟수
+int  y, x;        // y, x: 좌표
+int  t;           // t: 방향 전환 시각
+char c;           // 방향 전환 명령 (D: 오른쪽, L: 왼쪽)
+
+// 게임 진행 변수
+int currentSec = 0; // 현재 시간
+int currentDir = 1; // 현재 방향 (0: 상, 1: 우, 2: 하, 3: 좌)
+
+// 자료구조
+deque<pair<int, int>> snakeDQ;     // 뱀의 몸통 (front: 머리, back: 꼬리)
+queue<pair<int, int>> directionQ;  // 방향 전환 정보 (시각, 회전값)
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 보드 크기 입력
+    cin >> n >> k;
+
+    // 사과 위치 입력
+    for(int i = 0; i < k; i++)
+    {
+        cin >> y >> x;
+        arr[--y][--x] = 1; // 1-indexed → 0-indexed 변환(0 0 시작점)
+    }
+
+    // 방향 전환 정보 입력
+    cin >> l;
+    for(int i = 0; i < l; i++)
+    {
+        cin >> t >> c;
+
+        if(c == 'D') directionQ.emplace(t, 1); // 우 회전 = 1
+        else         directionQ.emplace(t, 3); // 좌 회전 = 3
+    }
+
+    // 게임 시작: 뱀의 초기 위치 (0, 0)
+    snakeDQ.emplace_back(0, 0);
+    vit[0][0] = 1;
+
+    // 게임 진행
+    while(!snakeDQ.empty())
+    {
+        currentSec++;
+        tie(y, x) = snakeDQ.front(); // 현재 머리 위치
+
+        // 다음 머리 위치 계산
+        int ny = y + dy[currentDir];
+        int nx = x + dx[currentDir];
+
+        // 벽 체크(=> break)
+        if(ny >= n || ny < 0 || nx >= n || nx < 0) break;
+        // 자기 몸과 충돌 체크(=> break)
+        if(vit[ny][nx]) break;
+
+        // 사과가 없으면 꼬리 제거
+        if(!arr[ny][nx])
+        {
+            vit[snakeDQ.back().first][snakeDQ.back().second] = 0;
+            snakeDQ.pop_back();
+        }
+        // 사과를 먹으면 사과 제거
+        else
+            arr[ny][nx] = 0;
+
+        // 머리 추가
+        vit[ny][nx] = 1;
+        snakeDQ.emplace_front(ny, nx);
+
+        // 방향 전환 체크
+        if(!directionQ.empty() && currentSec == directionQ.front().first)
+        {
+            currentDir = (currentDir + directionQ.front().second) % 4;
+            directionQ.pop();
+        }
+    }
+
+    // 결과 출력
+    cout << currentSec << "\n";
+
+    return 0;
+}

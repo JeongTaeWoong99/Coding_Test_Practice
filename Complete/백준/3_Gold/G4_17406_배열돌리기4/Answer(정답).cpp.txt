@@ -1,0 +1,139 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int INF  = 987654321;
+const int dy[] = {0, 1, 0, -1};  // 우, 하, 좌, 상 (시계 방향)
+const int dx[] = {1, 0, -1, 0};
+
+int n, m, k;                     // 배열 크기 및 연산 개수
+int r, c, s;                     // 회전 연산 정보
+int origArr[104][104];
+int copyArr[104][104];
+int visited[104][104];           // 방문 체크 배열
+int dir, sy, sx, ey, ex;         // 회전 관련 변수 (dir : 현재 방향, sy/sx/ey/ex : 회전 영역 좌표)
+int ret = INF;                   // 결과값 (각 행 합의 최솟값)
+
+vector<pair<int, int>> rotatV;   // 회전할 좌표들을 저장하는 벡터
+vector<int>            permuV;   // 회전 연산 순열을 저장하는 벡터
+
+// 회전 연산 정보를 담는 구조체 (y : 중심 y좌표, x : 중심 x좌표, cnt : 회전 범위)
+struct RotData
+{
+    int y, x, cnt;
+};
+vector<RotData> rotDatas;
+
+// 회전할 좌표들을 DFS로 찾는 함수
+// y : 현재 y좌표, x : 현재 x좌표, first : 시작점 여부
+void go(int y, int x, int first)
+{
+    // 모서리에 도달하면 방향 전환
+    if(!first && y == sy && x == sx) dir++;  // 좌상단
+    if(!first && y == sy && x == ex) dir++;  // 우상단
+    if(!first && y == ey && x == ex) dir++;  // 우하단
+    if(!first && y == ey && x == sx) dir++;  // 좌하단
+
+    int ny = y + dy[dir];
+    int nx = x + dx[dir];
+
+    if(visited[ny][nx]) return;  // 이미 방문했으면 종료
+
+    visited[ny][nx] = 1;
+    rotatV.emplace_back(ny, nx);
+    go(ny, nx, 0);
+}
+
+// 배열을 회전시키는 함수
+// y : 중심 y좌표, x : 중심 x좌표, cnt : 회전 범위 (1부터 cnt까지 각 레이어 회전)
+void rotateAll(int y, int x, int cnt)
+{
+    // 중심으로부터 1칸부터 cnt칸까지 각 레이어별로 회전
+    for(int i = 1; i <= cnt; i++)
+    {
+        // 현재 레이어의 좌상단, 우하단 좌표 설정
+        sy = y - (1 * i);
+        sx = x - (1 * i);
+        ey = y + (1 * i);
+        ex = x + (1 * i);
+
+        // 초기화
+        rotatV.clear();
+        dir = 0;
+        memset(visited, 0, sizeof(visited));
+
+        // 시작점 설정 및 DFS로 회전할 좌표들 찾기
+        visited[sy][sx] = 1;
+        rotatV.emplace_back(sy, sx);
+        go(sy, sx, 1);
+
+        // 좌표들의 값을 벡터에 저장
+        vector<int> layerV;
+        for(pair<int, int> c : rotatV)
+            layerV.push_back(copyArr[c.first][c.second]);
+
+        // 시계 방향으로 한 칸 회전 (역방향 반복자 사용)
+        rotate(layerV.rbegin(), layerV.rbegin() + 1, layerV.rend());
+
+        // 회전된 값을 배열에 다시 저장
+        for(int i = 0; i < rotatV.size(); i++)
+            copyArr[rotatV[i].first][rotatV[i].second] = layerV[i];
+    }
+}
+
+// 현재 순열에 따라 회전을 수행하고 배열 값(각 행 합의 최솟값)을 계산하는 함수
+int solve()
+{
+    // 새로 만들어진 permuV 순서대로 회전 연산 수행
+    for(int i : permuV)
+        rotateAll(rotDatas[i].y, rotDatas[i].x, rotDatas[i].cnt);
+
+    // 각 행의 합 중 최솟값 찾기
+    int mn = INF;
+    for(int i = 0; i < n; i++)
+    {
+        int cnt = 0;
+        for(int j = 0; j < m; j++) cnt += copyArr[i][j];
+        mn = min(mn, cnt);
+    }
+
+    return mn;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력 : 배열 크기, 회전 연산 개수
+    cin >> n >> m >> k;
+
+    // 입력 : 원본 배열
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < m; j++)
+        {
+            cin >> origArr[i][j];
+        }
+    }
+
+    // 입력 : 회전 연산 정보
+    for(int i = 0; i < k; i++)
+    {
+        cin >> r >> c >> s;
+        r--; c--;                               // 0-indexed로 보정
+        rotDatas.push_back({r, c, s});
+        permuV.push_back(i);
+    }
+
+    // 회전 연산의 모든 순열을 시도하여 최솟값 찾기
+    do
+    {
+        memcpy(copyArr, origArr, sizeof(copyArr)); // 원본 배열 복사
+        ret = min(ret, solve());              // 현재 순열로 회전 수행 및 결과 계산
+    }
+    while(next_permutation(permuV.begin(), permuV.end()));
+
+    // 결과 출력
+    cout << ret << "\n";
+
+    return 0;
+}

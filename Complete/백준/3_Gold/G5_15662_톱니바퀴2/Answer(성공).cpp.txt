@@ -1,0 +1,98 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int t, k, ret;
+char brade[1004][8];  // t개의 톱니바퀴, 각 8개 칼날
+
+void Vang(int number, int direction)
+{
+    // 1. 회전할 톱니 목록 작성
+    int rotateDir[1004] = {0};  // 0: 회전 안 함, 1: 시계, -1: 반시계
+    rotateDir[number] = direction;
+
+    // 2. 왼쪽으로 전파 체크 (원본 brade로 직접 확인)
+    for (int i = number; i > 1; i--)
+    {
+        if (brade[i][6] != brade[i - 1][2])  // 극이 다르면
+        {
+            rotateDir[i - 1] = -rotateDir[i];  // 반대 방향
+        }
+        else
+        {
+            break;  // 극이 같으면 전파 중단
+        }
+    }
+
+    // 3. 오른쪽으로 전파 체크 (원본 brade로 직접 확인)
+    for (int i = number; i < t; i++)
+    {
+        if (brade[i][2] != brade[i + 1][6])  // 극이 다르면
+        {
+            rotateDir[i + 1] = -rotateDir[i];  // 반대 방향
+        }
+        else
+        {
+            break;  // 극이 같으면 전파 중단
+        }
+    }
+
+    // 4. 한 번에 모든 톱니 회전
+    for (int i = 1; i <= t; i++)
+    {
+        if (rotateDir[i] == 1)  // 시계 방향
+        {
+            char tempChar = brade[i][7];  // 마지막만 저장
+            for (int j = 7; j > 0; j--)
+            {
+                brade[i][j] = brade[i][j - 1];
+            }
+            brade[i][0] = tempChar;
+        }
+        else if (rotateDir[i] == -1)  // 반시계 방향
+        {
+            char tempChar = brade[i][0];  // 첫 번째만 저장
+            for (int j = 0; j < 7; j++)
+            {
+                brade[i][j] = brade[i][j + 1];
+            }
+            brade[i][7] = tempChar;
+        }
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 톱니바퀴 개수 입력
+    cin >> t;
+    for (int i = 1; i <= t; i++)
+    {
+        string bradeState;
+        cin >> bradeState;
+        for (int j = 0; j < 8; j++)
+        {
+            brade[i][j] = bradeState[j];
+        }
+    }
+
+    // 회전 횟수 입력
+    cin >> k;
+    for (int i = 1; i <= k; i++)
+    {
+        int number, direction;
+        cin >> number >> direction;
+        Vang(number, direction);
+    }
+
+    // 12시 방향이 S극(1)인 톱니바퀴 개수 세기
+    for (int i = 1; i <= t; i++)
+    {
+        if (brade[i][0] == '1')
+            ret++;
+    }
+
+    cout << ret << "
+";
+    return 0;
+}

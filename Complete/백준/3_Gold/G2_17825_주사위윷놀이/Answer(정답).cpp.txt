@@ -1,0 +1,150 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 전역 변수
+int              dice[14];         // 주사위 값 배열 (10개)
+int              horses[4];        // 4개 말의 현재 위치 (인덱스 번호)
+int              cellScore[104];   // 각 칸의 점수 값
+int              TOTAL_TURNS = 10; // 총 턴 수
+vector<int>      graph[54];        // 각 칸에서 이동 가능한 칸 (인접 리스트)
+
+// 간선 추가 함수
+// from : 출발 칸, to : 도착 칸
+void add(int from, int to)
+{
+    graph[from].push_back(to);
+}
+
+// 게임판 초기화 함수
+void setMap()
+{
+    // 외곽 경로 (0 → 1 → 2 → ... → 20)
+    for(int i = 0; i <= 19; i++) add(i, i + 1);
+
+    // 파란색 칸 (5번)에서 시작하는 지름길
+    add(5, 21); add(21, 22); add(22, 23); add(23, 24);
+
+    // 파란색 칸 (15번)에서 시작하는 지름길
+    add(15, 29); add(29, 30); add(30, 31); add(31, 24);
+
+    // 파란색 칸 (10번)에서 시작하는 지름길 + 중앙 경로
+    add(10, 27); add(27, 28); add(28, 24); add(24, 25);
+    add(25, 26); add(26, 20); add(20, 100);
+
+    // 각 칸의 점수 값 설정 (외곽 경로)
+    cellScore[1]  = 2;  cellScore[2]  = 4;  cellScore[3]  = 6;  cellScore[4]  = 8;  cellScore[5]  = 10;
+    cellScore[6]  = 12; cellScore[7]  = 14; cellScore[8]  = 16; cellScore[9]  = 18; cellScore[10] = 20;
+    cellScore[11] = 22; cellScore[12] = 24; cellScore[13] = 26; cellScore[14] = 28; cellScore[15] = 30;
+    cellScore[16] = 32; cellScore[17] = 34; cellScore[18] = 36; cellScore[19] = 38; cellScore[20] = 40;
+
+    // 각 칸의 점수 값 설정 (지름길)
+    cellScore[21] = 13; cellScore[22] = 16; cellScore[23] = 19; cellScore[24] = 25; // 5번 지름길
+    cellScore[27] = 22; cellScore[28] = 24; cellScore[25] = 30; cellScore[26] = 35; // 10번 지름길 + 중앙
+    cellScore[29] = 28; cellScore[30] = 27; cellScore[31] = 26;                     // 15번 지름길
+}
+
+// 말 이동 함수
+// currentPos : 현재 위치, moveCount : 이동할 칸 수
+int move(int currentPos, int moveCount)
+{
+    if(currentPos == 100) return 100; // 도착 칸이면 그대로 유지
+
+    // 파란색 칸이면 지름길로 바로 진입 및 moveCount 감소!!
+    // ★ 파란색 선이 있는 자리. 즉, 연결되어 있는 선이 2개 이상이고
+    // ★ graph[currentPos][1]. 즉, graph[currentPos][0]은 빨간선이고, graph[currentPos][1]은 파란선이다.
+    // ★ setMap으로 만들 때, 빨간선 먼저 넣고, 파란선 나중에 넣음.
+    if(graph[currentPos].size() >= 2)
+    {
+        currentPos = graph[currentPos][1]; // 파란색 화살표 자리로 바로 이동 (인덱스 1)
+        moveCount--;                       // 이동 했으니, 무브 카운트 감소
+    }
+
+    // 남은 이동 횟수만큼 빨간색 화살표로 이동
+    if(moveCount)
+    {
+        queue<int> q;
+        q.push(currentPos);
+        int nextPos;
+
+        while(!q.empty())
+        {
+            int currentCell = q.front();
+            q.pop();
+            nextPos = graph[currentCell][0]; // 빨간색 화살표 (인덱스 0)
+            q.push(nextPos);
+
+            if(nextPos == 100) break; // 도착 칸 도달
+
+            moveCount--;
+            if(moveCount == 0) break; // 이동 완료
+        }
+
+        // 마지막으로 이동한 자리값 리턴
+        return nextPos;
+    }
+    else
+    {
+        // 현재 자리값 리턴
+        return currentPos;
+    }
+}
+
+// 해당 위치에 다른 말이 있는지 확인하는 함수
+// targetPos : 이동하려는 위치, currentHorseIdx : 현재 말의 인덱스
+bool isOccupied(int targetPos, int currentHorseIdx)
+{
+    // 도착 칸은 중복 허용
+    if(targetPos == 100) return false;
+
+    for(int i = 0; i < 4; i++)
+    {
+        // 자기 자신은 제외
+        if(i == currentHorseIdx) continue;
+
+        // 다른 말이 있으면 true
+        if(horses[i] == targetPos) return true;
+    }
+
+    return false;
+}
+
+// 백트래킹 함수 (최대 점수 계산)
+// currentTurn : 현재 턴 번호 (0 ~ 9)
+int go(int currentTurn)
+{
+    if(currentTurn == TOTAL_TURNS) return 0; // 모든 턴 종료
+
+    int maxScore = 0;
+
+    // 4개의 말 중 하나를 선택
+    for(int horseIdx = 0; horseIdx < 4; horseIdx++)
+    {
+        int originalPos = horses[horseIdx];                        // 백트래킹을 위한 현재 위치 저장
+        int newPos      = move(originalPos, dice[currentTurn]);    // 주사위 값만큼 이동
+
+        // ★ 도착 위치에 다른 말이 있으면 스킵(같은 자리에 2개가 있으면 안된다는 조건)
+        if(isOccupied(newPos, horseIdx)) continue;
+
+        horses[horseIdx] = newPos;                                                          // 말 이동
+        maxScore         = max(maxScore, go(currentTurn + 1) + cellScore[newPos]); // 다음 턴 진행 + 점수 추가
+        horses[horseIdx] = originalPos;                                                     // 백트래킹 (원상복구)
+    }
+
+    return maxScore;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 게임판 초기화
+    setMap();
+
+    // 주사위 값 입력
+    for(int i = 0; i < TOTAL_TURNS; i++) cin >> dice[i];
+
+    // 최대 점수 출력
+    cout << go(0) << "\n";
+
+    return 0;
+}

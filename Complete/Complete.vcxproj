@@ -193,6 +193,7 @@
     <None Include="백준\2_Silver\S4_3986_좋은단어\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_9012_괄호\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_1325_효율적인해킹\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S1_14888_연산자끼워넣기\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S5_14469_소가길을건너간이유3\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S5_2828_사과담기게임\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S5_10709_기상캐스터\Answer.cpp.txt" />
@@ -272,6 +273,7 @@
     <None Include="백준\2_Silver\S4_3986_좋은단어\README.md" />
     <None Include="백준\2_Silver\S4_9012_괄호\README.md" />
     <None Include="백준\2_Silver\S1_1325_효율적인해킹\README.md" />
+    <None Include="백준\2_Silver\S1_14888_연산자끼워넣기\README.md" />
     <None Include="백준\2_Silver\S5_14469_소가길을건너간이유3\README.md" />
     <None Include="백준\2_Silver\S5_2828_사과담기게임\README.md" />
     <None Include="백준\2_Silver\S5_10709_기상캐스터\README.md" />

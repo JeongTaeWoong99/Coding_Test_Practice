@@ -203,6 +203,7 @@
     <None Include="백준\3_Gold\G2_17825_주사위윷놀이\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G2_1202_보석도둑\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G2_1781_컵라면\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G2_2632_피자판매\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_1644_소수의연속합\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_2109_순회강연\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_15684_사다리조작\Answer(정답).cpp.txt" />
@@ -284,6 +285,7 @@
     <None Include="백준\3_Gold\G2_17825_주사위윷놀이\README.md" />
     <None Include="백준\3_Gold\G2_1202_보석도둑\README.md" />
     <None Include="백준\3_Gold\G2_1781_컵라면\README.md" />
+    <None Include="백준\3_Gold\G2_2632_피자판매\README.md" />
     <None Include="백준\3_Gold\G3_1644_소수의연속합\README.md" />
     <None Include="백준\3_Gold\G3_2109_순회강연\README.md" />
     <None Include="백준\3_Gold\G3_15684_사다리조작\README.md" />

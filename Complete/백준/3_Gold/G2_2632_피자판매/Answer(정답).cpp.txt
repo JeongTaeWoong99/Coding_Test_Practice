@@ -1,0 +1,90 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 입력 정보
+int targetSize;                       // 목표 피자 크기
+int numA, numB;                       // A, B 피자 조각 개수
+
+// 피자 데이터
+int pizzaA[1001], pizzaB[1001];       // 각 피자 조각 크기
+int prefixA[2002], prefixB[2002];     // 누적 합 배열 (원형 처리를 위해 2배 크기)
+
+// 부분합 카운트
+map<int, int> countA, countB;         // 부분합 크기 → 경우의 수
+
+// 결과
+int totalWays;                        // 총 경우의 수
+
+// 모든 연속 부분합을 생성하여 map에 저장
+// pieceCount : 피자 조각 개수
+// prefix     : 누적 합 배열
+// counter    : 부분합 카운트 map
+void GenerateSubsums(int pieceCount, int prefix[], map<int, int>& counter)
+{
+    // length: 선택할 조각의 개수 (1 ~ pieceCount)
+    for(int length = 1; length <= pieceCount; length++)
+    {
+        // startIdx: 시작 인덱스
+        for(int startIdx = length; startIdx <= pieceCount + length - 1; startIdx++)
+        {
+            int subsum = prefix[startIdx] - prefix[startIdx - length]; // 구간 합
+            counter[subsum]++;                                         // 해당 크기의 경우의 수 증가
+
+            // 전체 피자는 1번만 계산
+            if(length == pieceCount) break;
+        }
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> targetSize >> numA >> numB;
+
+    // A 피자 입력 및 누적 합 계산 (1부터 시작, prefixA[0] = 0)
+    for(int i = 1; i <= numA; i++)
+    {
+        cin >> pizzaA[i];
+        prefixA[i] = prefixA[i - 1] + pizzaA[i];
+    }
+
+    // 원형 배열 처리 (A 피자)
+    for(int i = numA + 1; i <= 2 * numA; i++)
+    {
+        prefixA[i] = prefixA[i - 1] + pizzaA[i - numA];
+    }
+
+    // B 피자 입력 및 누적 합 계산 (1부터 시작, prefixB[0] = 0)
+    for(int i = 1; i <= numB; i++)
+    {
+        cin >> pizzaB[i];
+        prefixB[i] = prefixB[i - 1] + pizzaB[i];
+    }
+
+    // 원형 배열 처리 (B 피자)
+    for(int i = numB + 1; i <= 2 * numB; i++)
+    {
+        prefixB[i] = prefixB[i - 1] + pizzaB[i - numB];
+    }
+
+    // 모든 연속 부분합 생성
+    GenerateSubsums(numA, prefixA, countA);
+    GenerateSubsums(numB, prefixB, countB);
+
+    // A만 또는 B만 사용하는 경우
+    totalWays = countA[targetSize] + countB[targetSize];
+
+    // A와 B를 조합하는 경우
+    for(int sizeA = 1; sizeA < targetSize; sizeA++)
+    {
+        int sizeB = targetSize - sizeA;
+        totalWays += countA[sizeA] * countB[sizeB];
+    }
+
+    // 결과 출력
+    cout << totalWays << "\n";
+
+    return 0;
+}

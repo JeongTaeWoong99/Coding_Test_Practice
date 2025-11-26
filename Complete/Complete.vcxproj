@@ -207,6 +207,7 @@
     <None Include="백준\3_Gold\G2_2632_피자판매\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_1644_소수의연속합\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_2109_순회강연\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G3_15683_감시\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_15684_사다리조작\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_15685_드래곤커브\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_16637_괄호추가하기\Answer(정답).cpp.txt" />
@@ -290,6 +291,7 @@
     <None Include="백준\3_Gold\G2_2632_피자판매\README.md" />
     <None Include="백준\3_Gold\G3_1644_소수의연속합\README.md" />
     <None Include="백준\3_Gold\G3_2109_순회강연\README.md" />
+    <None Include="백준\3_Gold\G3_15683_감시\README.md" />
     <None Include="백준\3_Gold\G3_15684_사다리조작\README.md" />
     <None Include="백준\3_Gold\G3_15685_드래곤커브\README.md" />
     <None Include="백준\3_Gold\G3_16637_괄호추가하기\README.md" />

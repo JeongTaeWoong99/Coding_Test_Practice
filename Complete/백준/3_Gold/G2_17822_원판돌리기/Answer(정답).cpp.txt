@@ -1,0 +1,193 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 방향 배열 (상, 우, 하, 좌)
+const int dy[4] = {-1, 0, 1, 0};
+const int dx[4] = {0, 1, 0, -1};
+
+int n, m, T;                // n : 원판 개수, m : 원판에 적힌 숫자 개수, T : 회전 횟수
+int x, d, k;                // x : 회전할 원판 번호의 배수, d : 방향(0=시계, 1=반시계), k : 회전 칸 수
+int arr[54][54];            // 원판 배열
+int vit[54][54];            // 방문 체크 (DFS용)
+int ret;                    // 최종 합
+bool flag;                  // ☆ 인접한 같은 수 존재 여부
+
+// 원판 회전 함수
+// y : 회전할 원판 번호,
+// dir : 방향(0=시계, 1=반시계),
+// k : 회전 칸 수
+void Rota(int y, int dir, int k)
+{
+    // 현재 원판을 벡터에 복사
+    vector<int> v;
+    for (int i = 0; i < m; i++)
+        v.push_back(arr[y][i]);
+
+    // 회전 (STL rotate 사용)
+    if (dir == 1)  // 반시계
+    {
+        rotate(v.begin(), v.begin() + k, v.end());
+    }
+    else  // 시계
+    {
+        rotate(v.begin(), v.begin() + m - k, v.end());
+    }
+
+    // 회전된 결과를 배열에 다시 저장
+    for (int i = 0; i < m; i++)
+    {
+        arr[y][i] = v[i];
+    }
+}
+
+// DFS로 인접한 같은 숫자 찾기
+// y : 현재 원판 번호, x : 현재 위치
+void DFS(int y, int x)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        int ny = y + dy[i];
+        int nx = (x + dx[i] + m) % m;  // ☆ 원형 연결 처리
+
+        // 원판 범위 체크
+        if (ny < 0 || ny >= n) continue;
+
+        // 이미 방문
+        if (vit[ny][nx]) continue;
+
+        // 인접한 칸이 같은 숫자면
+        if (arr[y][x] == arr[ny][nx])
+        {
+            vit[y][x]   = 1;    // ★ 현재 위치 방문 체크(인접한 경우에만, 시작 칸도 체크)
+            vit[ny][nx] = 1;    // 인접 위치 방문 체크
+
+            flag = false;       // 인접한 같은 수 발견
+
+            DFS(ny, nx);    // 재귀 탐색
+        }
+    }
+}
+
+// 인접한 같은 숫자 찾아서 제거
+bool FindAndRemove()
+{
+    // true  = 인접한 같은 수 없음,
+    // false = 인접한 같은 수 있음
+    flag = true;
+    memset(vit, 0, sizeof(vit));
+
+    // 모든 칸 탐색
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (arr[i][j] == 0) continue;       // 이미 제거된 숫자
+            if (vit[i][j])      continue;       // 이미 방문
+            
+            DFS(i, j);
+        }
+    }
+
+    // 방문한 칸(=인접한 같은 숫자)을 0으로 제거
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (vit[i][j])
+            {
+                arr[i][j] = 0;
+            }
+        }
+    }
+
+    return flag;
+}
+
+// 평균 계산 후 ±1 조정
+void AdjustByAverage()
+{
+    int sum = 0;
+    int cnt = 0;
+
+    // 0이 아닌 숫자들의 합과 개수 계산
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (arr[i][j] == 0) continue;
+            
+            sum += arr[i][j];
+            cnt++;
+        }
+    }
+
+    // 평균 계산
+    double avg = static_cast<double>(sum) / static_cast<double>(cnt);
+
+    // 평균과 비교하여 ±1 조정
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (arr[i][j] == 0) continue;
+
+            if (static_cast<double>(arr[i][j]) > avg)       // 평균보다 크면
+            {
+                arr[i][j]--;
+            }
+            else if (static_cast<double>(arr[i][j]) < avg)  // 평균보다 작으면
+            {
+                arr[i][j]++;
+            }
+        }
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> n >> m >> T;
+
+    // 원판 배열 입력
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            cin >> arr[i][j];
+        }
+    }
+
+    // T번 회전 및 처리
+    for (int i = 0; i < T; i++)
+    {
+        cin >> x >> d >> k;
+        
+        // x의 배수인 원판들을 회전
+        for (int j = x - 1; j < n; j += x)
+        {
+            Rota(j, d, k);
+        }
+
+        // 인접한 같은 숫자 찾아서 제거
+        // 제거할 숫자가 없으면 평균 조정
+        if (FindAndRemove())
+        {
+            AdjustByAverage();
+        }
+    }
+
+    // 남은 숫자들의 합 계산
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            ret += arr[i][j];
+        }
+    }
+
+    cout << ret << '\n';
+
+    return 0;
+}

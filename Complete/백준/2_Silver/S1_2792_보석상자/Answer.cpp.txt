@@ -1,0 +1,75 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+ll stuNum, colorNum;    // stuNum : 학생 수, colorNum : 보석 색상 수
+ll jewelNumArr[300004]; // jewelNumArr[i] : i번째 색상의 보석 개수
+ll minRet = 1e18;       // 질투심 최솟값 (가장 많이 받은 학생의 보석 개수)
+
+ll _left = 1;   // ★ 최소 1개는 줄 수 있음. 그래서, 1부터 시작.(0부터 시작하면, 런타임 에러 (DivisionByZero) 발생)
+ll _right, mid; // right : 이분 탐색 최대값 (가장 많은 보석 개수), mid : 중간값
+
+// checkMid : 한 학생이 가져갈 수 있는 최대 보석 개수
+// 반환      : checkMid 개씩 나눠줄 때 stuNum 명에게 모두 나눠줄 수 있는지 여부
+bool Check(ll checkMid)
+{
+    // needStuNum : 필요한 학생 수
+    ll needStuNum = 0;
+
+    // colorNum 만큼 반복하며 각 색상별로 필요한 학생 수 계산
+    for(int i = 0; i < colorNum; i++)
+    {
+        // checkMid 개씩 나눠줄 수 있는 학생 수
+        needStuNum += jewelNumArr[i] / checkMid;
+
+        // 나머지가 있으면 한 명 더 필요
+        if(jewelNumArr[i] % checkMid)
+            needStuNum++;
+    }
+
+    // stuNum 이하로 줄 수 있는지 확인
+    // 전체 학생 수 이하로 나눠주기만 하면 됨
+    // 못 받는 학생이 있어도 상관없음
+    return stuNum >= needStuNum;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력 처리
+    cin >> stuNum >> colorNum;
+    
+    for(int i = 0; i < colorNum; i++)
+    {
+        cin >> jewelNumArr[i];
+
+        // 가장 많은 보석 개수를 상한으로 (어차피 이 안에서 결정남 1 ~ max)
+        _right = max(_right, jewelNumArr[i]);
+    }
+
+    // 이분 탐색 : 질투심 최솟값 찾기
+    while(_left <= _right)
+    {
+        // 나눠 줄 갯수
+        mid = (_left + _right) / 2;
+
+        // mid 개씩 나눠줄 수 있음
+        if(Check(mid))
+        {
+            minRet = min(minRet, mid);  // 최솟값 갱신
+            _right = mid - 1;                    // 더 작은 값 탐색 (질투심 줄이기)
+        }
+        // mid 개씩 나눠줄 수 없음 (학생이 부족함)
+        else
+        {
+            _left = mid + 1;  // 더 큰 값 탐색 (한 명당 더 많이 줘야 함)
+        }
+    }
+
+    // 결과 출력
+    cout << minRet << "\n";
+
+    return 0;
+}

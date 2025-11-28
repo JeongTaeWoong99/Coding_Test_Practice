@@ -1,0 +1,54 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 전역 변수
+int         N, M;         // N = 컴퓨터 수, M = 연결 쌍의 수
+vector<int> adj[104];     // 인접 리스트 (양방향 그래프)
+int         visited[104]; // 방문 체크
+int         ret = 0;      // 감염된 컴퓨터 수
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> N >> M;
+
+    // 연결 관계 입력 (양방향)
+    for (int i = 0; i < M; i++)
+    {
+        int a, b;
+        cin >> a >> b;
+        adj[a].emplace_back(b);
+        adj[b].emplace_back(a);
+    }
+
+    // BFS 시작 (1번 컴퓨터부터)
+    queue<int> q;
+    visited[1] = 1;  // 1번 컴퓨터 방문 체크
+    q.emplace(1);
+
+    // BFS 탐색
+    while (!q.empty())
+    {
+        int cur = q.front();
+        q.pop();
+
+        // 현재 컴퓨터와 연결된 모든 컴퓨터 확인
+        for (int next : adj[cur])
+        {
+            // 이미 방문한 컴퓨터는 스킵
+            if (visited[next] == 1) continue;
+
+            // 방문 처리 및 큐에 추가
+            visited[next] = 1;
+            q.emplace(next);
+            ret++;  // 감염된 컴퓨터 수 증가
+        }
+    }
+
+    // 결과 출력 (1번 컴퓨터는 제외)
+    cout << ret << "\n";
+
+    return 0;
+}

@@ -180,6 +180,7 @@
     <None Include="백준\2_Silver\S3_1213_팰린드롬만들기\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_2559_수열\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_2559_수열\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S3_2606_바이러스\Answer.cpp.txt" />
     <None Include="백준\2_Silver\S4_2870_수학숙제\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_2910_빈도정렬\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_3273_두수의합\Answer(성공).cpp.txt" />
@@ -266,6 +267,7 @@
     <None Include="백준\2_Silver\S4_4949_균형잡힌세상\README.md" />
     <None Include="백준\2_Silver\S3_1213_팰린드롬만들기\README.md" />
     <None Include="백준\2_Silver\S3_2559_수열\README.md" />
+    <None Include="백준\2_Silver\S3_2606_바이러스\README.md" />
     <None Include="백준\2_Silver\S4_2870_수학숙제\README.md" />
     <None Include="백준\2_Silver\S3_2910_빈도정렬\README.md" />
     <None Include="백준\2_Silver\S3_3474_교수가된현우\README.md" />

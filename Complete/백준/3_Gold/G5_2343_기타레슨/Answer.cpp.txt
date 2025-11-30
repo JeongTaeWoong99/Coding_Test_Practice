@@ -1,0 +1,72 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, m;           // n : 강의의 수, m : 블루레이 개수
+int arr[100004];    // arr[] : 각 강의의 길이
+
+// 블루레이 크기가 mid일 때, m개 이하로 나눌 수 있는지 확인
+// mid : 블루레이 하나의 크기
+bool Check(int mid)
+{
+    int cnt = 1;   // 현재 사용한 블루레이 개수
+    int sum = 0;   // 현재 블루레이에 담긴 강의 길이 합
+
+    for(int i = 0; i < n; i++)
+    {
+        // 현재 강의를 담을 수 없으면  => 새 블루레이 사용
+        if(sum + arr[i] > mid)
+        {
+            cnt++;
+            sum = arr[i];  // 새 블루레이에 현재 강의 담기
+        }
+        // 현재 강의를 담을 수 있으면  => 값만 증가
+        else
+        {
+            sum += arr[i]; // 현재 블루레이에 추가
+        }
+    }
+
+    return cnt <= m;  // m개 이하로 나눌 수 있으면 true
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력 처리
+    cin >> n >> m;
+
+    int left  = 0;  // 이분 탐색 왼쪽   (최소값 : 가장 긴 강의)
+    int right = 0;  // 이분 탐색 오른쪽 (최대값 : 모든 강의 합)
+
+    for(int i = 0; i < n; i++)
+    {
+        cin >> arr[i];
+        left   = max(left, arr[i]);  // 가장 긴 강의가 최소 크기
+        right += arr[i];                  // 모든 강의 합이 최대 크기
+    }
+
+    // 이분 탐색으로 최소 블루레이 크기 찾기
+    int result = right;
+
+    while(left <= right)
+    {
+        int mid = (left + right) / 2;
+
+        // mid 크기로 m개 이하 블루레이에 나눌 수 있는지 확인
+        if(Check(mid))
+        {
+            result = mid;      // 가능하면 결과 저장
+            right  = mid - 1;  // 더 작은 크기 시도
+        }
+        else
+        {
+            left = mid + 1;    // 불가능하면 크기 증가
+        }
+    }
+
+    // 결과 출력
+    cout << result << "\n";
+
+    return 0;
+}

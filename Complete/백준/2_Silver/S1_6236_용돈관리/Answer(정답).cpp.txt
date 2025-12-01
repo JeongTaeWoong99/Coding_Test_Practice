@@ -1,0 +1,73 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+// 변수 선언 및 초기화
+ll n, m;        // n : 날짜 수, m : 인출 횟수
+ll arr[100005]; // arr[i] : i번째 날 사용할 금액
+ll mx, ret;     // mx : 최대 금액, ret : 결과값
+ll lo, hi;      // lo : 이분 탐색 하한, hi : 이분 탐색 상한
+
+// mid 금액으로 M번 이하로 인출 가능한지 확인
+// mid : 한 번에 인출할 금액
+bool Check(int mid)
+{
+    int cnt         = 1;        // 인출 횟수
+    int setMoney    = mid;      // K원 인출 금액 저장
+    int remainMoney = setMoney; // 세팅
+
+    for(int i = 0; i < n; i++)
+    {
+        // 현재 남은 돈으로 오늘 사용할 금액을 감당할 수 없으면
+        if(remainMoney - arr[i] < 0)
+        {
+            remainMoney = setMoney;  // 통장에서 다시 K원 인출
+            cnt++;                   // 인출 횟수 증가
+        }
+
+        // 오늘 사용할 금액 차감
+        remainMoney -= arr[i];
+    }
+
+    return cnt <= m;     // M번 이하로 인출 가능한지 확인
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력 처리
+    cin >> n >> m;
+    for(int i = 0; i < n; i++)
+    {
+        cin >> arr[i];
+        mx = max(arr[i], mx);  // 최소 인출 금액은 가장 큰 일일 사용액
+    }
+
+    // 이분 탐색으로 최소 인출 금액 찾기
+    lo = mx;              // 최소값 : 가장 큰 일일 사용액
+    hi = 1000000004;      // 최대값 : 충분히 큰 값
+
+    while(lo <= hi)
+    {
+        int mid = (lo + hi) / 2;
+
+        // mid 원으로 M번 이하 인출 가능
+        if(Check(mid))
+        {
+            hi  = mid - 1;  // 더 작은 금액 탐색
+            ret = mid;      // 현재 값 저장
+        }
+        // mid 원으로 M번 초과 인출 필요
+        else
+        {
+            lo = mid + 1;   // 더 큰 금액 탐색
+        }
+    }
+
+    // 결과 출력
+    cout << ret << "\n";
+
+    return 0;
+}

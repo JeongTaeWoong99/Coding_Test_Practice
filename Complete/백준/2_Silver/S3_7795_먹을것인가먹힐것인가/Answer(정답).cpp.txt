@@ -1,0 +1,57 @@
+// 백준 7795번 - 먹을 것인가 먹힐 것인가
+// 난이도: Silver 3
+// 알고리즘: 정렬, 이분 탐색
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// t : 테스트 케이스 개수
+// n : A 생명체의 수
+// m : B 생명체의 수
+int t, n, m;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
+    cin >> t;
+
+    while (t--)
+    {
+        cin >> n >> m;
+
+        // 초기화
+        vector<int> a(n), b(m); // 동적 배열
+        int ret = 0;            // 먹을 수 있는 쌍의 개수
+
+        // A 생명체 크기 입력
+        for (int i = 0; i < n; i++)
+            cin >> a[i];
+
+        // B 생명체 크기 입력
+        for (int i = 0; i < m; i++)
+            cin >> b[i];
+
+        // 정렬 (이분 탐색을 위한 필수 과정)
+        sort(a.begin(), a.end());
+        sort(b.begin(), b.end());
+
+        // A의 각 생명체에 대해 먹을 수 있는 B의 개수 계산
+        for (int i = 0; i < n; i++)
+        {
+            // a[i]보다 작은 B의 개수를 이분 탐색으로 찾기
+            // lower_bound : a[i] 이상인 첫 번째 위치 반환
+            auto pos = lower_bound(b.begin(), b.end(), a[i]);
+
+            // pos 이전의 모든 원소는 a[i]보다 작음
+            // (pos - b.begin()) = a[i]보다 작은 B의 개수
+            ret += (int)(pos - b.begin());
+        }
+
+        cout << ret << "\n";
+    }
+
+    return 0;
+}

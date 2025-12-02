@@ -40,3 +40,6 @@ Test/Test.cpp
 
 # Personal study notes (Git 추적 제외)
 SPECIAL.md
+
+# Python scripts (vcxproj 분석 도구)
+analyze_vcxproj.py

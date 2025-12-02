@@ -1,0 +1,36 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, m, cnt, temp;
+unordered_set<int> aSet, bSet;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m;
+
+    // A 집합 입력
+    while(n--)
+    {
+        cin >> temp;
+        aSet.insert(temp);
+    }
+
+    // B 집합 입력
+    while(m--)
+    {
+        cin >> temp;
+        bSet.insert(temp);
+    }
+
+    // 대칭 차집합 계산
+    // A - B : A에는 있지만 B에는 없는 원소
+    // B - A : B에는 있지만 A에는 없는 원소
+    for(int x : aSet) cnt += !bSet.count(x);
+    for(int x : bSet) cnt += !aSet.count(x);
+
+    cout << cnt << "\n";
+
+    return 0;
+}

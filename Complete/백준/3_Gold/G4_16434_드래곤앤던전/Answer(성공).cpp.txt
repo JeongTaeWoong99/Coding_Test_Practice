@@ -1,0 +1,82 @@
+﻿#include<bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+ll n, atk;
+ll t[130005], a[130005], h[130005];
+ll lo, hi, ret;
+
+bool Check(ll mid)
+{
+    ll currentHP  = mid; // 현재 체력
+    ll currentAtk = atk; // 현재 공격력
+
+    for (int i = 0; i < n; i++)
+    {
+        // 전투
+        if (t[i] == 1)
+        {
+            // 몬스터 사망에 필요한 공격 횟수
+            ll loopCount = h[i] / currentAtk;
+            if (h[i] % currentAtk != 0)
+                loopCount++;
+
+            // (내 공격횟수 - 1) 만큼 적의 공격을 곱해줘, 내 체력도 감소
+            // 내가 먼저 공격하기 때문에, -1 보정
+            currentHP -= (loopCount - 1) * a[i];
+        }
+        // 공격력 및 체력 업
+        else if (t[i] == 2)
+        {
+            // 공격력 증가
+            currentAtk += a[i];
+
+            // 체력 회복 (max 체력 안 넘게 회복)
+            currentHP += h[i];
+            if (currentHP > mid)
+                currentHP = mid;
+        }
+
+        // 각 방을 지날 때마다 체력 체크 (죽으면 즉시 false)
+        if (currentHP <= 0)
+            return false;
+    }
+
+    // 가능
+    return true;
+}
+
+// ti가 1인 경우 : 공격력이 ai이고 생명력이 hi인 몬스터
+// ti가 2인 경우 : 용사의 공격력 HATK를 ai만큼 증가시켜주고, 용사의 현재 생명력 HCurHP를 hi만큼 회복시켜주는 포션
+int main()
+{
+    ios::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+
+    cin >> n >> atk;
+
+    for (int i = 0; i < n; i++)
+        cin >> t[i] >> a[i] >> h[i];
+
+    lo = 1;          // 체력은 1 이상
+    hi = LLONG_MAX;  // long long 최댓값
+
+    while (lo <= hi)
+    {
+        ll mid = (lo + hi) / 2;
+
+        if (Check(mid))
+        {
+            hi  = mid - 1;
+            ret = mid;
+        }
+        else
+        {
+            lo = mid + 1;
+        }
+    }
+
+    cout << ret << '\n';
+
+    return 0;
+}

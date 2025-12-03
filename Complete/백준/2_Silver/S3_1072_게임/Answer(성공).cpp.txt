@@ -1,0 +1,38 @@
+﻿#include<bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+ll games, wins;     // 게임 판수, 승리 수
+ll mid, ret = -1;   // 정수가 바뀌지 않으면, ret -1 출력
+
+int main()
+{
+    cin >> games >> wins;
+
+    // 초기 승률 공식
+    ll initPer = wins * 100 / games;
+
+    ll lo = 1;
+    ll hi = games;  // games OR 1e9d OR 1000000000 가능
+
+    while(lo <= hi)
+    {
+        mid = (lo + hi)/ 2;
+
+        // 승리 수와 게임 판수 같이 증가하는 공식으로 확인
+        if((wins + mid) * 100 / (games + mid) > initPer)
+        {
+            ret = mid;
+            hi  = mid - 1;
+        }
+        else
+        {
+            lo = mid + 1;
+        }
+    }
+
+    cout << ret << "\n";
+
+    return 0;
+}

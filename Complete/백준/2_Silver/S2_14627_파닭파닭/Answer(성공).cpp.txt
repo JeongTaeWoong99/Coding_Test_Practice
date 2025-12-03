@@ -1,0 +1,61 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+// s : 파의 개수, c : 파닭의 수
+// a : 각 파의 길이, sum : 전체 파의 길이 합
+// ret : 파닭 하나당 들어갈 파의 최대 길이
+ll s, c, sum;
+ll a[1000004];
+ll ret;
+
+// mid : 파닭 하나당 넣을 파의 길이
+// 파닭을 c개 이상 만들 수 있는지 확인
+bool Check(ll mid)
+{
+    ll cnt = 0;
+
+    for(int i = 0; i < s; i++)
+    {
+        cnt += a[i] / mid;  // 각 파에서 만들 수 있는 파닭 개수
+    }
+
+    return cnt >= c;  // c개 이상 만들 수 있으면 true
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력 처리
+    cin >> s >> c;
+    for(int i = 0; i < s; i++)
+    {
+        cin >> a[i];
+        sum += a[i];
+    }
+
+    // 이분 탐색으로 파닭 하나당 들어갈 파의 최대 길이 찾기
+    ll lo = 1, hi = 1000000000;
+
+    while(lo <= hi)
+    {
+        ll mid = (lo + hi) / 2;
+
+        if(Check(mid))  // c개 이상 만들 수 있으면
+        {
+            lo  = mid + 1;
+            ret = mid;       // 가능한 최대 길이 갱신
+        }
+        else
+        {
+            hi = mid - 1;
+        }
+    }
+
+    // 결과 출력 : 전체 파 길이 - (파닭 하나당 파 길이 * 파닭 개수)
+    cout << sum - ret * c << "\n";
+
+    return 0;
+}

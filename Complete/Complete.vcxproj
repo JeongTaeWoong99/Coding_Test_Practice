@@ -180,6 +180,7 @@
     <None Include="백준\2_Silver\S2_1012_유기농배추\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S2_1912_연속합\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S2_14620_꽃길\Answer(정답).cpp.txt" />
+    <None Include="백준\2_Silver\S2_14627_파닭파닭\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_1213_팰린드롬만들기\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_1072_게임\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_1269_대칭차집합\Answer(성공_최적화).cpp.txt" />
@@ -279,6 +280,7 @@
     <None Include="백준\2_Silver\S2_1012_유기농배추\README.md" />
     <None Include="백준\2_Silver\S2_1912_연속합\README.md" />
     <None Include="백준\2_Silver\S2_14620_꽃길\README.md" />
+    <None Include="백준\2_Silver\S2_14627_파닭파닭\README.md" />
     <None Include="백준\2_Silver\S3_1072_게임\README.md" />
     <None Include="백준\2_Silver\S3_1213_팰린드롬만들기\README.md" />
     <None Include="백준\2_Silver\S3_1269_대칭차집합\README.md" />

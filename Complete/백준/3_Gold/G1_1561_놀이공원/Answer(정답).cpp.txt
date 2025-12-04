@@ -1,0 +1,92 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+const ll MAX_TIME = 60000000004;    // 최대 운행 시간 = (n 아이수 20억) x (m 놀이기구 1대) x (최대 운행시간 30분) = 600억 
+
+ll n, m;           // n : 아이들 수, m : 놀이기구 수
+ll arr[10004];     // arr[i] : i번 놀이기구의 운행 시간 배열
+ll lo, hi, mid;    // 이분 탐색
+ll ansRet;         // 정답 시간
+ll childCnt;       // 특정 시간까지 탑승한 아이 수 카운트
+
+// mid : 특정 시간
+// 반환 : mid 시간까지 n명 이상의 아이가 탑승 가능한지 여부
+bool Check(ll mid)
+{
+    childCnt = m;  // 0분에 m명 탑승(처음에는 모든 놀이기구 비어 있음)
+
+    for(ll i = 0; i < m; i++)
+    {
+        childCnt += mid / arr[i];  // i번 놀이기구에서 탑승한 아이 수
+    }
+
+    return childCnt >= n;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> n >> m;
+    for(ll i = 0; i < m; i++)
+    {
+        cin >> arr[i];
+    }
+
+    // 기저 케이스 : n명 이하면 n번째 아이는 n번 놀이기구 탑승
+    if(n <= m)
+    {
+        cout << n;
+        return 0;
+    }
+
+    // 이분 탐색으로 n번째 아이가 탑승하는 시간 찾기
+    lo = 0;
+    hi = MAX_TIME;
+
+    while(lo <= hi)
+    {
+        mid = (lo + hi) / 2;
+
+        if(Check(mid))
+        {
+            ansRet = mid;
+            hi     = mid - 1;
+        }
+        else
+        {
+            lo = mid + 1;
+        }
+    }
+
+    // ansRet - 1 시간까지 탑승한 아이 수 계산
+    childCnt = m;  // 0분에 m개 놀이기구에 각각 1명씩 탑승 (시작 시 m명)
+    for(ll i = 0; i < m; i++)
+    {
+        childCnt += (ansRet - 1) / arr[i];
+    }
+
+    // ansRet 시간에 탑승하는 아이들 중 n번째 아이 찾기
+    // ansRet 시간에 여러 놀이기구가 동시에 비는 경우, 작은 번호 놀이기구부터 순서대로 태우면서 n번째 아이 찾기
+    for(ll i = 0; i < m; i++)  // 0번부터 순서대로 확인 (작은 번호 우선)
+    {
+        // i번 놀이기구가 ansRet 시간에 비어있는지 확인
+        if(ansRet % arr[i] == 0)
+        {
+            childCnt++;  // 이 놀이기구에 한 명 탑승
+        }
+
+        // 방금 탑승한 아이가 n번째 아이라면 (독립적으로 체크!)
+        if(childCnt == n)
+        {
+            cout << i + 1 << "\n";  // i번 놀이기구 (1-indexed)
+
+            return 0;
+        }
+    }
+
+    return 0;
+}

@@ -1,0 +1,51 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int    n, range;      // n : 실수의 개수, range : 배열 크기
+double mx;            // mx : 전체 최댓값
+
+// nums : 입력받은 실수 배열
+// 반환값 : 연속된 부분의 최대 곱 (브루트포스 O(N^2))
+double Go(const vector<double>& nums)
+{
+    range = nums.size();
+    mx = -1;                // 최댓값 초기화
+
+    // 모든 구간 구하기
+    // (0 ~ n) 부터 (0 ~ n) 모두 구하기
+    for (int start = 0; start < range; ++start)
+    {
+        double curr = 1.0;  // 현재 구간의 곱 (1로 초기화)
+
+        // 시작점부터 끝까지 연속된 구간 계산
+        for (int end = start; end < range; ++end)
+        {
+            curr *= nums[end];    // 현재 숫자를 곱에 포함
+            mx = max(mx, curr);   // 최댓값 갱신
+        }
+    }
+
+    return mx;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력 처리
+    cin >> n;
+
+    vector<double> nums(n);
+    for (int i = 0; i < n; i++)
+    {
+        cin >> nums[i];
+    }
+
+    // 알고리즘 로직
+    double ret = Go(nums);
+
+    // 결과 출력 (소수점 셋째 자리까지)
+    cout << fixed << setprecision(3) << ret << '\n';
+
+    return 0;
+}

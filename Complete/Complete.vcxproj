@@ -178,6 +178,7 @@
     <None Include="백준\2_Silver\S1_10844_쉬운계단수\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_14888_연산자끼워넣기\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S2_1012_유기농배추\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S2_11053_가장긴증가하는부분수열\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S2_1912_연속합\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S2_14620_꽃길\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S2_14627_파닭파닭\Answer(성공).cpp.txt" />
@@ -282,6 +283,7 @@
     <None Include="백준\2_Silver\S1_10844_쉬운계단수\README.md" />
     <None Include="백준\2_Silver\S1_14888_연산자끼워넣기\README.md" />
     <None Include="백준\2_Silver\S2_1012_유기농배추\README.md" />
+    <None Include="백준\2_Silver\S2_11053_가장긴증가하는부분수열\README.md" />
     <None Include="백준\2_Silver\S2_1912_연속합\README.md" />
     <None Include="백준\2_Silver\S2_14620_꽃길\README.md" />
     <None Include="백준\2_Silver\S2_14627_파닭파닭\README.md" />

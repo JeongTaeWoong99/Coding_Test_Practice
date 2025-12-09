@@ -70,6 +70,8 @@ https://solved.ac/api/v3/problem/show?problemId={문제번호}
 
 **용도 :** 코딩테스트 연습 및 알고리즘 문제 해결 (Visual Studio C++, Windows)
 
+**C++ 버전 :** C++ 17
+
 **참고 자료 우선순위 :**
 1. **프로젝트 내 PDF** : C++문법 교안.pdf, 개념 교안.pdf, 문제 정답.pdf
 2. **Complete 폴더** : 기존 코드 스타일 패턴

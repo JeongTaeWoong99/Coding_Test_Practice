@@ -254,6 +254,7 @@
     <None Include="백준\3_Gold\G5_15686_치킨배달\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_1931_회의실배정\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_2343_기타레슨\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G5_2565_전깃줄\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_2589_보물섬\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G5_14502_연구소\Answer(3중 for문 조합 정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_14502_연구소\Answer(next_permutation 순열 메서드를 조합으로 응용한 정답).cpp.txt" />
@@ -352,6 +353,7 @@
     <None Include="백준\3_Gold\G5_15686_치킨배달\README.md" />
     <None Include="백준\3_Gold\G5_1931_회의실배정\README.md" />
     <None Include="백준\3_Gold\G5_2343_기타레슨\README.md" />
+    <None Include="백준\3_Gold\G5_2565_전깃줄\README.md" />
     <None Include="백준\3_Gold\G5_2589_보물섬\README.md" />
     <None Include="백준\3_Gold\G5_14502_연구소\README.md" />
     <None Include="백준\4_Platinum\P5_14003_가장긴증가하는부분수열5\README.md" />

@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		SPECIAL.md = SPECIAL.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCS", "TestCS\TestCS.csproj", "{DBAE0D31-41AC-4F7D-9FC0-275A36901A45}"
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -30,5 +32,13 @@ Global
 		{CB400137-5ECB-4A39-B35E-A83F62D232A7}.Release|Win32.Build.0 = Release|Win32
 		{CB400137-5ECB-4A39-B35E-A83F62D232A7}.Release|x64.ActiveCfg = Release|x64
 		{CB400137-5ECB-4A39-B35E-A83F62D232A7}.Release|x64.Build.0 = Release|x64
+		{DBAE0D31-41AC-4F7D-9FC0-275A36901A45}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{DBAE0D31-41AC-4F7D-9FC0-275A36901A45}.Debug|Win32.Build.0 = Debug|Any CPU
+		{DBAE0D31-41AC-4F7D-9FC0-275A36901A45}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DBAE0D31-41AC-4F7D-9FC0-275A36901A45}.Debug|x64.Build.0 = Debug|Any CPU
+		{DBAE0D31-41AC-4F7D-9FC0-275A36901A45}.Release|Win32.ActiveCfg = Release|Any CPU
+		{DBAE0D31-41AC-4F7D-9FC0-275A36901A45}.Release|Win32.Build.0 = Release|Any CPU
+		{DBAE0D31-41AC-4F7D-9FC0-275A36901A45}.Release|x64.ActiveCfg = Release|Any CPU
+		{DBAE0D31-41AC-4F7D-9FC0-275A36901A45}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

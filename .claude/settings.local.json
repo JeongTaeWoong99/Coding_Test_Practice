@@ -60,7 +60,9 @@
       "Bash(\"Complete\\백준\\2_Silver\\S2_4949_균형잡힌세상\\Answer.cpp.txt\")",
       "Bash(\"Complete\\백준\\3_Gold\\G5_15662_톱니바퀴2\\Answer.cpp.txt\")",
       "Bash(\"Complete/백준/3_Gold/G2_16434_드래곤앤던전/Answer(성공_최적화).cpp.txt\")",
-      "Bash(\"Complete/백준/3_Gold/G2_16434_드래곤앤던전/Answer(정답).cpp.txt\")"
+      "Bash(\"Complete/백준/3_Gold/G2_16434_드래곤앤던전/Answer(정답).cpp.txt\")",
+      "Bash(./verify:*)",
+      "Bash(cat:*)"
     ]
   },
   "outputStyle": "korean-terminal"

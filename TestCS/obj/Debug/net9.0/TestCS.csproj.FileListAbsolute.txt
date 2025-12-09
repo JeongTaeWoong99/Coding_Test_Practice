@@ -1,0 +1,15 @@
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\bin\Debug\net9.0\TestCS.exe
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\bin\Debug\net9.0\TestCS.deps.json
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\bin\Debug\net9.0\TestCS.runtimeconfig.json
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\bin\Debug\net9.0\TestCS.dll
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\bin\Debug\net9.0\TestCS.pdb
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\obj\Debug\net9.0\TestCS.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\obj\Debug\net9.0\TestCS.AssemblyInfoInputs.cache
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\obj\Debug\net9.0\TestCS.AssemblyInfo.cs
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\obj\Debug\net9.0\TestCS.csproj.CoreCompileInputs.cache
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\obj\Debug\net9.0\TestCS.sourcelink.json
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\obj\Debug\net9.0\TestCS.dll
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\obj\Debug\net9.0\refint\TestCS.dll
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\obj\Debug\net9.0\TestCS.pdb
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\obj\Debug\net9.0\TestCS.genruntimeconfig.cache
+C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\TestCS\obj\Debug\net9.0\ref\TestCS.dll

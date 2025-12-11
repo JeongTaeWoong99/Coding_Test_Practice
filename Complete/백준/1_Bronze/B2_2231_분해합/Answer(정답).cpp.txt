@@ -1,0 +1,42 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+
+// 자릿수 합 계산 (수학적 방법)
+int GetDigitSum(int num)
+{
+    int sum = 0;
+    while (num > 0)
+    {
+        sum += num % 10;  // (1의 자리)마지막 자릿수를 더함
+        num /= 10;        // 마지막 자릿수 제거(= 1의 자리로 땡기기)
+    }
+    return sum;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    // 탐색 범위 최적화 : N의 자릿수 계산
+    int digit = to_string(n).length();  // N의 자릿수 = 길이
+    int start = max(1, n - 9 * digit);  // 생성자의 최솟값
+
+    // 최적화된 범위에서만 탐색
+    for (int i = start; i < n; i++)
+    {
+        // i + (i의 각 자릿수 합) == n 인지 확인
+        if (i + GetDigitSum(i) == n)
+        {
+            cout << i << "\n";
+            return 0;
+        }
+    }
+
+    // 생성자가 없는 경우
+    cout << "0\n";
+    return 0;
+}

@@ -1,0 +1,33 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int    findNum;
+string numS;
+int    sum;
+
+int main()
+{
+    cin >> findNum;
+
+    for (int i = 1; i <= 1000000 ; ++i)
+    {
+        // 초기화
+        numS = std::to_string(i);
+        sum  = 0;
+
+        // 자릿수합 구하기(- '0' 을 통해서, char값을 int로 형변환)
+        for (auto num : numS)
+            sum += num - '0';
+
+        // 찾음 : 분해합 =  i + i의 자릿수 합
+        if (findNum == i + sum)
+        {
+            cout << i;
+            return 0;
+        }
+    }
+
+    // 없음
+    cout << "0";
+    return 0;
+}

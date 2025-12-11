@@ -1,0 +1,39 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, num, cnt;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> num;
+
+        // 1은 소수가 아님
+        if (num == 1) continue;
+
+        // 소수 판별 플래그
+        bool isPrime = true;
+
+        // 2부터 sqrt(num)까지 나누어떨어지는지 확인
+        // ★ 약수는 항상 쌍(pair)으로 존재하고, 한 쌍에서 하나는 반드시 √n 이하
+        for (int j = 2; j * j <= num; ++j)
+        {
+            if (num % j == 0)
+            {
+                isPrime = false;  // 나누어떨어지면 소수 아님
+                break;
+            }
+        }
+
+        if (isPrime) cnt++;
+    }
+
+    cout << cnt;
+
+    return 0;
+}

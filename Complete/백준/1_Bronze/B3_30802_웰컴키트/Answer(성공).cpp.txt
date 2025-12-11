@@ -1,0 +1,34 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n;            // 사람 수
+int arr[6];       // 사이즈 6종류
+int tSize, pSize; // 주문 묶음 크기
+int tRet;
+
+int main(int argc, char* argv[])
+{
+    // 사람 수
+    cin >> n;
+
+    // 티셔츠 사이즈 당 필요 수
+    for (int i = 0; i < 6; ++i) cin >> arr[i];
+
+    // 묶음 크기
+    cin >> tSize >> pSize;
+
+    // 필요 티셔츠 주문 횟수
+    for (int i = 0; i < 6; ++i)
+    {
+        // 몫 더해주기
+        tRet += arr[i]/tSize;
+
+        // 나머지가 있는 경우, +1 해주기
+        if (arr[i] % tSize) tRet++;
+    }
+
+    cout << tRet << '\n';
+    cout << n / pSize << " " << n % pSize;
+
+    return 0;
+}

@@ -378,6 +378,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="백준\3_Gold\G4_16434_드래곤앤던전\Answer(정답_그리디).cpp.txt" />
+    <Content Include="연습\피보나치 수열\피보나치 수열(DP_메모이제이션_바텁업).txt" />
+    <Content Include="연습\피보나치 수열\피보나치 수열(DP_메모이제이션_탑다운_재귀).txt" />
+    <Content Include="연습\피보나치 수열\피보나치 수열(순수 재귀).txt" />
+    <Content Include="연습\피보나치 수열\피보나치 수열 탑다운 문제.txt" />
+    <Content Include="연습\피보나치 수열\피보나치 수열.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

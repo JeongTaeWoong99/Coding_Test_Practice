@@ -1,0 +1,35 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int dp[1004];  // DP 메모이제이션 배열 (-1로 초기화됨)
+
+// 메모이제이션을 이용한 피보나치 수열 코드
+// (n이 커지면, 기하급수적으로 계산이 커지는 재귀 방법에 비해 더 효율적)
+int Fibo(int n)
+{
+    // 베이스 케이스 : F(0) = 0, F(1) = 1
+    if(n <= 1) return n;
+
+    // ⭐ 핵심! ret는 dp[n]의 참조자(별칭)
+    // ret를 수정하면 dp[n]이 수정됨!
+    int &ret = dp[n];
+    
+    // 이미 계산된 값이 있으면 바로 반환 (메모이제이션)
+    if (ret != -1) return ret;
+
+    // ⭐⭐ 여기서 저장이 일어남! ⭐⭐
+    // 1. Fibo(n-1) + Fibo(n-2) 계산
+    // 2. 그 값을 ret에 대입 → 실제로는 dp[n]에 저장!
+    // 3. 동시에 그 값을 return
+    return ret = Fibo(n - 1) + Fibo(n - 2);
+}
+
+int main(int argc, char* argv[])
+{
+    int n = 5;
+
+    // DP 배열 -1로 초기화 (미계산 표시)
+    memset(dp, -1, sizeof(dp));
+
+    cout << Fibo(n);
+}

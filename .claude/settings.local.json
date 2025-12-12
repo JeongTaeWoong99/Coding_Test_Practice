@@ -62,7 +62,8 @@
       "Bash(\"Complete/백준/3_Gold/G2_16434_드래곤앤던전/Answer(성공_최적화).cpp.txt\")",
       "Bash(\"Complete/백준/3_Gold/G2_16434_드래곤앤던전/Answer(정답).cpp.txt\")",
       "Bash(./verify:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(git add:*)"
     ]
   },
   "outputStyle": "korean-terminal"

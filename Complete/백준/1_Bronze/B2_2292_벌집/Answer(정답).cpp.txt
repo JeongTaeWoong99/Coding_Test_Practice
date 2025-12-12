@@ -1,0 +1,23 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int findNum;
+int floorMaxNum  = 1;
+int currentFloor = 1;
+
+int main()
+{
+    cin >> findNum;
+
+    // 1층이면, 바로 종료
+    // 1층에서 점점 범위를 넓혀가며 확인
+    while (findNum > floorMaxNum)
+    {
+        floorMaxNum += 6 * currentFloor;   // n층에서 다음 층 갈 때, 6 * n 증가
+        currentFloor++;            
+    }
+
+    cout << currentFloor;
+
+    return 0;
+}

@@ -162,6 +162,7 @@
     <None Include="백준\1_Bronze\B2_1978_소수찾기\Answer(정답).cpp.txt" />
     <None Include="백준\1_Bronze\B2_2231_분해합\Answer(성공).cpp.txt" />
     <None Include="백준\1_Bronze\B2_2231_분해합\Answer(정답).cpp.txt" />
+    <None Include="백준\1_Bronze\B2_2292_벌집\Answer(정답).cpp.txt" />
     <None Include="백준\1_Bronze\B3_2959_거북이\Answer(성공).cpp.txt" />
     <None Include="백준\1_Bronze\B3_2979_트럭주차\Answer(정답).cpp.txt" />
     <None Include="백준\1_Bronze\B3_30802_웰컴키트\Answer(성공).cpp.txt" />
@@ -275,6 +276,7 @@
     <None Include="백준\1_Bronze\B2_10808_알파벳개수\README.md" />
     <None Include="백준\1_Bronze\B2_1978_소수찾기\README.md" />
     <None Include="백준\1_Bronze\B2_2231_분해합\README.md" />
+    <None Include="백준\1_Bronze\B2_2292_벌집\README.md" />
     <None Include="백준\1_Bronze\B3_2959_거북이\README.md" />
     <None Include="백준\1_Bronze\B3_2979_트럭주차\README.md" />
     <None Include="백준\1_Bronze\B3_30802_웰컴키트\README.md" />

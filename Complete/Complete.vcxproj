@@ -155,14 +155,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="백준\1_Bronze\B1_11655_ROT13\Answer(정답).cpp.txt" />
-    <None Include="백준\1_Bronze\B1_2309_일곱난쟁이\Answer(Combination).cpp.txt" />
-    <None Include="백준\1_Bronze\B1_2309_일곱난쟁이\Answer(Permutation).cpp.txt" />
+    <None Include="백준\1_Bronze\B1_2309_일곱난쟁이\Answer(정답_Combination).cpp.txt" />
+    <None Include="백준\1_Bronze\B1_2309_일곱난쟁이\Answer(정답_Permutation).cpp.txt" />
     <None Include="백준\1_Bronze\B1_2309_일곱난쟁이\Answer(성공_Recursive).cpp.txt" />
     <None Include="백준\1_Bronze\B2_10808_알파벳개수\Answer(성공).cpp.txt" />
     <None Include="백준\1_Bronze\B2_1978_소수찾기\Answer(정답).cpp.txt" />
     <None Include="백준\1_Bronze\B2_2231_분해합\Answer(성공).cpp.txt" />
     <None Include="백준\1_Bronze\B2_2231_분해합\Answer(정답).cpp.txt" />
     <None Include="백준\1_Bronze\B2_2292_벌집\Answer(정답).cpp.txt" />
+    <None Include="백준\1_Bronze\B2_2798_블랙잭\Answer(성공_prev_permutation_조합).cpp.txt" />
+    <None Include="백준\1_Bronze\B2_2798_블랙잭\Answer(정답_3중 for문).cpp.txt" />
     <None Include="백준\1_Bronze\B3_2959_거북이\Answer(성공).cpp.txt" />
     <None Include="백준\1_Bronze\B3_2979_트럭주차\Answer(정답).cpp.txt" />
     <None Include="백준\1_Bronze\B3_30802_웰컴키트\Answer(성공).cpp.txt" />
@@ -277,6 +279,7 @@
     <None Include="백준\1_Bronze\B2_1978_소수찾기\README.md" />
     <None Include="백준\1_Bronze\B2_2231_분해합\README.md" />
     <None Include="백준\1_Bronze\B2_2292_벌집\README.md" />
+    <None Include="백준\1_Bronze\B2_2798_블랙잭\README.md" />
     <None Include="백준\1_Bronze\B3_2959_거북이\README.md" />
     <None Include="백준\1_Bronze\B3_2979_트럭주차\README.md" />
     <None Include="백준\1_Bronze\B3_30802_웰컴키트\README.md" />

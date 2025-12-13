@@ -1,0 +1,38 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int           n, m, mx;
+vector<int>   cards;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 카드 수, 상한선 입력
+    cin >> n >> m;
+
+    // 카드 점수 입력 및 저장
+    cards.resize(n);
+    for (int i = 0; i < n; ++i)
+        cin >> cards[i];
+
+    // 3중 for문으로 3장 선택
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = i + 1; j < n; ++j)
+        {
+            for (int k = j + 1; k < n; ++k)
+            {
+                int sum = cards[i] + cards[j] + cards[k];
+
+                // sum이 상한선 m 이하이면, 현재 mx와 비교하여 갱신
+                if (sum <= m)
+                    mx = max(mx, sum);
+            }
+        }
+    }
+
+    cout << mx;
+
+    return 0;
+}

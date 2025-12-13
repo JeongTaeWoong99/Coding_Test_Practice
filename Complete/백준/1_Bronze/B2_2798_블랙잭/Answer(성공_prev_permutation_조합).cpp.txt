@@ -1,0 +1,50 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int           n, m, num, mx;
+vector<int>   numVec;
+vector<int>   selector;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 카드 수, 상한선 입력
+    cin >> n >> m;
+
+    // 카드 점수 입력 및 저장
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> num;
+        numVec.push_back(num);
+    }
+
+    // selector 크기 맞춰서 늘리기 + 앞에 3개 1로 선택
+    selector.resize(n);
+    for (int i = 0; i < 3; ++i)
+        selector[i] = 1;
+
+    // 조합으로 3개 뽑아서 확인
+    do
+    {
+        int sum = 0;
+
+        // 선택된 3개의 합 구하기
+        for (int i = 0; i < numVec.size(); ++i)
+        {
+            if (selector[i] == 1)
+            {
+                sum += numVec[i];
+            }
+        }
+
+        // sum이 상한선 m 이하이면, 현재 mx와 비교하여 갱신
+        if (sum <= m)
+            mx = max(mx, sum);
+    }
+    while (prev_permutation(selector.begin(), selector.end()));
+
+    cout << mx;
+
+    return 0;
+}

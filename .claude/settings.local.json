@@ -63,7 +63,9 @@
       "Bash(\"Complete/백준/3_Gold/G2_16434_드래곤앤던전/Answer(정답).cpp.txt\")",
       "Bash(./verify:*)",
       "Bash(cat:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(\"Complete/백준/1_Bronze/B2_2798_블랙잭/Answer(성공_prev_permutation_조합).cpp.txt\")",
+      "Bash(\"Complete/백준/1_Bronze/B2_2798_블랙잭/Answer(정답_3중 for문).cpp.txt\")"
     ]
   },
   "outputStyle": "korean-terminal"

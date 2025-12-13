@@ -260,6 +260,7 @@
     <None Include="백준\3_Gold\G5_1911_흙길보수하기\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_15662_톱니바퀴2\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G5_15686_치킨배달\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G5_17070_파이프옮기기1\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_1931_회의실배정\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_2343_기타레슨\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_2565_전깃줄\Answer(정답).cpp.txt" />
@@ -365,6 +366,7 @@
     <None Include="백준\3_Gold\G5_1911_흙길보수하기\README.md" />
     <None Include="백준\3_Gold\G5_15662_톱니바퀴2\README.md" />
     <None Include="백준\3_Gold\G5_15686_치킨배달\README.md" />
+    <None Include="백준\3_Gold\G5_17070_파이프옮기기1\README.md" />
     <None Include="백준\3_Gold\G5_1931_회의실배정\README.md" />
     <None Include="백준\3_Gold\G5_2343_기타레슨\README.md" />
     <None Include="백준\3_Gold\G5_2565_전깃줄\README.md" />

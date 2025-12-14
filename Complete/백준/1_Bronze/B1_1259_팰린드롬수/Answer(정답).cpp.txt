@@ -1,0 +1,26 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+string s, temp;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    while (cin >> s)
+    {
+        // 종료 조건
+        if (s == "0")
+            break;
+
+        // 문자열 뒤집기
+        temp = s;
+        reverse(temp.begin(), temp.end());
+
+        // 팰린드롬 여부 확인
+        if (s == temp) cout << "yes" << '\n';
+        else           cout << "no"  << '\n';
+    }
+
+    return 0;
+}

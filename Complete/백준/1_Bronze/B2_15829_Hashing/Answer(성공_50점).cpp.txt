@@ -1,0 +1,28 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int  lenth;
+int  ret;
+char c;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> lenth;
+
+    for (int i = 0; i < lenth; ++i)
+    {
+        cin >> c;
+
+        // 알파벳 숫자로 변환 (+1 문제 보정)
+        int changeNum = c - 'a' + 1;
+
+        // 변환값 * 31^i
+        ret += changeNum * pow(31, i);
+    }
+
+    cout << ret << "\n";
+
+    return 0;
+}

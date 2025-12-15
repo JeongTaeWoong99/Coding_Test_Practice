@@ -160,6 +160,8 @@
     <None Include="백준\1_Bronze\B1_2309_일곱난쟁이\Answer(정답_Permutation).cpp.txt" />
     <None Include="백준\1_Bronze\B1_2309_일곱난쟁이\Answer(성공_Recursive).cpp.txt" />
     <None Include="백준\1_Bronze\B2_10808_알파벳개수\Answer(성공).cpp.txt" />
+    <None Include="백준\1_Bronze\B2_15829_Hashing\Answer(성공_50점).cpp.txt" />
+    <None Include="백준\1_Bronze\B2_15829_Hashing\Answer(정답_100점).cpp.txt" />
     <None Include="백준\1_Bronze\B2_1978_소수찾기\Answer(정답).cpp.txt" />
     <None Include="백준\1_Bronze\B2_2231_분해합\Answer(성공).cpp.txt" />
     <None Include="백준\1_Bronze\B2_2231_분해합\Answer(정답).cpp.txt" />
@@ -279,6 +281,7 @@
     <None Include="백준\1_Bronze\B1_1259_팰린드롬수\README.md" />
     <None Include="백준\1_Bronze\B1_2309_일곱난쟁이\README.md" />
     <None Include="백준\1_Bronze\B2_10808_알파벳개수\README.md" />
+    <None Include="백준\1_Bronze\B2_15829_Hashing\README.md" />
     <None Include="백준\1_Bronze\B2_1978_소수찾기\README.md" />
     <None Include="백준\1_Bronze\B2_2231_분해합\README.md" />
     <None Include="백준\1_Bronze\B2_2292_벌집\README.md" />

@@ -175,6 +175,7 @@
     <None Include="백준\1_Bronze\B3_10988_팰린드롬인지확인하기\Answer(성공).cpp.txt" />
     <None Include="백준\1_Bronze\B3_2442_별찍기5\Answer(성공).cpp.txt" />
     <None Include="백준\1_Bronze\B4_1159_농구경기\Answer(성공).cpp.txt" />
+    <None Include="백준\1_Bronze\B1_1546_평균\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_1189_컴백홈\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_1325_효율적인해킹\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_1629_곱셈\Answer(정답).cpp.txt" />
@@ -293,6 +294,7 @@
     <None Include="백준\1_Bronze\B3_10988_팰린드롬인지확인하기\README.md" />
     <None Include="백준\1_Bronze\B3_2442_별찍기5\README.md" />
     <None Include="백준\1_Bronze\B4_1159_농구경기\README.md" />
+    <None Include="백준\1_Bronze\B1_1546_평균\README.md" />
     <None Include="백준\2_Silver\S1_1189_컴백홈\README.md" />
     <None Include="백준\2_Silver\S1_1325_효율적인해킹\README.md" />
     <None Include="백준\2_Silver\S1_1629_곱셈\README.md" />

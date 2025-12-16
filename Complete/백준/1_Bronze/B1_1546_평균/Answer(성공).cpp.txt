@@ -1,0 +1,32 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int    n;             // 과목 개수
+double sum = 0;       // 변환된 점수의 합
+double mx = -1;       // 최대 점수
+double arr[1004];     // 점수 배열
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    // 입력 + 최댓값 찾기
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> arr[i];
+        mx = max(mx, arr[i]);
+    }
+
+    // 변환된 점수의 합 계산
+    for (int i = 0; i < n; ++i)
+    {
+        sum += arr[i] / mx * 100;
+    }
+
+    // 새로운 평균 출력
+    cout << sum / (double)n << "\n";
+
+    return 0;
+}

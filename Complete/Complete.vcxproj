@@ -227,6 +227,7 @@
     <None Include="백준\3_Gold\G1_1561_놀이공원\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G1_1700_멀티탭스케줄링\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G1_12100_2048(Easy)\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G1_2098_외판원순회\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G2_1202_보석도둑\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_16434_드래곤앤던전\Answer(성공_이분탐색).cpp.txt" />
     <None Include="백준\3_Gold\G4_16434_드래곤앤던전\Answer(정답_이분탐색).cpp.txt" />
@@ -341,6 +342,7 @@
     <None Include="백준\3_Gold\G1_1561_놀이공원\README.md" />
     <None Include="백준\3_Gold\G1_1700_멀티탭스케줄링\README.md" />
     <None Include="백준\3_Gold\G1_12100_2048(Easy)\README.md" />
+    <None Include="백준\3_Gold\G1_2098_외판원순회\README.md" />
     <None Include="백준\3_Gold\G2_1202_보석도둑\README.md" />
     <None Include="백준\3_Gold\G4_16434_드래곤앤던전\README.md" />
     <None Include="백준\3_Gold\G2_17825_주사위윷놀이\README.md" />

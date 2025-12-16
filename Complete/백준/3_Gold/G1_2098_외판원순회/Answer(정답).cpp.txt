@@ -13,7 +13,7 @@ int dist[MAX_N][MAX_N];       // dist[i][j] : i번 도시에서 j번 도시로 �
 // here : 현재 위치한 도시, visited : 방문한 도시들의 비트마스크
 int TSP(int here, int visited)
 {
-    // 모든 도시를 방문했다면
+    // 모든 도시를 방문했다면(== 연산자)
     if(visited == (1 << n) - 1)
     {
         // 현재 도시에서 시작 도시(0번)로 돌아가는 비용 반환
@@ -30,7 +30,7 @@ int TSP(int here, int visited)
     ret = INF;
     for(int i = 0; i < n; i++)
     {
-        if(visited & (1 << i)) continue;    // 이미 방문한 도시는 건너뛰기
+        if(visited & (1 << i)) continue;    // 이미 방문한 도시는 건너뛰기(& 연산자)
 
         if(dist[here][i] == 0) continue;    // 갈 수 없는 도시는 건너뛰기
 

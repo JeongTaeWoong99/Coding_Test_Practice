@@ -1,0 +1,81 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 상 우 하 좌(시계방향)
+const int dy[4] = {-1, 0, 1,  0};
+const int dx[4] = { 0, 1, 0, -1};
+
+int  n, m;
+int  ar[54][54];
+bool vi[54][54];  // 현재 경로에서 방문 중인지 체크 (사이클 감지용) => true or false => 방문 미방문 왔다 갔다
+int  dp[54][54];  // 메모이제이션 : 해당 위치에서 최대 이동 횟수 (-1 : 미방문 / 1 ~ 숫자값 : 방문) => 기록값 사용
+
+// DFS + 메모이제이션
+int DFS(int y, int x)
+{
+    // 범위 초과
+    if (y < 0 || y >= n || x < 0 || x >= m) return 0;
+
+    // 구멍이라 못감
+    if (ar[y][x] == -1) return 0;
+
+    // 사이클 감지 : 현재 경로에서 이미 방문 중!!! → -1
+    // 빽트레킹으로 해제 or 새로 방문이 아닌데, 방문 중 이다? => 그러면, 사이클이 생긴 것!!!
+    if (vi[y][x]) return -1;
+
+    // 이미 계산됨 => 기록된 메모이제이션 값 리턴
+    // 방문이랑 다르다! 방문은 해체 <=> 체크가 바꾸지만
+    // dp이동 값은 다시 계산할 필요 없이, 기록된 값 사용하면 됨.
+    if (dp[y][x] != -1) return dp[y][x];
+
+    // 현재 위치 방문 중 표시
+    vi[y][x] = true;
+
+    int curVal = ar[y][x];
+    int maxMov = 0;
+
+    for (int i = 0; i < 4; i++)
+    {
+        // 다음 위치 = 현재 위치 + (방향값 x 자리값)
+        int newY = y + dy[i] * curVal;
+        int newX = x + dx[i] * curVal;
+
+        int result = DFS(newY, newX);
+
+        // 사이클 발견 → 즉시 -1 반환(종료)
+        if (result == -1) return -1;
+
+        maxMov = max(maxMov, result);
+    }
+
+    // 방문 중 표시 해제
+    vi[y][x] = false;
+
+    // 현재 위치 포함 (+1)
+    return dp[y][x] = maxMov + 1;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m;
+
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < m; ++j)
+        {
+            char temp;
+            cin >> temp;
+            ar[i][j] = temp == 'H' ? -1 : temp - '0';
+        }
+    }
+
+    // dp 배열 초기화 (-1 : 미방문)
+    memset(dp, -1, sizeof(dp));
+
+    // 결과 출력 : (0, 0)에서 시작
+    cout << DFS(0, 0);
+
+    return 0;
+}

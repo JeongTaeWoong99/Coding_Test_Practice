@@ -225,6 +225,7 @@
     <None Include="백준\2_Silver\S5_10709_기상캐스터\Answer.cpp.txt" />
     <None Include="백준\2_Silver\S5_14469_소가길을건너간이유3\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G1_1016_제곱ㄴㄴ수\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G2_1103_게임\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G1_1285_동전뒤집기\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G1_1561_놀이공원\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G1_1700_멀티탭스케줄링\Answer(정답).cpp.txt" />
@@ -341,6 +342,7 @@
     <None Include="백준\2_Silver\S5_10709_기상캐스터\README.md" />
     <None Include="백준\2_Silver\S5_14469_소가길을건너간이유3\README.md" />
     <None Include="백준\3_Gold\G1_1016_제곱ㄴㄴ수\README.md" />
+    <None Include="백준\3_Gold\G2_1103_게임\README.md" />
     <None Include="백준\3_Gold\G1_1285_동전뒤집기\README.md" />
     <None Include="백준\3_Gold\G1_1561_놀이공원\README.md" />
     <None Include="백준\3_Gold\G1_1700_멀티탭스케줄링\README.md" />

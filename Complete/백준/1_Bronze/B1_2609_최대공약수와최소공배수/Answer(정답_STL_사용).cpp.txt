@@ -1,0 +1,16 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int a, b;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+    
+    cin >> a >> b;
+
+    cout << gcd(a, b) << "\n";  // 최대공약수 (GCD)
+    cout << lcm(a, b) << "\n";  // 최소공배수 (LCM)
+
+    return 0;
+}

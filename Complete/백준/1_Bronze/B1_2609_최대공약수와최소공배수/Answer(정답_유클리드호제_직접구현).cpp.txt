@@ -1,0 +1,32 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int a, b;
+
+// 유클리드 호제법으로 '최대공약수' 구하기
+int GCD(int x, int y)
+{
+    // 최대 공약수를 찾으면, 단순 리턴을 통해, 값을 찾음(더해 지거나, 빼 지는게 아님!)
+    if(y == 0) 
+        return x;
+    
+    return GCD(y, x % y);
+}
+
+// '최소공배수' = (a * b) / 최대공약수
+int LCM(int x, int y)
+{
+    return (x * y) / GCD(x, y);
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> a >> b;
+
+    cout << GCD(a, b) << "\n";
+    cout << LCM(a, b) << "\n";
+
+    return 0;
+}

@@ -69,7 +69,8 @@
       "Bash(\"Complete\\백준\\1_Bronze\\B2_15829_Hashing\\Answer(성공_50점).cpp.txt\")",
       "Bash(\"Complete\\백준\\1_Bronze\\B2_15829_Hashing\\Answer(정답_100점).cpp.txt\")",
       "Bash(\"Complete\\백준\\1_Bronze\\B1_2609_최대공약수와최소공배수\\Answer(정답_STL_사용).cpp.txt\")",
-      "Bash(\"Complete\\백준\\1_Bronze\\B1_2609_최대공약수와최소공배수\\Answer(정답_유클리드호제_직접구현).cpp.txt\")"
+      "Bash(\"Complete\\백준\\1_Bronze\\B1_2609_최대공약수와최소공배수\\Answer(정답_유클리드호제_직접구현).cpp.txt\")",
+      "Bash(./test.exe:*)"
     ]
   },
   "outputStyle": "korean-terminal"

@@ -257,6 +257,8 @@
     <None Include="백준\3_Gold\G4_16234_인구이동\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G4_17406_배열돌리기4\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_17144_미세먼지안녕\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G4_2240_자두나무\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G4_2240_자두나무\Answer(토글 연산자 미사용 버전).cpp.txt" />
     <None Include="백준\3_Gold\G4_2636_치즈\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G4_3190_뱀\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_4179_불\Answer(성공).cpp.txt" />
@@ -374,6 +376,7 @@
     <None Include="백준\3_Gold\G4_17406_배열돌리기4\README.md" />
     <None Include="백준\3_Gold\G4_1987_알파벳\README.md" />
     <None Include="백준\3_Gold\G4_19942_다이어트\README.md" />
+    <None Include="백준\3_Gold\G4_2240_자두나무\README.md" />
     <None Include="백준\3_Gold\G4_2636_치즈\README.md" />
     <None Include="백준\3_Gold\G4_3190_뱀\README.md" />
     <None Include="백준\3_Gold\G4_4179_불\README.md" />

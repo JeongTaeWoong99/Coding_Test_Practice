@@ -1,0 +1,79 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+const long long MOD = 1000000007;  // 10^9 + 7 (소수)
+int n, m;
+
+// 거듭제곱 (분할 정복): O(log exp)
+long long Power(long long base, long long exp, long long mod)
+{
+    long long result = 1;
+    base %= mod;
+
+    while (exp > 0)
+    {
+        if (exp % 2 == 1)  // 홀수면 현재 base 곱하기
+            result = (result * base) % mod;
+
+        base = (base * base) % mod;  // base를 제곱
+        exp /= 2;                    // 지수를 절반으로
+    }
+
+    return result;
+}
+
+// 페르마의 소정리를 이용한 모듈러 역원 : a^(-1) ≡ a^(p-2) (mod p)
+long long ModInverse(long long a, long long mod)
+{
+    return Power(a, mod - 2, mod);
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+    
+    cin >> n >> m;
+
+    // 분자: n × (n-1) × ... × (n-m+1) mod MOD
+    long long numerator = 1;
+    for (int i = n; i > n - m; --i)
+        numerator = (numerator * i) % MOD;
+
+    // 분모: m! mod MOD
+    long long denominator = 1;
+    for (int i = m; i > 1; --i)
+        denominator = (denominator * i) % MOD;
+
+    // 나눗셈 → 역원 곱셈 : (분자 / 분모) mod MOD = 분자 × 분모^(-1) mod MOD
+    long long result = (numerator * ModInverse(denominator, MOD)) % MOD;
+
+    cout << result;
+
+    return 0;
+}
+
+// ============================================================
+// 📌 핵심 개념: 모듈러 연산에서의 나눗셈
+// ============================================================
+//
+// ❌ (a / b) % MOD  →  이렇게 계산하면 안 됨!
+// ✅ (a × b^(-1)) % MOD  →  역원을 구해서 곱셈으로 변환
+//
+// 페르마의 소정리 (Fermat's Little Theorem):
+//   - p가 소수이고 gcd(a, p) = 1이면
+//   - a^(p-1) ≡ 1 (mod p)
+//   - 양변을 a로 나누면: a^(p-2) ≡ a^(-1) (mod p)
+//
+// 따라서: b^(-1) ≡ b^(MOD-2) (mod MOD)
+//
+// ============================================================
+// 📌 시간 복잡도
+// ============================================================
+//
+// Power 함수: O(log MOD)
+// ModInverse: O(log MOD)
+// 분자 계산: O(m)
+// 분모 계산: O(m)
+// 전체: O(m + log MOD)
+//
+// ============================================================

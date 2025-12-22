@@ -155,6 +155,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="백준\1_Bronze\B1_10989_수정렬하기3\Answer(정답).cpp.txt" />
+    <None Include="백준\1_Bronze\B1_11050_이항계수1\Answer(단순 for + 모듈러).cpp.txt" />
+    <None Include="백준\1_Bronze\B1_11050_이항계수1\Answer(단순 for문).cpp.txt" />
+    <None Include="백준\1_Bronze\B1_11050_이항계수1\Answer(재귀).cpp.txt" />
     <None Include="백준\1_Bronze\B1_11655_ROT13\Answer(정답).cpp.txt" />
     <None Include="백준\1_Bronze\B1_1259_팰린드롬수\Answer(정답).cpp.txt" />
     <None Include="백준\1_Bronze\B1_2309_일곱난쟁이\Answer(정답_Combination).cpp.txt" />
@@ -287,6 +290,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="백준\1_Bronze\B1_10989_수정렬하기3\README.md" />
+    <None Include="백준\1_Bronze\B1_11050_이항계수1\README.md" />
     <None Include="백준\1_Bronze\B1_11655_ROT13\README.md" />
     <None Include="백준\1_Bronze\B1_1259_팰린드롬수\README.md" />
     <None Include="백준\1_Bronze\B1_2309_일곱난쟁이\README.md" />

@@ -1,0 +1,54 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// ISBN 13자리 검증
+// 가중치 : 1, 3, 1, 3, 1, 3, ... (인덱스 짝수=1, 홀수=3)
+// m = 10 - (a+3b+c+3d+e+3f+g+3h+i+3j+k+3l) mod 10
+
+int sum;            // 1~12번째 자리들의 가중치 합 (* 자리 제외)
+int weight;         // 훼손된 자리의 가중치
+int checkDigit;     // 13번째 자리 (체크기호 m)
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    string isbn;
+    cin >> isbn;
+
+    // 13번째 자리 (체크기호) 저장
+    checkDigit = isbn[12] - '0';
+
+    // 1단계 : 0~11번째 자리들의 가중치 합 계산 (*제외)
+    for (int i = 0; i < 12; i++)
+    {
+        if (isbn[i] == '*')
+        {
+            weight = (i % 2 == 0) ? 1 : 3;  // 가중치 저장
+        }
+        else
+        {
+            int digit = isbn[i] - '0';          // int값
+            int w     = (i % 2 == 0) ? 1 : 3;   // 가중치
+            
+            sum += digit * w; // sum 더해주기
+        }
+    }
+
+    // 2단계 : 0 ~ 9를 대입하여 체크기호 공식 확인
+    // m = 10 - (a+3b+c+3d+e+3f+g+3h+i+3j+k+3l) mod 10
+    for (int candidate = 0; candidate <= 9; candidate++)
+    {
+        int total = sum + candidate * weight;  // 1~12번째 자리 전체 합
+        int m     = (10 - total % 10) % 10;    // 계산된 체크기호
+
+        // 실제 13번째 자리와 일치하는지 확인
+        if (m == checkDigit)
+        {
+            cout << candidate << "\n";
+            return 0;
+        }
+    }
+
+    return 0;
+}

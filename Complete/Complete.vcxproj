@@ -159,6 +159,7 @@
     <None Include="백준\1_Bronze\B1_11050_이항계수1\Answer(단순 for문).cpp.txt" />
     <None Include="백준\1_Bronze\B1_11050_이항계수1\Answer(재귀).cpp.txt" />
     <None Include="백준\1_Bronze\B1_11655_ROT13\Answer(정답).cpp.txt" />
+    <None Include="백준\1_Bronze\B1_14626_ISBN\Answer(성공).cpp.txt" />
     <None Include="백준\1_Bronze\B1_1259_팰린드롬수\Answer(정답).cpp.txt" />
     <None Include="백준\1_Bronze\B1_2309_일곱난쟁이\Answer(정답_Combination).cpp.txt" />
     <None Include="백준\1_Bronze\B1_2309_일곱난쟁이\Answer(정답_Permutation).cpp.txt" />
@@ -292,6 +293,7 @@
     <None Include="백준\1_Bronze\B1_10989_수정렬하기3\README.md" />
     <None Include="백준\1_Bronze\B1_11050_이항계수1\README.md" />
     <None Include="백준\1_Bronze\B1_11655_ROT13\README.md" />
+    <None Include="백준\1_Bronze\B1_14626_ISBN\README.md" />
     <None Include="백준\1_Bronze\B1_1259_팰린드롬수\README.md" />
     <None Include="백준\1_Bronze\B1_2309_일곱난쟁이\README.md" />
     <None Include="백준\1_Bronze\B1_2609_최대공약수와최소공배수\README.md" />

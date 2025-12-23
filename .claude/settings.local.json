@@ -72,7 +72,10 @@
       "Bash(\"Complete\\백준\\1_Bronze\\B1_2609_최대공약수와최소공배수\\Answer(정답_유클리드호제_직접구현).cpp.txt\")",
       "Bash(./test.exe:*)",
       "Bash(claude config set:*)",
-      "Bash(/output-style default)"
+      "Bash(/output-style default)",
+      "WebFetch(domain:www.reddit.com)",
+      "Bash(pwsh:*)",
+      "Bash(claude update)"
     ]
   },
   "outputStyle": "korean-terminal"

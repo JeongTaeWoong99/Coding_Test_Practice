@@ -1,0 +1,50 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+int n;          // n : 약의 개수
+ll  dp[31][31]; // dp[w][h] : 전체 약 w개, 반조각 h개 남았을 때 가능한 경우의 수
+                // n이 30일 때, 3,814,986,502,092,304이기 때문에 long long 사용 필수!
+
+// w : 남은 전체 약 개수, h : 남은 반조각 개수
+ll Go(int w, int h)
+{
+    // 기저 사례 : 모든 약을 다 먹음 (유효한 문자열 1개 완성)
+    if(w == 0 && h == 0)
+        return 1;
+    
+    // 메모이제이션 : 이미 계산된 값이 있으면 반환
+    // DP로 중복되는 부분 재귀 방지(메모이제이션)
+    ll &ret = dp[w][h];
+    if(ret) return ret;
+
+    // ret에 좌우 Go(w - 1, h + 1) + Go(w, h - 1)를 += 해 줌으로써, DP에 해당 자리가 완성됨
+    // W 선택 : 전체 약을 꺼내서 반 먹고 반은 병에 (w-1, h+1)
+    if(w > 0) ret += Go(w - 1, h + 1);
+    // H 선택 : 반조각을 꺼내서 먹음 (w, h-1)
+    if(h > 0) ret += Go(w    , h - 1);
+
+    // 좌우 탐색 완료된 DP 해당 자리값 리턴
+    return ret;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    while(true)
+    {
+        cin >> n;
+
+        // 종료 조건
+        if(n == 0)
+            break;
+
+        // 결과 출력 (DP 배열 초기화 불필요 - 이전 계산 재사용으로 최적화)
+        cout << Go(n, 0) << "
+";
+    }
+
+    return 0;
+}

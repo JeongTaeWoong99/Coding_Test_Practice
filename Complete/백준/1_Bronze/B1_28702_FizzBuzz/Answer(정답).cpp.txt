@@ -1,0 +1,30 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+string s;
+int    findNum;
+
+int main()
+{
+    // 3번 입력
+    for (int i = 0; i < 3; ++i)
+    {
+        cin >> s;
+
+        // 첫 문자가 숫자면 전체가 숫자
+        // 4번째 자리 값 구하기(3 - i를 통해, 4번째 자리 값 계산)
+        if (isdigit(s[0]))
+            findNum = stoi(s) + 3 - i;
+    }
+
+    // FizzBuzz => 15의 배수
+    if      (findNum % 3 == 0 && findNum % 5 == 0) cout << "FizzBuzz";
+    // Fizz     => 3의 배수
+    else if (findNum % 3 == 0 && findNum % 5 != 0) cout << "Fizz";
+    // Buzz     => 5의 배수
+    else if (findNum % 3 != 0 && findNum % 5 == 0) cout << "Buzz";
+    // 숫자      => 3 or 5의 배수 아님
+    else                                           cout << findNum;
+
+    return 0;
+}

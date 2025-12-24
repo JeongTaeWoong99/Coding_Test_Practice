@@ -167,6 +167,7 @@
     <None Include="백준\1_Bronze\B1_2609_최대공약수와최소공배수\Answer(정답_STL_사용).cpp.txt" />
     <None Include="백준\1_Bronze\B1_2609_최대공약수와최소공배수\Answer(정답_유클리드호제_직접구현).cpp.txt" />
     <None Include="백준\1_Bronze\B1_2775_부녀회장이될테야\Answer(성공).cpp.txt" />
+    <None Include="백준\1_Bronze\B1_28702_FizzBuzz\Answer(정답).cpp.txt" />
     <None Include="백준\1_Bronze\B2_10808_알파벳개수\Answer(성공).cpp.txt" />
     <None Include="백준\1_Bronze\B2_15829_Hashing\Answer(성공_50점).cpp.txt" />
     <None Include="백준\1_Bronze\B2_15829_Hashing\Answer(정답_100점).cpp.txt" />
@@ -298,6 +299,7 @@
     <None Include="백준\1_Bronze\B1_2309_일곱난쟁이\README.md" />
     <None Include="백준\1_Bronze\B1_2609_최대공약수와최소공배수\README.md" />
     <None Include="백준\1_Bronze\B1_2775_부녀회장이될테야\README.md" />
+    <None Include="백준\1_Bronze\B1_28702_FizzBuzz\README.md" />
     <None Include="백준\1_Bronze\B2_10808_알파벳개수\README.md" />
     <None Include="백준\1_Bronze\B2_15829_Hashing\README.md" />
     <None Include="백준\1_Bronze\B2_1978_소수찾기\README.md" />

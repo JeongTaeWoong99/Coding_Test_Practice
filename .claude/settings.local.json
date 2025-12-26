@@ -75,7 +75,9 @@
       "Bash(/output-style default)",
       "WebFetch(domain:www.reddit.com)",
       "Bash(pwsh:*)",
-      "Bash(claude update)"
+      "Bash(claude update)",
+      "Bash(\"Complete\\\\백준\\\\2_Silver\\\\S5_1436_영화감독숌\\\\Answer\\(성공_메서드 사용\\).cpp.txt\")",
+      "Bash(\"Complete\\\\백준\\\\2_Silver\\\\S5_1436_영화감독숌\\\\Answer\\(정답_수학적 계산\\).cpp.txt\")"
     ]
   },
   "outputStyle": "korean-terminal"

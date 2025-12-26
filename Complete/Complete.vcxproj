@@ -228,6 +228,8 @@
     <None Include="백준\2_Silver\S4_4949_균형잡힌세상\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_9012_괄호\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S5_1181_단어정렬\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S5_1436_영화감독숌\Answer(성공_메서드 사용).cpp.txt" />
+    <None Include="백준\2_Silver\S5_1436_영화감독숌\Answer(정답_수학적 계산).cpp.txt" />
     <None Include="백준\2_Silver\S5_2828_사과담기게임\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S5_4659_비밀번호발음하기\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S5_10709_기상캐스터\Answer.cpp.txt" />
@@ -354,6 +356,7 @@
     <None Include="백준\2_Silver\S4_4949_균형잡힌세상\README.md" />
     <None Include="백준\2_Silver\S4_9012_괄호\README.md" />
     <None Include="백준\2_Silver\S5_1181_단어정렬\README.md" />
+    <None Include="백준\2_Silver\S5_1436_영화감독숌\README.md" />
     <None Include="백준\2_Silver\S5_2828_사과담기게임\README.md" />
     <None Include="백준\2_Silver\S5_4659_비밀번호발음하기\README.md" />
     <None Include="백준\2_Silver\S5_10709_기상캐스터\README.md" />

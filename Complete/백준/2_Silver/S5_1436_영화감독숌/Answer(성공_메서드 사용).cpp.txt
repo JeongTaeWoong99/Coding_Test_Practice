@@ -1,0 +1,35 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+int posNum;
+int curNum = 666;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    while (true)
+    {
+        // curNum을 스트링으로 바꾼 후, 666이 들어가 있는지 확인
+        if (to_string(curNum).find("666") != string::npos)
+        {
+            // 몇번째로 나오는지 체크 증가
+            posNum++;
+        }
+
+        // 찾음
+        if (posNum == n)
+        {
+            cout << curNum << "\n";
+            break;
+        }
+
+        // 다음 숫자 찾기
+        curNum++;
+    }
+
+    return 0;
+}

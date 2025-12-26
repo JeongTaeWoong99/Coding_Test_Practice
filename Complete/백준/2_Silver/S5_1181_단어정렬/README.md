@@ -44,6 +44,7 @@ bool cmp(string a, string b)
 {
     if(a.length() != b.length())
         return a.length() < b.length();
+    
     return a < b;
 }
 ```
@@ -71,13 +72,13 @@ bool cmp(string a, string b)
 
 ```cpp
 int            n;
+string         s;
 vector<string> words;
 
 // 입력 처리
 cin >> n;
 for(int i = 0; i < n; i++)
 {
-    string s;
     cin >> s;
     words.push_back(s);
 }
@@ -175,55 +176,6 @@ for(int i = 0; i < words.size(); i++)
 ❌ 사전 순 우선: ["ab", "abc", "z"]  (길이 무시됨)
 ✅ 길이 우선: ["z", "ab", "abc"]     (길이 1 → 2 → 3)
 ```
-
-### 3️⃣ 중복 제거 시 첫 번째 원소 체크
-
-```cpp
-❌ for(int i = 0; i < words.size(); i++)
-{
-    if(words[i] == words[i-1]) continue;  // i=0일 때 범위 초과!
-    cout << words[i] << "\n";
-}
-
-✅ for(int i = 0; i < words.size(); i++)
-{
-    if(i > 0 && words[i] == words[i-1]) continue;  // i > 0 조건 필수
-    cout << words[i] << "\n";
-}
-```
-
-**이유**:
-- `i=0`일 때 `words[i-1]` = `words[-1]`은 범위 초과 (undefined behavior)
-- `i > 0` 조건으로 첫 번째 원소는 무조건 출력
-
-### 4️⃣ unique() 함수 사용 시 주의
-
-```cpp
-❌ sort(words.begin(), words.end(), cmp);
-   unique(words.begin(), words.end());  // 반환값 무시!
-   for(auto w : words)
-       cout << w << "\n";  // 중복이 여전히 출력됨
-
-✅ 방법 1: erase-remove idiom
-   sort(words.begin(), words.end(), cmp);
-   words.erase(unique(words.begin(), words.end()), words.end());
-   for(auto w : words)
-       cout << w << "\n";
-
-✅ 방법 2: 출력하면서 중복 체크 (더 간단)
-   sort(words.begin(), words.end(), cmp);
-   for(int i = 0; i < words.size(); i++)
-   {
-       if(i > 0 && words[i] == words[i-1]) continue;
-       cout << words[i] << "\n";
-   }
-```
-
-**이유**:
-- `unique()` 함수는 중복을 제거하되 **실제로 vector 크기를 줄이지 않음**
-- 중복이 아닌 원소들을 앞쪽으로 모은 후, **새로운 끝 위치를 반환**
-- `erase()`와 함께 사용해야 실제 제거됨
-- 본 문제에서는 **방법 2**가 더 간단하고 직관적
 
 ---
 

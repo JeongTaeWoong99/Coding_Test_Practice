@@ -2,13 +2,17 @@
 using namespace std;
 
 int            n;
+string         s;
 vector<string> words;
 
 // 비교 함수 : 길이 짧은 순 → 사전 순
 bool cmp(string a, string b)
 {
+    // 길이가 다를 때, 길이로 비교
     if(a.length() != b.length())
         return a.length() < b.length();
+    
+    // 길이가 같을 때, 스트링 내부 char 값으로 비교
     return a < b;
 }
 
@@ -20,7 +24,6 @@ int main()
     cin >> n;
     for(int i = 0; i < n; i++)
     {
-        string s;
         cin >> s;
         words.push_back(s);
     }

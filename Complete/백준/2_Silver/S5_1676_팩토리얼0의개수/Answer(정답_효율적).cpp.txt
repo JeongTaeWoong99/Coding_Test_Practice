@@ -1,0 +1,26 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, cnt, temp;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    for (int i = 1; i <= n; ++i)
+    {
+        temp = i;
+
+        while (temp % 5 == 0)
+        {
+            cnt++;
+            temp /= 5;
+        }
+    }
+
+    cout << cnt;
+
+    return 0;
+}

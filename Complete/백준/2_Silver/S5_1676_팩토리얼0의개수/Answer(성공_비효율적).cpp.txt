@@ -1,0 +1,59 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int  n, temp, cnt;
+int  arr[11];       // 0 제외 1 ~ 10 갯수 체크
+bool isNotPossible;
+
+int main()
+{
+    cin >> n;
+
+    for (int i = 1; i <= n; ++i)
+    {
+        // 사용할 숫자
+        temp = i;
+
+        // 1이 될 때 까지 체크
+        while (true)
+        {
+            // 더이상 나누기 불가
+            isNotPossible = true;
+
+            // 10로 나누어 떨어짐
+            if (temp % 10 == 0)
+            {
+                arr[10]++;      // 갯수 카운트
+                temp /= 10;     // 값 감소
+                isNotPossible = false;
+            }
+            // 5로 나누어 떨어짐
+            else if (temp % 5 == 0)
+            {
+                arr[5]++;
+                temp /= 5;
+                isNotPossible = false;
+            }
+            // 2로 나누어 떨어짐
+            else if (temp % 2 == 0)
+            {
+                arr[2]++;
+                temp /= 2;
+                isNotPossible = false;
+            }
+
+            // 더이상 나누기 불가
+            if (isNotPossible)
+                break;
+        }
+    }
+
+    // 만들 수 있는 10 갯수 구하기
+    cnt += arr[10];
+    cnt += min(arr[2],arr[5]);
+
+    // 출력
+    cout << cnt;
+
+    return 0;
+}

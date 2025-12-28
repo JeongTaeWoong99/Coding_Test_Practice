@@ -428,7 +428,7 @@
   <ItemGroup>
     <Content Include="백준\3_Gold\G4_16434_드래곤앤던전\Answer(정답_그리디).cpp.txt" />
     <Content Include="백준\3_Gold\G4_2240_자두나무\img.png" />
-    <Content Include="백준\3_Gold\G5_12852_1로만들기2\img.png" />
+    <Content Include="백준\3_Gold\G5_12852_1로만들기2\IMAG.jpg" />
     <Content Include="백준\3_Gold\G5_4811_알약\img.png" />
     <Content Include="연습\피보나치 수열\피보나치 수열(DP_메모이제이션_바텁업).txt" />
     <Content Include="연습\피보나치 수열\피보나치 수열(DP_메모이제이션_탑다운_재귀).txt" />

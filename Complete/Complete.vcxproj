@@ -279,6 +279,8 @@
     <None Include="백준\3_Gold\G4_1987_알파벳\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_9935_문자열폭발\Answer(정답_스택).cpp.txt" />
     <None Include="백준\3_Gold\G5_1068_트리\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G5_12852_1로만들기2\Answer(정답_바텀업).cpp.txt" />
+    <None Include="백준\3_Gold\G5_12852_1로만들기2\Answer(정답_탑다운).cpp.txt" />
     <None Include="백준\3_Gold\G5_1911_흙길보수하기\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_15662_톱니바퀴2\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G5_15686_치킨배달\Answer(정답).cpp.txt" />
@@ -401,6 +403,7 @@
     <None Include="백준\3_Gold\G4_4179_불\README.md" />
     <None Include="백준\3_Gold\G4_9935_문자열폭발\README.md" />
     <None Include="백준\3_Gold\G5_1068_트리\README.md" />
+    <None Include="백준\3_Gold\G5_12852_1로만들기2\README.md" />
     <None Include="백준\3_Gold\G5_1911_흙길보수하기\README.md" />
     <None Include="백준\3_Gold\G5_15662_톱니바퀴2\README.md" />
     <None Include="백준\3_Gold\G5_15686_치킨배달\README.md" />
@@ -425,6 +428,7 @@
   <ItemGroup>
     <Content Include="백준\3_Gold\G4_16434_드래곤앤던전\Answer(정답_그리디).cpp.txt" />
     <Content Include="백준\3_Gold\G4_2240_자두나무\img.png" />
+    <Content Include="백준\3_Gold\G5_12852_1로만들기2\img.png" />
     <Content Include="백준\3_Gold\G5_4811_알약\img.png" />
     <Content Include="연습\피보나치 수열\피보나치 수열(DP_메모이제이션_바텁업).txt" />
     <Content Include="연습\피보나치 수열\피보나치 수열(DP_메모이제이션_탑다운_재귀).txt" />

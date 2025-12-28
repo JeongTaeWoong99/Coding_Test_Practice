@@ -1,0 +1,67 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 987654321;
+
+int n;            // 입력 값 (1 ~ 1000000)
+int dp[1000004];  // dp[i] : i를 1로 만드는 최소 연산 횟수 최소값 저장
+
+// here : 현재 숫자 (역추적하며 경로 출력)
+void PrintPath(int here)
+{
+    // 추적 종료
+    if (here == 0) return;
+
+    // 현재 자리 출력
+    cout << here << " ";
+
+    // 이미 DP에 값들이 모두 기록되어 있음.
+    // 이동 가능하고, dp[here]값과 이동 가능 자리(/3 or /2 or -1) + 1 한 값이 같으면, 해당 경로가 맞음.
+
+    // 3으로 나눈 경로
+    if      (here % 3 == 0 && dp[here] == (dp[here / 3] + 1)) PrintPath(here / 3);
+    // 2로 나눈 경로
+    else if (here % 2 == 0 && dp[here] == (dp[here / 2] + 1)) PrintPath(here / 2);
+    // 1을 뺀 경로
+    else if (here - 1 >= 0 && dp[here] == (dp[here - 1] + 1)) PrintPath(here - 1);
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> n;
+
+    // 초기화
+    fill_n(dp, 1000004, INF);
+    dp[1] = 0;  // 1을 1로 만드는 연산 횟수는 0
+
+    // DP : Bottom-up 방식으로 1부터 n까지 계산
+    for (int i = 1; i <= n; i++)
+    {
+        // 아래에서 위로 올라가기 때문에
+        // - 값이 갱신 안 됨 → 갱신된 이전 자리 + 1 vs INF 현재 자리 → 이전 자리 + 1 선택
+        // - 둘 다 갱신됨   → 갱신된 이전 자리 + 1 vs 갱신된 현재 자리 → 더 작은 값 선택
+        // ※ 모든 경우를 확인해야 하기 때문에 3가지 경우 모두 체크
+
+        // 3으로 나누기 (가능한 경우)
+        if (i % 3 == 0)
+            dp[i] = min(dp[i / 3] + 1, dp[i]);
+
+        // 2로 나누기 (가능한 경우)
+        if (i % 2 == 0)
+            dp[i] = min(dp[i / 2] + 1, dp[i]);
+
+        // 1 빼기 (무조건 가능)
+        dp[i] = min(dp[i - 1] + 1, dp[i]);
+    }
+
+    // n까지의 최소값 출력
+    cout << dp[n] << "\n";
+
+    // 경로 출력
+    PrintPath(n);
+
+    return 0;
+}

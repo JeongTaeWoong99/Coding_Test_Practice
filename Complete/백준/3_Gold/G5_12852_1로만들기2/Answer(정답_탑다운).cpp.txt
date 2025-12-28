@@ -1,0 +1,78 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 987654321;
+
+int n;            // 입력 값 (1 ~ 1000000)
+int dp[1000004];  // dp[i] : i를 1로 만드는 최소 연산 횟수
+
+// here : 현재 숫자를 1로 만드는 최소 연산 횟수를 반환 (Top-down)
+int Go(int here)
+{
+    // Base case : 1에 도달하면 연산 횟수 0 (dp[1]에도 저장)
+    if (here == 1) return dp[1] = 0;
+
+    // 메모이제이션 : 이미 계산된 값이 있으면 반환
+    int& ret = dp[here];
+    if (ret != INF) return ret;
+
+    // 재귀 : 3가지 연산 중 최소값 선택
+    // 위에서 아래로 내려가기 때문에
+    // - Go(here/3), Go(here/2), Go(here-1) 재귀 호출로 하위 문제 먼저 해결
+    // - 반환된 값에 +1 하여 현재 위치의 최소 연산 횟수 계산
+    // ※ 모든 경우를 확인해야 하기 때문에 3가지 경우 모두 체크
+
+    // 3으로 나누기 (가능한 경우)
+    if (here % 3 == 0)
+        ret = min(ret, Go(here / 3) + 1);
+
+    // 2로 나누기 (가능한 경우)
+    if (here % 2 == 0)
+        ret = min(ret, Go(here / 2) + 1);
+
+    // 1 빼기 (무조건 가능)
+    ret = min(ret, Go(here - 1) + 1);
+
+    // 3가지 경우에서 가장 작은 값 선택 후, 리턴
+    return ret;
+}
+
+// here : 현재 숫자 (역추적하며 경로 출력)
+void PrintPath(int here)
+{
+    // 추적 종료
+    if (here == 0) return;
+
+    // 현재 자리 출력
+    cout << here << " ";
+
+    // 이미 DP에 값들이 모두 기록되어 있음.
+    // 이동 가능하고, dp[here]값과 이동 가능 자리(/3 or /2 or -1) + 1 한 값이 같으면, 해당 경로가 맞음.
+
+    // 3으로 나눈 경로
+    if      (here % 3 == 0 && dp[here] == (dp[here / 3] + 1)) PrintPath(here / 3);
+    // 2로 나눈 경로
+    else if (here % 2 == 0 && dp[here] == (dp[here / 2] + 1)) PrintPath(here / 2);
+    // 1을 뺀 경로
+    else if (here - 1 >= 0 && dp[here] == (dp[here - 1] + 1)) PrintPath(here - 1);
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> n;
+
+    // 초기화 : 모든 값을 INF로 설정
+    fill_n(dp, 1000004, INF);
+
+    // Top-down DP : n에서 시작하여 1까지 재귀적으로 계산
+    // 최소 연산 횟수 출력
+    cout << Go(n) << "\n";
+
+    // 경로 출력 (n → ... → 1)
+    PrintPath(n);
+
+    return 0;
+}

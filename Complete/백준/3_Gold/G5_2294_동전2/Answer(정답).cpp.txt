@@ -1,0 +1,42 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 987654321;
+
+int n, k, val;     // n : 동전 종류 개수(1~100), k : 목표 금액(1~10000), val : 입력 동전 가치
+int dp[10004];     // dp[i] : i원을 만드는 최소 동전 개수
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> n >> k;
+
+    // DP 초기화
+    fill_n(dp, 10004, INF);  // 불가능한 경우를 위해 큰 값으로 초기화
+    dp[0] = 0;                          // 0원을 만드는데 필요한 동전 개수 = 0개
+
+    // 동전 DP (바텀업 + 메모이제이션)
+    for (int i = 0; i < n; i++)
+    {
+        // 동전 가치 입력
+        cin >> val;
+
+        // val원 부터 k원 까지 확인
+        //1인  경우 =>  1 ~ 15
+        //5인  경우 =>  5 ~ 15
+        //12인 경우 => 12 ~ 15
+        for (int money = val; money <= k; money++)
+        {
+            // 현재 자리 최소 값 = 현재 자리값 vs 이전 자리 값(-1 or -5 or -12) + 1
+            dp[money] = min(dp[money], dp[money - val] + 1);
+        }
+    }
+
+    // 출력 (불가능하면 -1)
+    if (dp[k] == INF) cout << -1    << "\n";
+    else              cout << dp[k] << "\n";
+
+    return 0;
+}

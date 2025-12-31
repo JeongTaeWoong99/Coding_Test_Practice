@@ -236,6 +236,7 @@
     <None Include="백준\2_Silver\S5_2751_수정렬하기2\Answer(성공_벡터정렬).cpp.txt" />
     <None Include="백준\2_Silver\S5_2828_사과담기게임\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S5_4659_비밀번호발음하기\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S5_7568_덩치\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S5_10709_기상캐스터\Answer.cpp.txt" />
     <None Include="백준\2_Silver\S5_14469_소가길을건너간이유3\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G1_1016_제곱ㄴㄴ수\Answer(정답).cpp.txt" />
@@ -368,6 +369,7 @@
     <None Include="백준\2_Silver\S5_2751_수정렬하기2\README.md" />
     <None Include="백준\2_Silver\S5_2828_사과담기게임\README.md" />
     <None Include="백준\2_Silver\S5_4659_비밀번호발음하기\README.md" />
+    <None Include="백준\2_Silver\S5_7568_덩치\README.md" />
     <None Include="백준\2_Silver\S5_10709_기상캐스터\README.md" />
     <None Include="백준\2_Silver\S5_14469_소가길을건너간이유3\README.md" />
     <None Include="백준\3_Gold\G1_1016_제곱ㄴㄴ수\README.md" />

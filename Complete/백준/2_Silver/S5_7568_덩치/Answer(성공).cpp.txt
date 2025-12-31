@@ -1,0 +1,45 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+vector<pair<int,int>> v;
+int n, tempW, tempH;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    // 미리 용량 할당(재할당 방지)
+    v.reserve(n);
+
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> tempW >> tempH;
+        v.emplace_back(tempW, tempH);
+    }
+
+    // 비교할 인원 1명 선택(참조 사용으로 복사 비용 제거)
+    for (const auto& selectP : v)
+    {
+        // 시작 등수(매번 초기화)
+        int cnt = 1;
+
+        // 모든 인원과 비교
+        for (const auto& currentP : v)
+        {
+            // 자기 자신 비교 패스
+            if (selectP.first == currentP.first && selectP.second == currentP.second)
+                continue;
+
+            // 무게 && 키 모두 작으면, 등수 증가
+            if (selectP.first < currentP.first && selectP.second < currentP.second)
+                cnt++;
+        }
+
+        // 등수 출력
+        cout << cnt << " ";
+    }
+
+    return 0;
+}

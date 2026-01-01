@@ -1,0 +1,36 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, findN, val;
+int dp[10004];
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    
+    cin >> n >> findN;
+
+    // 바텀업 + 메모이제이션
+    // ※ 0원을 만드는 경우의 수는 1개 (아무 동전도 사용하지 않음)
+    dp[0] = 1;
+
+    // N개의 동전별로 DP 테이블 업데이트
+    for(int i = 1; i <= n; i++)
+    {
+        cin >> val;
+        
+        // 찾는 수 보다 큰 동전은 무시
+        if(val > findN) continue;
+        
+        // 동전 가치 val에서 부터 findN까지 확인
+        // 현재 동전으로 만들 수 있는 모든 금액 업데이트
+        for (int j = val; j <= findN; j++)
+        {
+            // 이전 경우의 수 누적
+            dp[j] += dp[j - val];
+        }
+    }
+
+    // 출력
+    cout << dp[findN];
+}

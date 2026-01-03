@@ -1,0 +1,39 @@
+// 정렬
+// Y좌표 오름차순
+// Y좌표 == Y좌표하면, X좌표가 증가하는 순으로
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, y, x;
+vector<pair<int,int>> v;
+
+bool CMP(pair<int,int> a, pair<int,int> b)
+{
+    // Y 먼저 비교
+    // Y가 같다면, x가 더 작은게 앞으로
+    if (a.second == b.second)
+        return a.first < b.first;
+
+    // y가 다르면, y가 저 작은게 앞으로
+    return a.second < b.second;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> x >> y;
+        v.emplace_back(x,y);
+    }
+
+    sort(v.begin(),v.end(), CMP);
+
+    for (auto value : v)
+        cout << value.first << " " << value.second << '\n';
+
+    return 0;
+}

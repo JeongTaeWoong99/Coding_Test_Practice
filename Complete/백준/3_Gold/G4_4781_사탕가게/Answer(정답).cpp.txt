@@ -1,0 +1,50 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int   candies;    // n 사탕 종류
+float totalMoney; // m 가지고 있는 돈
+int   dp[10004];  // dp[i] : i센트로 살 수 있는 최대 칼로리
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    while (true)
+    {
+        cin >> candies >> totalMoney;
+
+        // float totalMoney을 int로 변환해서 사용 (반올림 처리로 부동소수점 오차 방지)
+        int intTotalM = (int)(totalMoney * 100 + 0.5);
+
+        // 종료 조건
+        if (candies == 0)
+            break;
+
+        // DP 배열 초기화
+        memset(dp, 0, sizeof(dp));
+
+        // DP(바텁업 + 메모이제이션)
+        for (int i = 0; i < candies; ++i)
+        {
+            int   tempK;  // 사탕의 칼로리
+            float tempM;  // 사탕의 가격
+
+            cin >> tempK >> tempM;  // 칼로리, 가격 순서
+
+            // float tempM을 int로 변환해서 사용(반올림 처리로 부동소수점 오차 방지)
+            int intTempM = (int)(tempM * 100 + 0.5);
+
+            // intTempM 부터 intTotalM 까지 DP 갱신
+            for (int j = intTempM; j <= intTotalM; ++j)
+            {
+                // 현재 값 = 현재 값 vs 점프해온 이전 자리 값(현재 - 가격) + 현재 사탕 칼로리
+                dp[j] = max(dp[j], dp[j - intTempM] + tempK);
+            }
+        }
+
+        // 살 수 있는 최대 칼로리 출력
+        cout << dp[intTotalM] << '\n';
+    }
+
+    return 0;
+}

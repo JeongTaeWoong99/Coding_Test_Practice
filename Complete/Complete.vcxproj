@@ -290,6 +290,7 @@
     <None Include="백준\3_Gold\G5_1068_트리\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_12852_1로만들기2\Answer(정답_바텀업).cpp.txt" />
     <None Include="백준\3_Gold\G5_12852_1로만들기2\Answer(정답_탑다운).cpp.txt" />
+    <None Include="백준\3_Gold\G5_12865_평범한배낭\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G5_1911_흙길보수하기\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_15662_톱니바퀴2\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G5_15686_치킨배달\Answer(정답).cpp.txt" />
@@ -420,6 +421,7 @@
     <None Include="백준\3_Gold\G4_9935_문자열폭발\README.md" />
     <None Include="백준\3_Gold\G5_1068_트리\README.md" />
     <None Include="백준\3_Gold\G5_12852_1로만들기2\README.md" />
+    <None Include="백준\3_Gold\G5_12865_평범한배낭\README.md" />
     <None Include="백준\3_Gold\G5_1911_흙길보수하기\README.md" />
     <None Include="백준\3_Gold\G5_15662_톱니바퀴2\README.md" />
     <None Include="백준\3_Gold\G5_15686_치킨배달\README.md" />

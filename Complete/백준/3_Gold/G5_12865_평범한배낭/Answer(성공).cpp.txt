@@ -1,0 +1,30 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, findW;    // n : 물건 개수, findW(= k) : 최대 무게(= 찾는 무게)
+int w, v;        // w : 물건 무게, v : 물건 가치
+int dp[100004];  // dp[i] : 무게 i일 때 최대 가치
+
+// 배낭 문제 (바텀업 DP)
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n >> findW;
+
+    while(n--)
+    {
+        cin >> w >> v;
+
+        // 순방향(x) : for (int i = w; i <= findW; ++i)
+        // 이 문제는 역방향 갱신으로 각 물건을 최대 1번만 사용
+        for (int i = findW; i >= w; --i)
+        {
+            dp[i] = max(dp[i], dp[i - w] + v);
+        }
+    }
+
+    cout << dp[findW];
+
+    return 0;
+}

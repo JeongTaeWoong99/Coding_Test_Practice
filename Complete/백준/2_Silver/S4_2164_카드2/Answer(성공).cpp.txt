@@ -1,0 +1,29 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int        n;
+queue<int> qu;
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    // 큐에 1 ~ n 넣기
+    for (int i = 1; i <= n; ++i)
+        qu.emplace(i);
+
+    // 2개 이상일 때, 1 싸이클 가능
+    while (qu.size() > 1)
+    {
+        qu.pop();             // 앞 버리기
+        qu.push(qu.front());  // 앞을 뒤로
+        qu.pop();             // 앞 제거
+    }
+
+    // 남은 1개 출력
+    cout << qu.front();
+
+    return 0;
+}

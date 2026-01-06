@@ -221,6 +221,7 @@
     <None Include="백준\2_Silver\S4_1620_나는야포켓몬마스터이다솜\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S4_1940_주몽\Answer(조합 성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_1940_주몽\Answer(투포인터 최적화 정답).cpp.txt" />
+    <None Include="백준\2_Silver\S4_1920_수 찾기\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_2670_연속부분최대곱\Answer(정답_DP).cpp.txt" />
     <None Include="백준\2_Silver\S4_2670_연속부분최대곱\Answer(정답_브루트포스).cpp.txt" />
     <None Include="백준\2_Silver\S4_2870_수학숙제\Answer(정답).cpp.txt" />
@@ -365,6 +366,7 @@
     <None Include="백준\2_Silver\S3_9996_한국이그리울땐서버에접속하지\README.md" />
     <None Include="백준\2_Silver\S4_1620_나는야포켓몬마스터이다솜\README.md" />
     <None Include="백준\2_Silver\S4_1940_주몽\README.md" />
+    <None Include="백준\2_Silver\S4_1920_수 찾기\README.md" />
     <None Include="백준\2_Silver\S4_2670_연속부분최대곱\README.md" />
     <None Include="백준\2_Silver\S4_2870_수학숙제\README.md" />
     <None Include="백준\2_Silver\S4_3986_좋은단어\README.md" />

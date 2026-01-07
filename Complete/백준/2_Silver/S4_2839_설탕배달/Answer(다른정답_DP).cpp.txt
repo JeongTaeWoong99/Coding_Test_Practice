@@ -1,0 +1,41 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+int dp[5004];  // dp[i] : i kg을 만드는 최소 봉지 수 (-1 : 불가능)
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    // 초기화 : 모든 무게는 불가능한 상태로 시작
+    memset(dp, -1, sizeof(dp));
+    dp[0] = 0;  // 0kg은 봉지 0개
+
+    // 모든 무게에 대해 최소 봉지 수 계산 (Bottom-up DP)
+    for (int weight = 0; weight <= n; weight++)
+    {
+        // 불가능한 무게는 스킵
+        if (dp[weight] == -1) continue;
+
+        // 현재 무게에서 3kg 봉지 추가
+        if (weight + 3 <= n)
+        {
+            if (dp[weight + 3] == -1) dp[weight + 3] = dp[weight] + 1;                      // 처음 체크(min으로 비교하면, -1이 선택되기 때문에)
+            else                      dp[weight + 3] = min(dp[weight + 3], dp[weight] + 1); // 비교 체크
+        }
+
+        // 현재 무게에서 5kg 봉지 추가
+        if (weight + 5 <= n)
+        {
+            if (dp[weight + 5] == -1) dp[weight + 5] = dp[weight] + 1;                       // 처음 체크(min으로 비교하면, -1이 선택되기 때문에)
+            else                      dp[weight + 5] = min(dp[weight + 5], dp[weight] + 1);  // 비교 체크
+        }
+    }
+
+    cout << dp[n] << "\n";
+
+    return 0;
+}

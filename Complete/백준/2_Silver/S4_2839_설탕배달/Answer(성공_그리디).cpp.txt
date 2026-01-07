@@ -1,0 +1,33 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int sugar, bagCnt;  // sugar : 남은 설탕 무게, bagCnt : 봉지 개수
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> sugar;
+
+    // 전략 : 5kg 봉지를 최대한 많이 사용하기 위해
+    //       3kg씩 빼면서 5로 나누어떨어지는지 확인
+    while (sugar >= 0)
+    {
+        // 5kg 봉지로 정확히 나누어떨어지면 성공
+        if (sugar % 5 == 0)
+        {
+            bagCnt += sugar / 5;     // 남은 설탕을 5kg 봉지로 채우기
+            cout << bagCnt;          // 출력
+            return 0;                // 종료
+        }
+
+        // 5로 안 나누어떨어지면 3kg 봉지 하나 사용
+        sugar -= 3;
+        bagCnt++;
+    }
+
+    // sugar < 0 이면 정확히 만들 수 없음
+    cout << "-1";
+
+    return 0;
+}

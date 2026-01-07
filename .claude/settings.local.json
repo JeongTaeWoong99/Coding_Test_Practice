@@ -84,7 +84,9 @@
       "Bash(\"Complete\\\\백준\\\\2_Silver\\\\S5_10814_나이순정렬\\\\Answer\\(성공_stable_sort\\).cpp.txt\")",
       "Bash(\"Complete\\\\백준\\\\2_Silver\\\\S5_10814_나이순정렬\\\\Answer\\(정답_계수정렬\\).cpp.txt\")",
       "Bash(\"Complete\\\\백준\\\\2_Silver\\\\S5_11651_좌표정렬하기2\\\\Answer\\(성공_비효율적\\).cpp.txt\")",
-      "Bash(\"Complete\\\\백준\\\\2_Silver\\\\S5_11651_좌표정렬하기2\\\\Answer\\(정답_효율적\\).cpp.txt\")"
+      "Bash(\"Complete\\\\백준\\\\2_Silver\\\\S5_11651_좌표정렬하기2\\\\Answer\\(정답_효율적\\).cpp.txt\")",
+      "Bash('Complete\\\\백준\\\\2_Silver\\\\S4_2839_설탕배달\\\\Answer\\(성공_그리디\\).cpp.txt')",
+      "Bash('Complete\\\\백준\\\\2_Silver\\\\S4_2839_설탕배달\\\\Answer\\(다른정답_DP\\).cpp.txt')"
     ]
   },
   "outputStyle": "korean-terminal"

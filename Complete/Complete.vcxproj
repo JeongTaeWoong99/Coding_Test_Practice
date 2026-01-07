@@ -225,6 +225,8 @@
     <None Include="백준\2_Silver\S4_2164_카드2\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_2670_연속부분최대곱\Answer(정답_DP).cpp.txt" />
     <None Include="백준\2_Silver\S4_2670_연속부분최대곱\Answer(정답_브루트포스).cpp.txt" />
+    <None Include="백준\2_Silver\S4_2839_설탕배달\Answer(다른정답_DP).cpp.txt" />
+    <None Include="백준\2_Silver\S4_2839_설탕배달\Answer(성공_그리디).cpp.txt" />
     <None Include="백준\2_Silver\S4_2870_수학숙제\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S4_3986_좋은단어\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_4949_균형잡힌세상\Answer(성공).cpp.txt" />
@@ -370,6 +372,7 @@
     <None Include="백준\2_Silver\S4_1920_수 찾기\README.md" />
     <None Include="백준\2_Silver\S4_2164_카드2\README.md" />
     <None Include="백준\2_Silver\S4_2670_연속부분최대곱\README.md" />
+    <None Include="백준\2_Silver\S4_2839_설탕배달\README.md" />
     <None Include="백준\2_Silver\S4_2870_수학숙제\README.md" />
     <None Include="백준\2_Silver\S4_3986_좋은단어\README.md" />
     <None Include="백준\2_Silver\S4_4949_균형잡힌세상\README.md" />

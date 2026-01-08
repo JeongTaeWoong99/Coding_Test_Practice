@@ -231,6 +231,7 @@
     <None Include="백준\2_Silver\S4_3986_좋은단어\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_4949_균형잡힌세상\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_9012_괄호\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S4_10773_제로\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S5_1181_단어정렬\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S5_1436_영화감독숌\Answer(성공_메서드 사용).cpp.txt" />
     <None Include="백준\2_Silver\S5_1436_영화감독숌\Answer(정답_수학적 계산).cpp.txt" />
@@ -377,6 +378,7 @@
     <None Include="백준\2_Silver\S4_3986_좋은단어\README.md" />
     <None Include="백준\2_Silver\S4_4949_균형잡힌세상\README.md" />
     <None Include="백준\2_Silver\S4_9012_괄호\README.md" />
+    <None Include="백준\2_Silver\S4_10773_제로\README.md" />
     <None Include="백준\2_Silver\S5_1181_단어정렬\README.md" />
     <None Include="백준\2_Silver\S5_1436_영화감독숌\README.md" />
     <None Include="백준\2_Silver\S5_1676_팩토리얼0의개수\README.md" />

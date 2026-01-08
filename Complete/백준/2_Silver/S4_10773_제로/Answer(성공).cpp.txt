@@ -1,0 +1,31 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int        n, temp, cnt;
+stack<int> stk;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> temp;
+
+        if (temp != 0) stk.push(temp);  // 0이 아니면 스택에 추가
+        else           stk.pop();       // 0이면 최근 수 제거
+    }
+
+    // 스택에 남아있는 모든 수의 합 계산
+    while (!stk.empty())
+    {
+        cnt += stk.top();
+        stk.pop();
+    }
+
+    cout << cnt << "\n";
+
+    return 0;
+}

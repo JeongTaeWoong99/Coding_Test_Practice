@@ -1,0 +1,61 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// n : 명령의 개수
+// x : push 시 입력받을 정수
+// s : 명령어 문자열
+int        n, x;
+string     s;
+queue<int> que;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    for(int i = 0; i < n; i++)
+    {
+        cin >> s;
+
+        if(s == "push")
+        {
+            cin >> x;
+            que.push(x);
+        }
+        else if(s == "pop")
+        {
+            if(que.empty())
+                cout << -1 << "\n";
+            else
+            {
+                cout << que.front() << "\n";
+                que.pop();
+            }
+        }
+        else if(s == "size")
+        {
+            cout << que.size() << "\n";
+        }
+        else if(s == "empty")
+        {
+            cout << (que.empty() ? 1 : 0) << "\n";
+        }
+        else if(s == "front")
+        {
+            if(que.empty())
+                cout << -1 << "\n";
+            else
+                cout << que.front() << "\n";
+        }
+        else if(s == "back")
+        {
+            if(que.empty())
+                cout << -1 << "\n";
+            else
+                cout << que.back() << "\n";
+        }
+    }
+
+    return 0;
+}

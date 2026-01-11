@@ -1,0 +1,81 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// 문제 요구사항
+// - (1, 1) 시작, (n, m) 도착
+// - 오른쪽 또는 아래로만 이동 가능
+// - 오락실 C개 (1번 ~ C번)
+// - 오락실은 증가하는 순서대로만 방문 가능
+// - 0개 ~ C개 방문했을 때 경로의 수를 각각 출력
+// - (1, 1)과 (n, m)에도 오락실 위치 가능
+
+const int mod = 1000007;
+
+int n, m, c;            // n : 세로, m : 가로, c : 오락실 개수
+int tempY, tempX;       // 임시 좌표 입력용
+int ar[54][54];         // 오락실 배치 (0 : 빈칸, 1 ~ c : 오락실 번호)
+int dp[54][54][54][54]; // dp[y][x][남은방문수][이전오락실번호] : 경로의 수
+
+// curY      : 현재 Y좌표
+// curX      : 현재 X좌표
+// remainVit : 앞으로 방문해야 할 오락실 수
+// prev      : 이전에 방문한 오락실 번호
+int Go(int curY, int curX, int remainVit, int prev)
+{
+    // 범위를 벗어난 경우 : 불가능한 경로
+    if (curY > n || curX > m) return 0;
+
+    // 목적지 (n, m) 도착
+    if (curY == n && curX == m)
+    {
+        // 더 이상 방문할 오락실이 없고, 목적지가 빈칸인 경우
+        if (remainVit == 0 && ar[curY][curX] == 0) return 1;
+
+        // 방문할 오락실이 1개 남았고, 목적지가 오락실이며, 이전 오락실보다 번호가 큰 경우
+        if (remainVit == 1 && ar[curY][curX] > prev) return 1;
+
+        return 0;
+    }
+
+    // 메모이제이션 : 이미 계산된 경우 바로 반환
+    int &ret = dp[curY][curX][remainVit][prev];
+    if (ret != -1) return ret;
+    ret = 0;
+
+    // 현재 위치가 빈칸인 경우 : 그냥 지나감(아래 + 오른쪽)
+    if (ar[curY][curX] == 0)
+        ret = (Go(curY + 1, curX    , remainVit, prev) +
+               Go(curY    , curX + 1, remainVit, prev)) % mod;
+
+    // 현재 위치가 오락실이고, 이전 오락실보다 번호가 큰 경우 : 방문 가능(아래 + 오른쪽)
+    else if (ar[curY][curX] > prev)
+        ret = (Go(curY + 1, curX    , remainVit - 1, ar[curY][curX]) +
+               Go(curY    , curX + 1, remainVit - 1, ar[curY][curX])) % mod;
+
+    return ret;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0); cout.tie(0);
+
+    // dp 배열 초기화 (-1 : 아직 계산 안 됨)
+    memset(dp, -1, sizeof(dp));
+
+    // 입력 : 세로, 가로, 오락실 개수
+    cin >> n >> m >> c;
+
+    // 오락실 위치 입력 (1번 ~ C번 오락실 순서대로)
+    for (int i = 1; i <= c; ++i)
+    {
+        cin >> tempY >> tempX;
+        ar[tempY][tempX] = i;   // 해당 위치에 오락실 번호 저장
+    }
+
+    // (1, 1)에서 시작하여 (n, m)까지 가는 경로 중
+    // 오락실을 0개, 1개, 2개, ..., C개 방문하는 경우의 수를 각각 출력
+    for (int i = 0; i <= c ; ++i)
+        cout << Go(1, 1, i, 0) << " ";
+
+    return 0;
+}

@@ -1,0 +1,41 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int        n, k;    // n : 사람 수, k : K번째 사람 제거
+queue<int> que;     // 원형 큐
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0); cout.tie(0);
+
+    cin >> n >> k;
+
+    // 1 ~ n까지 큐에 넣기
+    for (int i = 1; i <= n; ++i)
+        que.push(i);
+
+    cout << "<";
+
+    // 큐가 빌 때까지 반복
+    while (!que.empty())
+    {
+        // K-1번 회전 (K번째 원소가 맨 앞으로 오도록)
+        for (int i = 1; i < k; ++i)
+        {
+            que.push(que.front());  // 맨 앞을 뒤로 이동
+            que.pop();              // 맨 앞 제거
+        }
+
+        // K번째 사람 출력 및 제거
+        cout << que.front();
+        que.pop();
+
+        // 남아 있으면 구분자 출력
+        if (!que.empty())
+            cout << ", ";
+    }
+
+    cout << ">";
+
+    return 0;
+}

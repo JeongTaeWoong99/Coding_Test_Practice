@@ -239,6 +239,7 @@
     <None Include="백준\2_Silver\S4_10828_스택\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_10845_큐\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_11866_요세푸스문제0\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S4_18110_solved.ac\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S5_1181_단어정렬\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S5_1436_영화감독숌\Answer(성공_메서드 사용).cpp.txt" />
     <None Include="백준\2_Silver\S5_1436_영화감독숌\Answer(정답_수학적 계산).cpp.txt" />
@@ -392,6 +393,7 @@
     <None Include="백준\2_Silver\S4_10828_스택\README.md" />
     <None Include="백준\2_Silver\S4_10845_큐\README.md" />
     <None Include="백준\2_Silver\S4_11866_요세푸스문제0\README.md" />
+    <None Include="백준\2_Silver\S4_18110_solved.ac\README.md" />
     <None Include="백준\2_Silver\S5_1181_단어정렬\README.md" />
     <None Include="백준\2_Silver\S5_1436_영화감독숌\README.md" />
     <None Include="백준\2_Silver\S5_1676_팩토리얼0의개수\README.md" />

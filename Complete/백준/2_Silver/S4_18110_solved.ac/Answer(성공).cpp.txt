@@ -1,0 +1,51 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int         n, temp, eraseNum, lastAver;
+double      sum;
+vector<int> v;        
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    
+    cin >> n;
+
+    // 미리 할당
+    v.reserve(n);
+
+    // 난이도 의견 개수가 0이면 0을 반환
+    if (n == 0)
+    {
+        cout << '0';
+        return 0;
+    }
+
+    // n개 난이도 넣기
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> temp;
+        v.emplace_back(temp);
+    }
+
+    // 오름차순 정렬
+    sort(v.begin(),v.end());
+
+    // 15% 제외 인원 수 계산 (반올림)
+    // n이 5명인 경우 => 5.0의 15%는 0.75 => 0.75의 반올림은 1
+    eraseNum = round(15.0 / 100.0 * n);
+    
+    // 앞 뒤로 eraseNum 만큼 제외한 합 구하기
+    // n이 5인 경우 => 2 ~ 4번 값만 sum에 더하기
+    for (int i = eraseNum; i < v.size() - eraseNum; ++i)
+        sum += v[i];
+
+    // 평균 계산 후 반올림 (30% 절사평균)
+    // n개 중, 앞 뒤 eraseNum만큼 제외한 갯수로 sum을 나눠 평균 구하기
+    lastAver = round(sum / (n - eraseNum * 2));
+
+    // 최종 평균 출력
+    cout << lastAver;
+    
+    return 0;
+}

@@ -1,0 +1,140 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 8방향 탐색 (가을 번식용)
+const int dy[] = {-1, -1, -1,  0, 0,  1, 1, 1};
+const int dx[] = {-1,  0,  1, -1, 1, -1, 0, 1};
+
+int n, m, k;                // n : 땅 크기, m : 나무 수, k : 시뮬레이션 연도
+int plusYangbun[14][14];    // 매년 겨울에 추가되는 양분
+int remainYangbun[14][14];  // 현재 각 칸의 양분 (초기값 5)
+int ret;                    // 결과 : 살아있는 나무 수
+vector<int> tree[14][14];   // 각 칸의 나무들 (나이 저장)
+
+// 봄 + 여름 : 양분 섭취 및 죽은 나무 처리
+void SpringSummer()
+{
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            // 해당 위치에 나무가 없으면, 넘어가기
+            if (tree[i][j].empty()) continue;
+
+            int deadTreeToYangbun = 0;  // 죽은 나무가 변환된 양분
+            vector<int> aliveTree;      // 살아남은 나무들
+
+            // 나이 어린 나무부터 양분 섭취
+            sort(tree[i][j].begin(), tree[i][j].end());
+            
+            for (int age : tree[i][j])
+            {
+                // 양분 충분(현재 자리의 양분이 자기 나이보다 많거나 같음)
+                if (remainYangbun[i][j] >= age)
+                {
+                    remainYangbun[i][j] -= age;      // 양분 섭취
+                    aliveTree.push_back(age + 1); // 나이 증가
+                }
+                // 양분 부족
+                else
+                {
+                    deadTreeToYangbun += age / 2; // 죽은 나무 → 양분
+                }
+            }
+
+            tree[i][j]           = aliveTree;          // 살아남은 나무만 유지(덮어씌우기)
+            remainYangbun[i][j] += deadTreeToYangbun;  // 죽은 나무 양분 추가
+        }
+    }
+}
+
+// 가을 : 나이가 5의 배수인 나무 번식
+void Fall()
+{
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            // 해당 위치에 나무가 없으면, 넘어가기
+            if (tree[i][j].empty()) continue;
+
+            for (int age : tree[i][j])
+            {
+                if (age % 5 == 0)   // 5의 배수만 번식
+                {
+                    for (int d = 0; d < 8; d++)
+                    {
+                        int ny = i + dy[d];
+                        int nx = j + dx[d];
+
+                        if (ny < 0 || ny >= n || nx < 0 || nx >= n) continue;
+
+                        tree[ny][nx].push_back(1);  // 나이 1인 나무 추가
+                    }
+                }
+            }
+        }
+    }
+}
+
+// 겨울 : 로봇이 양분 추가
+void Winter()
+{
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            remainYangbun[i][j] += plusYangbun[i][j];
+        }
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m >> k;
+
+    // 초기 양분 5로 설정
+    fill_n(&remainYangbun[0][0], 14 * 14, 5);
+
+    // 겨울에 추가될 양분 배열 입력
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            cin >> plusYangbun[i][j];
+        }
+    }
+
+    // 나무 정보 입력 (x, y, 나이)
+    int x, y, z;
+    for (int i = 0; i < m; i++)
+    {
+        cin >> x >> y >> z;
+        x--; y--;                   // 1-indexed → 0-indexed 보정
+        tree[x][y].push_back(z);    // 각 자리의 백터에 트리 나이 넣어주기
+    }
+
+    // K년 시뮬레이션
+    for (int i = 0; i < k; i++)
+    {
+        SpringSummer();
+        Fall();
+        Winter();
+    }
+
+    // 살아있는 나무 개수 세기
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            ret += tree[i][j].size();
+        }
+    }
+
+    // 결과 출력
+    cout << ret << "\n";
+
+    return 0;
+}

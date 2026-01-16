@@ -1,0 +1,52 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int    n, m;        // n x m 크기 배열
+int    minCnt = 64; // 불일치 최대 갯수는 64개(64개에서 3중 min 비교를 통해, 최소값 찾기)
+string board[54];   // x에 해당해는 m은 string이라 필요 없음
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m;
+
+    // string으로 y = n줄 입력(x = m은 미사용)
+    for(int i = 0; i < n; i++)
+        cin >> board[i];
+
+    // 시작점 선택 2중 for문
+    // 8x8 크기에서는 (0,0)만 시작점으로 선택됨!
+    // x와 y에 -8을 통해, 시작점 범위 제한
+    for(int startY = 0; startY <= n - 8; startY++)
+    {
+        for(int startX = 0; startX <= m - 8; startX++)
+        {
+            // W로 시작하는 패턴과 불일치 개수
+            int isDifferent = 0;
+
+            // 시작점 기준 8x8 범위 체크 2중 for문
+            for(int curY = 0; curY < 8; curY++)
+            {
+                for(int curX = 0; curX < 8; curX++)
+                {
+                    // (curY+curX) 짝수면 W, 홀수면 B가 정상 (W시작 패턴 기준)
+                    char expected = (curY + curX) % 2 == 0 ? 'W' : 'B';
+
+                    // 시작점(startY, startX)에서 현재 위치(curY, curX)만큼 이동한 좌표 확인
+                    if(board[startY + curY][startX + curX] != expected)
+                        isDifferent++;
+                }
+            }
+
+            // W시작 패턴 불일치 : isDifferent개
+            // ★ B시작 패턴 불일치 : 64 - isDifferent개 (W와 B는 정확히 반대!)
+            // → 현재 선택된 minCnt와 두 패턴 중 더 적은 쪽을 선택
+            minCnt = min({minCnt, isDifferent, 64 - isDifferent});
+        }
+    }
+
+    cout << minCnt << "\n";
+
+    return 0;
+}

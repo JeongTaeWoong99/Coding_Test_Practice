@@ -1,0 +1,60 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int t, n, m;  // 테스트 케이스 수, 문서 개수, 찾을 문서 위치
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> t;
+
+    while (t--)
+    {
+        // 매번 초기화
+        priority_queue<int>   pQ;  // 최대 힙 : 현재 최고 중요도 추적
+        queue<pair<int, int>> nQ;  // {원래 인덱스, 중요도}
+        int cnt = 0;               // 인쇄 순서
+
+        cin >> n >> m;
+
+        // 입력 및 큐 초기화
+        int priority;
+        for (int idx = 0; idx < n; idx++)
+        {
+            cin >> priority;
+            nQ.emplace(idx, priority);
+            pQ.emplace(priority);
+        }
+
+        // 시뮬레이션
+        while (!nQ.empty())
+        {
+            int idx = nQ.front().first;  // 순서
+            int pri = nQ.front().second; // 중요도
+            nQ.pop();
+
+            // 제거 가능함!
+            // => 노멀 큐의 맨 앞의 중요도가 전체 즉, 우선순위 큐의 top()과 동일한 경우
+            // => 전체에서 중요가 가장 높아 제거가 가능함!
+            if (pri == pQ.top())
+            {
+                // 제거 및 순서 체크
+                pQ.pop();
+                cnt++;
+
+                // 찾던 문서인 경우!
+                if (idx == m)
+                {
+                    cout << cnt << '\n';
+                    break;
+                }
+            }
+            // 제거 불가 => 뒤로 재배치
+            else
+            {
+                nQ.emplace(idx, pri);
+            }
+        }
+    }
+}

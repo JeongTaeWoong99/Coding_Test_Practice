@@ -210,6 +210,7 @@
     <None Include="백준\2_Silver\S3_1269_대칭차집합\Answer(성공_최적화).cpp.txt" />
     <None Include="백준\2_Silver\S3_1269_대칭차집합\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_1535_안녕\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S3_1929_소수구하기\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_2559_수열\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_2559_수열\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_2606_바이러스\Answer.cpp.txt" />
@@ -372,6 +373,7 @@
     <None Include="백준\2_Silver\S3_1213_팰린드롬만들기\README.md" />
     <None Include="백준\2_Silver\S3_1269_대칭차집합\README.md" />
     <None Include="백준\2_Silver\S3_1535_안녕\README.md" />
+    <None Include="백준\2_Silver\S3_1929_소수구하기\README.md" />
     <None Include="백준\2_Silver\S3_2559_수열\README.md" />
     <None Include="백준\2_Silver\S3_2606_바이러스\README.md" />
     <None Include="백준\2_Silver\S3_2910_빈도정렬\README.md" />

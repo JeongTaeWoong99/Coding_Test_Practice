@@ -1,0 +1,56 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 전역 변수
+int        n;                   // n개 숫자 입력(= 출력 순서)
+int        cur = 1;             // 현재까지 push한 숫자 (1부터 시작 ~ n까지)
+string     result;              // 연산 결과 저장 (+, -)
+bool       possible = true;     // 만들지 못하면 false로 변경
+int        target;              // 뽑아내야 할 숫자
+stack<int> stk;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> n;
+
+    // 뽑아내야 할 숫자 n개
+    for (int i = 0; i < n; i++)
+    {
+        // 현재 뽑아내야할 숫자
+        cin >> target;
+
+        // target까지 push (현재까지 push한 숫자보다 클 때)
+        while (cur <= target)
+        {
+            stk.push(cur);
+            cur++;
+
+            result += "+";  // "+\n" 합쳐도 가능
+            result += "\n";
+        }
+
+        // 스택의 top이 target과 같으면 pop
+        if (!stk.empty() && stk.top() == target)
+        {
+            stk.pop();
+
+            result += "-";   // "-\n" 합쳐도 가능
+            result += "\n";
+        }
+        // top이 target과 다르면 불가능
+        else
+        {
+            possible = false;
+            break;
+        }
+    }
+
+    // 결과 출력
+    if (possible) cout << result;
+    else          cout << "NO";
+
+    return 0;
+}

@@ -259,6 +259,8 @@
     <None Include="백준\2_Silver\S5_10709_기상캐스터\Answer.cpp.txt" />
     <None Include="백준\2_Silver\S5_10814_나이순정렬\Answer(성공_stable_sort).cpp.txt" />
     <None Include="백준\2_Silver\S5_10814_나이순정렬\Answer(정답_계수정렬).cpp.txt" />
+    <None Include="백준\2_Silver\S5_11723_집합\Answer(성공_bool 배열).cpp.txt" />
+    <None Include="백준\2_Silver\S5_11723_집합\Answer(정답_비트마스킹).cpp.txt" />
     <None Include="백준\2_Silver\S5_11651_좌표정렬하기2\Answer(성공_비효율적).cpp.txt" />
     <None Include="백준\2_Silver\S5_11651_좌표정렬하기2\Answer(정답_효율적).cpp.txt" />
     <None Include="백준\2_Silver\S5_14469_소가길을건너간이유3\Answer(정답).cpp.txt" />
@@ -415,6 +417,7 @@
     <None Include="백준\2_Silver\S5_7568_덩치\README.md" />
     <None Include="백준\2_Silver\S5_10709_기상캐스터\README.md" />
     <None Include="백준\2_Silver\S5_10814_나이순정렬\README.md" />
+    <None Include="백준\2_Silver\S5_11723_집합\README.md" />
     <None Include="백준\2_Silver\S5_11651_좌표정렬하기2\README.md" />
     <None Include="백준\2_Silver\S5_14469_소가길을건너간이유3\README.md" />
     <None Include="백준\3_Gold\G1_1016_제곱ㄴㄴ수\README.md" />

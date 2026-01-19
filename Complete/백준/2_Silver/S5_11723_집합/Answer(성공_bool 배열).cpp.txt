@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int    m, x;   // 입력 횟수, 입력 번호
+bool   b[21];  // 집합을 배열로 표현 (인덱스 1~20 사용)
+string cmd;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> m;
+
+    while(m--)
+    {
+        cin >> cmd;
+
+        // x를 집합에 추가
+        if(cmd == "add")
+        {
+            cin >> x;
+            b[x] = true;
+        }
+        // x를 집합에서 제거
+        else if(cmd == "remove")
+        {
+            cin >> x;
+            b[x] = false;
+        }
+        // x가 있으면 1, 없으면 0 출력
+        else if(cmd == "check")
+        {
+            cin >> x;
+            cout << b[x] << "\n";
+        }
+        // x의 존재 여부 반전
+        else if(cmd == "toggle")
+        {
+            cin >> x;
+            b[x] = !b[x];
+        }
+        // 1~20 모두 추가
+        else if(cmd == "all")
+        {
+            for(int i = 1; i <= 20; i++)
+                b[i] = true;
+        }
+        // "empty" 모두 제거
+        else
+        {
+            for(int i = 1; i <= 20; i++)
+                b[i] = false;
+        }
+    }
+
+    return 0;
+}

@@ -1,0 +1,69 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+const int OFFSET  = 4000;   // 음수 보정값 (-4000 ~ 4000 → 0 ~ 8000)
+const int MAX_VAL = 8001;   // 배열 크기
+
+int n, temp;
+int sum;             // 산술평균용 합계
+int freq[MAX_VAL];   // 숫자별 빈도수
+int minVal =  4001;  // 최솟값 (범위 계산용)
+int maxVal = -4001;  // 최댓값 (범위 계산용)
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> temp;
+        sum += temp;                // 합계 누적
+        freq[temp + OFFSET]++;      // 빈도 저장
+        minVal = min(minVal, temp); // 최솟값 갱신
+        maxVal = max(maxVal, temp); // 최댓값 갱신
+    }
+
+    // 1. 산술평균 (반올림)
+    cout << (int)round((double)sum / n) << '\n';
+
+    // 2. 중앙값 (Counting 방식 - 정렬 없이 찾기)
+    int cnt = 0;
+    for (int i = 0; i < MAX_VAL; ++i)
+    {
+        cnt += freq[i];              // 누적 개수
+        if (cnt >= (n + 1) / 2)      // 중앙 위치 도달
+        {
+            cout << i - OFFSET << '\n';
+            break;
+        }
+    }
+
+    // 3. 최빈값 (두 번째로 작은 값)
+    int maxFreq = 0, mode = 0, modeCnt = 0;
+
+    for (int i = 0; i < MAX_VAL; ++i)
+    {
+        if (freq[i] == 0) continue;
+
+        if (freq[i] > maxFreq)           // 새로운 최대 빈도 발견
+        {
+            maxFreq = freq[i];           // 최대 빈도 변경
+            mode    = i - OFFSET;        // 첫 번째 최빈값
+            modeCnt = 1;                 // 현재 빈도에서 첫번째 값(0 ~ MAX_VAL찾기 때문에 자동 정렬상태)
+        }
+        else if (freq[i] == maxFreq)     // 같은 빈도의 값 발견
+        {
+            if (modeCnt == 1)            // 아직 첫 번째만 있었다면(이후 체크할 필요 없음)
+                mode = i - OFFSET;       // 두 번째로 갱신
+            modeCnt++;
+        }
+    }
+    cout << mode << '\n';
+
+    // 4. 범위 (입력 시 저장한 최대/최소 활용)
+    cout << maxVal - minVal;
+
+    return 0;
+}

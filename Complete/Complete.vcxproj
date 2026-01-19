@@ -203,6 +203,8 @@
     <None Include="백준\2_Silver\S3_1018_체스판다시칠하기\Answer(정답_압축버전).cpp.txt" />
     <None Include="백준\2_Silver\S2_11053_가장긴증가하는부분수열\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S2_1912_연속합\Answer(정답).cpp.txt" />
+    <None Include="백준\2_Silver\S2_2108_통계학\Answer(정답_Counting_STL미사용_효율적).cpp.txt" />
+    <None Include="백준\2_Silver\S2_2108_통계학\Answer(성공_STL사용_비효율적).cpp.txt" />
     <None Include="백준\2_Silver\S2_14620_꽃길\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S2_14627_파닭파닭\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S2_1874_스택수열\Answer(성공_최적화버전).cpp.txt" />
@@ -369,6 +371,7 @@
     <None Include="백준\2_Silver\S3_1018_체스판다시칠하기\README.md" />
     <None Include="백준\2_Silver\S2_11053_가장긴증가하는부분수열\README.md" />
     <None Include="백준\2_Silver\S2_1912_연속합\README.md" />
+    <None Include="백준\2_Silver\S2_2108_통계학\README.md" />
     <None Include="백준\2_Silver\S2_14620_꽃길\README.md" />
     <None Include="백준\2_Silver\S2_14627_파닭파닭\README.md" />
     <None Include="백준\2_Silver\S2_1874_스택수열\README.md" />

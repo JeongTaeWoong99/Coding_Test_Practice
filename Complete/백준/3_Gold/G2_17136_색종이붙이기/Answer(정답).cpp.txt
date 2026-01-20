@@ -1,0 +1,110 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+const int INF   = 987654321;
+const int MAX_N = 10;
+
+int a[MAX_N][MAX_N]; // 10×10 종이 배열 (0 또는 1)
+int paper[6];        // paper[k] : k×k 색종이 사용 개수 (1~5)
+int anwCnt = INF;    // 최소 색종이 개수 (정답)
+
+// (y, x) 위치부터 size×size 영역이 모두 1인지 확인
+// y : 시작 행, x : 시작 열, size : 색종이 크기
+bool Check(int y, int x, int size)
+{
+    // 범위 초과 체크
+    if (y + size > MAX_N || x + size > MAX_N) return false;
+
+    // size×size 영역이 모두 1인지 확인
+    for (int i = y; i < y + size; i++)
+    {
+        for (int j = x; j < x + size; j++)
+        {
+            if (a[i][j] == 0) return false;
+        }
+    }
+    return true;
+}
+
+// (y, x) 위치부터 size×size 영역을 value로 채우기
+// value : 0이면 색종이 붙이기, 1이면 색종이 떼기 (복원)
+void Draw(int y, int x, int size, int value)
+{
+    for (int i = y; i < y + size; i++)
+    {
+        for (int j = x; j < x + size; j++)
+        {
+            a[i][j] = value;
+        }
+    }
+}
+
+// 백트래킹 DFS
+// y : 현재 행, x : 현재 열, curUse : 현재까지 사용한 색종이 개수
+void DFS(int y, int x, int curUse)
+{
+    // 가지치기 : 현재 찾은 최솟값 이상으로 사용했으면, 탐색 중단
+    if (curUse >= anwCnt) return;
+
+    // 열 끝에 도달하면 다음 행 처음으로 이동
+    if (x == MAX_N) // (0 ~ 9)
+    {
+        DFS(y + 1, 0, curUse);
+        return;
+    }
+
+    // 모든 칸 탐색 완료 → 최솟값 갱신
+    if (y == MAX_N) // (0 ~ 9)
+    {
+        anwCnt = min(anwCnt, curUse);
+        return;
+    }
+
+    // 현재 칸이 0이면 다음 칸으로 이동
+    if (a[y][x] == 0)
+    {
+        DFS(y, x + 1, curUse);
+        return;
+    }
+
+    // 현재 칸이 1이면 색종이 붙이기 시도 (5×5 → 1×1 순서)
+    for (int size = 5; size >= 1; size--)
+    {
+        // 해당 크기 색종이를 이미 5장 다 썼으면 스킵
+        if (paper[size] == 5) continue;
+
+        // 해당 크기 색종이를 붙일 수 있는지 확인
+        if (Check(y, x, size))
+        {
+            paper[size]++;             // 색종이 사용
+            Draw(y, x, size, 0);       // 색종이 붙이기 (0으로 채우기)
+
+            DFS(y, x + size, curUse + 1);   // 다음 위치로 탐색
+
+            Draw(y, x, size, 1);       // 색종이 떼기 (1로 복원)
+            paper[size]--;             // 색종이 반납
+        }
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 10×10 배열 입력
+    for (int i = 0; i < MAX_N; i++)
+    {
+        for (int j = 0; j < MAX_N; j++)
+        {
+            cin >> a[i][j];
+        }
+    }
+
+    // (0,0)부터 백트래킹 시작
+    DFS(0, 0, 0);
+
+    // 결과 출력 (불가능하면 -1)
+    cout << (anwCnt == INF ? -1 : anwCnt) << "\n";
+
+    return 0;
+}

@@ -1,0 +1,48 @@
+﻿#include <bits/stdc++.h>
+using namespace  std;
+
+int                   n, m; 
+string                temp;
+unordered_set<string> unSet; // 존재 확인
+vector<string>        v;     // 찾은 정답 저장
+
+int main()
+{
+    ios_base::sync_with_stdio(0),cin.tie(0),cout.tie(0);
+    
+    cin >> n >> m;
+
+    // n 입력
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> temp;
+        
+        unSet.emplace(temp);
+    }
+
+    // m 입력 및 존재 확인
+    for (int i = 0; i < m; ++i)
+    {
+        cin >> temp;
+
+        // 존재하면, 백터에 저장
+        if (unSet.count(temp))
+        {
+            v.emplace_back(temp);
+        }
+    }
+
+    // 이름순 정렬
+    sort(v.begin(),v.end());
+
+    // 사이즈 출력
+    cout << v.size() << '\n';
+
+    // (읽기 전용) 이름 모두 출력
+    for (const auto& name : v) 
+    {
+        cout << name << '\n';
+    }
+
+    return 0;
+}

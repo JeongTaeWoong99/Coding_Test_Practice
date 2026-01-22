@@ -1,0 +1,32 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, k, cnt;
+int arr[10];  // 고정 배열 (N ≤ 10)
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n >> k;
+
+    // 입력 (이미 오름차순)
+    for (int i = 0; i < n; ++i)
+        cin >> arr[i];
+
+    // 역순 순회 (큰 동전부터)
+    for (int i = n - 1; i >= 0; --i)
+    {
+        if (arr[i] <= k)
+        {
+            cnt += k / arr[i];  // 몫 더하기
+            k   %= arr[i];      // 나머지로 갱신
+        }
+
+        if (k == 0) break;  // 조기 탈출
+    }
+
+    cout << cnt;
+
+    return 0;
+}

@@ -245,6 +245,8 @@
     <None Include="백준\2_Silver\S4_10816_숫자카드2\Answer(성공_최적화_unordered_map).cpp.txt" />
     <None Include="백준\2_Silver\S4_10828_스택\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_10845_큐\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S4_11047_동전0\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S4_11047_동전0\Answer(성공_고정배열+역순순회버전).cpp.txt" />
     <None Include="백준\2_Silver\S4_11866_요세푸스문제0\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_18110_solved.ac\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S5_1181_단어정렬\Answer(성공).cpp.txt" />
@@ -409,6 +411,7 @@
     <None Include="백준\2_Silver\S4_10816_숫자카드2\README.md" />
     <None Include="백준\2_Silver\S4_10828_스택\README.md" />
     <None Include="백준\2_Silver\S4_10845_큐\README.md" />
+    <None Include="백준\2_Silver\S4_11047_동전0\README.md" />
     <None Include="백준\2_Silver\S4_11866_요세푸스문제0\README.md" />
     <None Include="백준\2_Silver\S4_18110_solved.ac\README.md" />
     <None Include="백준\2_Silver\S5_1181_단어정렬\README.md" />

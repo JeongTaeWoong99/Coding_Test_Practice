@@ -1,0 +1,35 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int         n, k, cnt;
+vector<int> v;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n >> k;
+
+    v.resize(n);  // 미리 크기 할당 (emplace_back 오버헤드 제거)
+    
+    for (int i = 0; i < n; ++i)
+        cin >> v[i];
+
+    // 역순 순회 (입력이 오름차순이므로 정렬 불필요!)
+    for (int i = n - 1; i >= 0; --i)
+    {
+        int q = k / v[i];  // 몫 한 번만 계산
+        
+        if (q > 0)
+        {
+            cnt += q;
+            k   %= v[i];
+        }
+
+        if (k == 0) break;
+    }
+
+    cout << cnt;
+
+    return 0;
+}

@@ -226,6 +226,7 @@
     <None Include="백준\2_Silver\S3_9375_패션왕신해빈\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_9996_한국이그리울땐서버에접속하지\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_1620_나는야포켓몬마스터이다솜\Answer(정답).cpp.txt" />
+    <None Include="백준\2_Silver\S4_17219_비밀번호찾기\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_1764_듣보잡\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_1940_주몽\Answer(조합 성공).cpp.txt" />
     <None Include="백준\2_Silver\S4_1940_주몽\Answer(투포인터 최적화 정답).cpp.txt" />
@@ -398,6 +399,7 @@
     <None Include="백준\2_Silver\S3_9375_패션왕신해빈\README.md" />
     <None Include="백준\2_Silver\S3_9996_한국이그리울땐서버에접속하지\README.md" />
     <None Include="백준\2_Silver\S4_1620_나는야포켓몬마스터이다솜\README.md" />
+    <None Include="백준\2_Silver\S4_17219_비밀번호찾기\README.md" />
     <None Include="백준\2_Silver\S4_1764_듣보잡\README.md" />
     <None Include="백준\2_Silver\S4_1940_주몽\README.md" />
     <None Include="백준\2_Silver\S4_1920_수 찾기\README.md" />

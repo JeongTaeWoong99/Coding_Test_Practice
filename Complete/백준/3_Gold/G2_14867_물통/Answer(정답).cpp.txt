@@ -1,0 +1,81 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int aCap, bCap, aFid, bFid; // A B 물통의 용량, 목표 상태
+map<pair<int, int>, int> m; // m : 방문 여부(키 pair<int, int>) 및 거리(벨류 int) => (상태 → 거리 + 1)
+queue<pair<int, int>>    q; // q : BFS 탐색 큐
+
+// Enqueue : 상태(x, y)가 미방문이면 큐에 추가
+// x : A 물통의 현재 물 양
+// y : B 물통의 현재 물 양
+// d : 현재까지의 거리
+void Enqueue(int x, int y, int d)
+{
+    // 이미 방문한 상태면 스킵
+    // ※ 최초로 기록된 값이 그 자리 도달 최소값이다! 다시 기록 불필요!
+    if (m[{x, y}]) return;
+
+    // 거리 저장 (0과 구분 위해 +1)
+    // ※ d + 1이 해당 자리 도달 최소값
+    m[{x, y}] = d + 1;
+
+    // BFS 탐색 위치 추가
+    q.emplace(x, y);
+}
+
+// BFS : 너비 우선 탐색으로 최소 작업 수 계산
+// aStart, bStart : 시작 상태 (0, 0)
+int BFS(int aStart, int bStart)
+{
+    // 시작 상태가 목표 상태인 경우
+    if (aStart == aFid && bStart == bFid) return 0;
+
+    // 시작 상태 방문 표시 (거리 0 + 1)
+    m[{aStart, bStart}] = 1;
+
+    // BFS 탐색 시작
+    q.emplace(aStart, bStart);
+    while (!q.empty())
+    {
+        int cA = q.front().first;   // 현재 A 물통 상태
+        int cB = q.front().second;  // 현재 B 물통 상태
+        q.pop();                    // 제거
+
+        // 현재까지의 거리
+        int dist = m[{cA, cB}];
+
+        // 6가지 연산 수행
+        // 1. Fill A : A 물통을 가득 채움
+        // 2. Fill B : B 물통을 가득 채움
+        Enqueue(aCap, cB  , dist);
+        Enqueue(cA  , bCap, dist);
+
+        // 3. Empty A : A 물통을 비움
+        // 4. Empty B : B 물통을 비움
+        Enqueue(0,  cB, dist);
+        Enqueue(cA, 0 , dist);
+
+        // 5. Move B → A : B에서 A로 물을 옮김
+        // 6. Move A → B : A에서 B로 물을 옮김
+        Enqueue(min(cA + cB, aCap          ), max(0      , cA + cB - aCap), dist);
+        Enqueue(max(0      , cA + cB - bCap), min(cA + cB, bCap          ), dist);
+
+        // 목표 상태에 도달했는지 확인
+        if (m[{aFid, bFid}])
+            return m[{aFid, bFid}] - 1;  // 실제 거리 = 저장값 - 1
+    }
+
+    // 목표 상태에 도달 불가
+    return -1;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> aCap >> bCap >> aFid >> bFid;
+
+    cout << BFS(0, 0);
+
+    return 0;
+}

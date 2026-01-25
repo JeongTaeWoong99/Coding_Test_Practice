@@ -279,6 +279,7 @@
     <None Include="백준\3_Gold\G1_2098_외판원순회\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G2_1202_보석도둑\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G2_1513_경로찾기\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G2_14867_물통\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_16434_드래곤앤던전\Answer(성공_이분탐색).cpp.txt" />
     <None Include="백준\3_Gold\G4_16434_드래곤앤던전\Answer(정답_이분탐색).cpp.txt" />
     <None Include="백준\3_Gold\G2_17825_주사위윷놀이\Answer(정답).cpp.txt" />
@@ -441,6 +442,7 @@
     <None Include="백준\3_Gold\G1_2098_외판원순회\README.md" />
     <None Include="백준\3_Gold\G2_1202_보석도둑\README.md" />
     <None Include="백준\3_Gold\G2_1513_경로찾기\README.md" />
+    <None Include="백준\3_Gold\G2_14867_물통\README.md" />
     <None Include="백준\3_Gold\G4_16434_드래곤앤던전\README.md" />
     <None Include="백준\3_Gold\G2_17825_주사위윷놀이\README.md" />
     <None Include="백준\3_Gold\G2_1781_컵라면\README.md" />

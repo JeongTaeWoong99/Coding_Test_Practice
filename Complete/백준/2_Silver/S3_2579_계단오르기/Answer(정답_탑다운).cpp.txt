@@ -1,0 +1,44 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+int a[304];   // 각 계단의 점수
+int dp[304];  // dp[i] : i번째 계단까지 올라왔을 때의 최대 점수
+
+// 탑다운 : n번째 계단부터 역으로 내려가며 계산
+int solve(int i)
+{
+    // Base case
+    if (i == 1) return a[1];
+    if (i == 2) return a[1] + a[2];
+
+    // 메모이제이션 : 이미 계산된 값이면 바로 반환
+    int& ret = dp[i];
+    if (ret != -1) return ret;
+
+    // 점화식 : dp[i] = max(2칸 점프, 1칸+1칸)
+    // - 2칸 점프 : solve(i-2) + a[i]           (i-1 안 밟음)
+    // - 1칸+1칸 : solve(i-3) + a[i-1] + a[i]   (i-2 안 밟음)
+    // → 둘 다 중간에 하나를 건너뛰므로 3연속 불가능!
+    ret = max(
+        solve(i - 2) + a[i],
+        solve(i - 3) + a[i - 1] + a[i]
+    );
+
+    return ret;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+        cin >> a[i];
+
+    fill_n(dp, 304, -1);  // 메모이제이션용 초기화
+
+    cout << solve(n);
+
+    return 0;
+}

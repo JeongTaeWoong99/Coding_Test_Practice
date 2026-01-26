@@ -1,0 +1,41 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = INT_MAX;
+
+int n;
+int dp[1000004];
+
+int main()
+{
+    ios_base::sync_with_stdio(0),cin.tie(0),cout.tie(0);
+
+    cin >> n;
+
+    fill_n(dp, 1000004, INF);
+
+    // 1로 만들기 이기 때문에, 1의 이동 횟수는 0이다
+    dp[0] = 0;
+    dp[1] = 0;
+
+    // 각 공식에 대해서, 조건을 만족하면
+    // 이전 자리 + 1 vs 현재 자리
+    // 를 통해, 값을 비교해, min값을 구한다.
+    for (int i = 2; i <= n; ++i)
+    {
+        // 1을 뺐을 때, 0보다 큼(2부터 시작하여, 함상 참이기 때문에, 조건식 생략)
+        dp[i] = min(dp[i], dp[i - 1] + 1);
+
+        // 2으로 나눴을 때, 나머지가 없음
+        if (i % 2 == 0)
+            dp[i] = min(dp[i], dp[i / 2] + 1);
+
+        // 3으로 나눴을 때, 나머지가 없음
+        if (i % 3 == 0)
+            dp[i] = min(dp[i], dp[i / 3] + 1);
+    }
+
+    cout << dp[n];
+
+    return 0;
+}

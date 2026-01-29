@@ -213,6 +213,7 @@
     <None Include="백준\2_Silver\S3_1072_게임\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_11659_구간합구하기4\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_11726_2xn타일링\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S3_11727_2xn타일링2\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_1269_대칭차집합\Answer(성공_최적화).cpp.txt" />
     <None Include="백준\2_Silver\S3_1269_대칭차집합\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_1463_1로만들기\Answer(성공).cpp.txt" />
@@ -396,6 +397,7 @@
     <None Include="백준\2_Silver\S3_1072_게임\README.md" />
     <None Include="백준\2_Silver\S3_11659_구간합구하기4\README.md" />
     <None Include="백준\2_Silver\S3_11726_2xn타일링\README.md" />
+    <None Include="백준\2_Silver\S3_11727_2xn타일링2\README.md" />
     <None Include="백준\2_Silver\S3_1213_팰린드롬만들기\README.md" />
     <None Include="백준\2_Silver\S3_1269_대칭차집합\README.md" />
     <None Include="백준\2_Silver\S3_1463_1로만들기\README.md" />

@@ -1,0 +1,27 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_N = 1004;
+
+int n;
+int dp[MAX_N];
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    dp[0] = 0;
+    dp[1] = 1;
+    dp[2] = 3;
+
+    for (int i = 3; i < MAX_N; ++i)
+    {
+        dp[i] = (dp[i - 2] * 2 + dp[i - 1]) % 10007;
+    }
+
+    cout << dp[n];
+
+    return 0;
+}

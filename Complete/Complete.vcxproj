@@ -218,6 +218,7 @@
     <None Include="백준\2_Silver\S3_1269_대칭차집합\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_1463_1로만들기\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_1535_안녕\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S3_17626_FourSquares\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_1929_소수구하기\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_1966_프린터큐\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_2559_수열\Answer(성공).cpp.txt" />
@@ -402,6 +403,7 @@
     <None Include="백준\2_Silver\S3_1269_대칭차집합\README.md" />
     <None Include="백준\2_Silver\S3_1463_1로만들기\README.md" />
     <None Include="백준\2_Silver\S3_1535_안녕\README.md" />
+    <None Include="백준\2_Silver\S3_17626_FourSquares\README.md" />
     <None Include="백준\2_Silver\S3_1929_소수구하기\README.md" />
     <None Include="백준\2_Silver\S3_1966_프린터큐\README.md" />
     <None Include="백준\2_Silver\S3_2559_수열\README.md" />

@@ -1,0 +1,68 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+double dpA[19][19]; // dpA[i][j] : i번째 구간까지, A팀이 j골 넣을 확률
+double dpB[19][19]; // dpB[i][j] : i번째 구간까지, B팀이 j골 넣을 확률
+int    a, b;        // a  : A팀 득점 확률(%),   b  : B팀 득점 확률(%)
+double pA, pB;      // pA : A팀 득점 확률(0~1), pB : B팀 득점 확률(0~1)
+
+// num : 소수 판별할 숫자
+bool isPrime(int num)
+{
+    if(num < 2) return false;
+
+    for(int i = 2; i * i <= num; i++)
+    {
+        if(num % i == 0) 
+            return false;
+    }
+    
+    return true;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력 (퍼센트 단위)
+    cin >> a >> b;
+    pA = a / 100.0; // 퍼센트 → 확률 변환
+    pB = b / 100.0;
+
+    // DP 초기화 : 0번째 구간에서 0골일 확률 = 1
+    dpA[0][0] = 1.0;
+    dpB[0][0] = 1.0;
+
+    // 18개 구간(5분 x 18 = 90분)에 대해 DP 전이
+    for(int i = 0; i < 18; i++)
+    {
+        for(int j = 0; j <= i; j++)
+        {
+            // A팀 DP 전이
+            dpA[i + 1][j + 1] += dpA[i][j] * pA;        // 이 구간에서 득점
+            dpA[i + 1][j]     += dpA[i][j] * (1 - pA);  // 이 구간에서 미득점
+
+            // B팀 DP 전이
+            dpB[i + 1][j + 1] += dpB[i][j] * pB;        // 이 구간에서 득점
+            dpB[i + 1][j]     += dpB[i][j] * (1 - pB);  // 이 구간에서 미득점
+        }
+    }
+
+    // 여사건 활용 : "적어도 한 팀이 소수" = 1 - "두 팀 모두 소수 아님"
+    double notPrimeA = 0.0; // A팀 총 골이 소수가 아닐 확률
+    double notPrimeB = 0.0; // B팀 총 골이 소수가 아닐 확률
+
+    for(int j = 0; j <= 18; j++)
+    {
+        if(!isPrime(j))
+        {
+            notPrimeA += dpA[18][j];
+            notPrimeB += dpB[18][j];
+        }
+    }
+
+    // 정답 출력 (두 팀이 독립이므로, 여사건의 곱으로 계산)
+    cout << fixed << setprecision(16) << 1.0 - notPrimeA * notPrimeB << "\n";
+
+    return 0;
+}

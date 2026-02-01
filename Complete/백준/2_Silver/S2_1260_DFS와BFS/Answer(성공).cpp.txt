@@ -1,0 +1,80 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int         n, m, s;   // n : 정점 수, m : 간선 수, s : 시작 정점
+vector<int> adj[1004]; // 인접 리스트 (양방향 그래프)
+bool        vit[1004]; // 방문 체크 배열
+
+// DFS : 깊이 우선 탐색 (재귀)
+// cur : 현재 방문 정점
+void DFS(int cur)
+{
+    vit[cur] = true;         // 현재 정점 방문 처리
+    cout << cur << " ";      // 방문 순서 출력
+
+    for (int next : adj[cur])
+    {
+        if (vit[next]) continue; // 이미 방문한 정점 스킵
+
+        DFS(next);               // 재귀 호출
+    }
+}
+
+// BFS : 너비 우선 탐색 (큐)
+// start : 탐색 시작 정점
+void BFS(int start)
+{
+    queue<int> bfsQ;
+    vit[start] = true;      // 시작 정점 방문 처리
+    bfsQ.emplace(start);    // 큐에 삽입
+
+    while (!bfsQ.empty())
+    {
+        int cur = bfsQ.front(); // 현재 정점
+        bfsQ.pop();
+        cout << cur << " ";     // 방문 순서 출력
+
+        for (int next : adj[cur])
+        {
+            if (vit[next]) continue; // 이미 방문한 정점 스킵
+
+            vit[next] = true;        // 방문 처리
+            bfsQ.emplace(next);      // 큐에 삽입
+        }
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> n >> m >> s;
+
+    // 간선 입력 (양방향)
+    int a, b;
+    for (int i = 0; i < m; i++)
+    {
+        cin >> a >> b;
+        adj[a].emplace_back(b);
+        adj[b].emplace_back(a);
+    }
+
+    // 정점 번호가 작은 것부터 방문하기 위해 정렬
+    for (int i = 1; i <= n; i++)
+    {
+        sort(adj[i].begin(), adj[i].end());
+    }
+
+    // DFS 탐색
+    DFS(s);
+    cout << "\n";
+
+    // visited 배열 초기화 (BFS를 위해)
+    fill_n(vit,1004,false);
+
+    // BFS 탐색
+    BFS(s);
+
+    return 0;
+}

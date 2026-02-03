@@ -1,0 +1,50 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+string s;       // 입력받을 수식 문자열
+int    result;  // 최종 결과값
+bool   isMinus; // 첫 번째 '-'를 만났는지 여부
+
+// 핵심 아이디어 :
+// '-' 뒤에 나오는 '+' 연산들은 괄호로 묶으면 전부 '-'로 바꿀 수 있다!!!
+// 예) 55-50+40  →  55-(50+40)  =  -35
+// 따라서, 첫 '-' 이전의 숫자는 더하고, 이후의 숫자는 전부 빼면 최솟값
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> s;
+
+    int num = 0; // 현재 파싱 중인 숫자
+
+    // 문자열을 한 글자씩 순회 (i == s.length()일 때 마지막 숫자 처리)
+    for (int i = 0; i <= s.length(); i++)
+    {
+        // 연산자를 만나거나, 문자열 끝에 도달하면 → 숫자 처리
+        if (i == s.length() || s[i] == '+' || s[i] == '-')
+        {
+            // '-'를 만난 적 있으면 빼기, 없으면 더하기
+            if (isMinus) result -= num;
+            else         result += num;
+
+            num = 0; // 다음 숫자를 위해 초기화
+
+            // '-'를 처음 만나면, 이후로는 모든 숫자를 빼기
+            if (i < s.length() && s[i] == '-')
+                isMinus = true;
+        }
+        // 숫자인 경우 → 자릿수 반영하여 숫자 조립
+        //  s[i] - '0' : 새로운 1의 자리
+        //  num * 10   : 기존 숫자를 한 자릿수 왼쪽으로 밀기 (5 → 50)
+        else
+        {
+            // 숫자 갱신 = 기존 숫자 왼쪽으로 1칸 밀기 + 1의 자리 더하기
+            num = num * 10 + (s[i] - '0');
+        }
+    }
+
+    cout << result << "\n";
+
+    return 0;
+}

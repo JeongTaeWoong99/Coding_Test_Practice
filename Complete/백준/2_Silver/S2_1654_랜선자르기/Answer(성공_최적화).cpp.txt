@@ -1,0 +1,57 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int       k, n;               // k개 가지고 있는 렌선 길이 입력, n개 만들기
+long long lenth[10004];       // 길이가 2^31-1까지라 long long 사용
+long long mid, lef, rit, cnt; // 이분 탐색용 변수(마찬가지 long long)
+long long maxRet = 0;         // n개를 만들 수 있는 '랜선의 최대 길이'
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> k >> n;
+
+    for (int i = 0; i < k; ++i)
+    {
+        cin >> lenth[i];
+
+        // k개 랜선 중, 제일 긴 랜선을 right로 선택
+        rit = max(lenth[i], rit);
+    }
+
+    // 초기 설정(left는 최소 1이고, right는 위에서 선택됨)
+    lef = 1;
+
+    // 최대 길이 찾기(이분 탐색 종료 조건 동안 진행)
+    while (lef <= rit)
+    {
+        mid = (lef + rit) / 2; // 미드 초기화
+        cnt = 0;               // 구한 갯수 초기화
+
+        // 미드 값으로 각 길이에서 몇개를 만들 수 있는지 구하고 합 만들기
+        for (int i = 0; i < k; ++i)
+        {
+            cnt += lenth[i] / mid;
+        }
+
+        // cnt(구한 갯수) >= n(만드려는 갯수)
+        // 현재 mid 값으로 n개 이상 구해지면, mid를 더 크게 만든다.
+        if (cnt >= n)
+        {
+            maxRet = mid;  // n개를 만들 수 있는 '랜선의 최대 길이' 갱신
+
+            lef = mid + 1; // left 변경(무한루프 방지 + 1)
+        }
+        // cnt(구한 갯수) < n(만드려는 갯수)
+        // 현재 mid 값으로 n개 이상 구하지 못하면, mid를 작게 만든다.
+        else
+        {
+            rit = mid - 1; // right 변경(무한루프 방지 - 1)
+        }
+    }
+
+    cout << maxRet;
+
+    return 0;
+}

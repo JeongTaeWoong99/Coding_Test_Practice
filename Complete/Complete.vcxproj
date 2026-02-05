@@ -208,6 +208,11 @@
     <None Include="백준\2_Silver\S2_1912_연속합\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S2_2108_통계학\Answer(정답_Counting_STL미사용_효율적).cpp.txt" />
     <None Include="백준\2_Silver\S2_2108_통계학\Answer(성공_STL사용_비효율적).cpp.txt" />
+<<<<<<< Updated upstream
+=======
+    <None Include="백준\2_Silver\S2_2630_색종이만들기\Answer(정답_최적화버전).cpp.txt" />
+    <None Include="백준\2_Silver\S2_2805_나무자르기\Answer(정답).cpp.txt" />
+>>>>>>> Stashed changes
     <None Include="백준\2_Silver\S2_14620_꽃길\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S2_14627_파닭파닭\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S2_1927_최소힙\Answer(정답).cpp.txt" />
@@ -399,6 +404,13 @@
     <None Include="백준\2_Silver\S2_11053_가장긴증가하는부분수열\README.md" />
     <None Include="백준\2_Silver\S2_1912_연속합\README.md" />
     <None Include="백준\2_Silver\S2_2108_통계학\README.md" />
+<<<<<<< Updated upstream
+=======
+    <None Include="백준\2_Silver\S2_2630_색종이만들기\README.md" />
+    <None Include="백준\2_Silver\S2_2805_나무자르기\README.md" />
+>>>>>>> Stashed changes
+    <None Include="백준\2_Silver\S2_2630_색종이만들기\Answer(정답_최적화버전).cpp.txt" />
+    <None Include="백준\2_Silver\S2_2805_나무자르기\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S2_14620_꽃길\README.md" />
     <None Include="백준\2_Silver\S2_14627_파닭파닭\README.md" />
     <None Include="백준\2_Silver\S2_1927_최소힙\README.md" />

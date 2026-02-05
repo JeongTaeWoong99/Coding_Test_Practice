@@ -1,0 +1,41 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+priority_queue<int> pQ;  // 최대 힙 (기본값)
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    long long temp; // x는 0 ~ 2^31 자연수
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> temp;
+
+        // 0이라면 배열에서 가장 큰 값을 출력 + 제거
+        if (temp == 0)
+        {
+            // 값이 없다면 => 0 출력
+            if (pQ.empty())
+            {
+                cout << 0 << '\n';
+            }
+            // 값이 있다면, 출력 + 제거
+            else
+            {
+                cout << pQ.top() << '\n';
+                pQ.pop();
+            }
+        }
+        // 0이 아닌 자연수면 => 넣기
+        else
+        {
+            pQ.emplace(temp);
+        }
+    }
+
+    return 0;
+}

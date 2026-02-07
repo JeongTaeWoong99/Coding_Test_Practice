@@ -1,0 +1,66 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, whiteRet, blueRet; // n x n 범위, 하얀색 구역 수, 파란색 구역 수
+int ar[130][130];         // 2^7 = 128 + 여유
+
+// 재귀(재귀마다 현재 위치와 사이즈를 알맞게)
+// (curY, curX) 위치부터 curSize × curSize 범위 확인
+void Check(int curY, int curX, int curSize)
+{
+    int firstColor = ar[curY][curX];  // 첫 칸의 색 확인
+    bool isAllSame = true;            // 모두 동일한지 확인
+
+    // 전체가 같은 색인지 확인(시작점)
+    for (int i = curY; i < curY + curSize; ++i)
+    {
+        if (!isAllSame) break;
+
+        for (int j = curX; j < curX + curSize; ++j)
+        {
+            if (ar[i][j] != firstColor)
+            {
+                isAllSame = false;
+                break;
+            }
+        }
+    }
+
+    // 모두 같은 색 => 알맞게 카운트
+    if (isAllSame)
+    {
+        if (firstColor == 0)
+            whiteRet++;
+        else
+            blueRet++;
+    }
+    // 다른 색 존재 => 4등분 재귀
+    else
+    {
+        // 현재 사이즈에서 절반으로 적용
+        int half = curSize / 2;
+
+        // 재귀
+        Check(curY       , curX       , half);  // 왼쪽 위
+        Check(curY       , curX + half, half);  // 오른쪽 위
+        Check(curY + half, curX       , half);  // 왼쪽 아래
+        Check(curY + half, curX + half, half);  // 오른쪽 아래
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < n; ++j)
+            cin >> ar[i][j];
+
+    Check(0, 0, n);
+
+    cout << whiteRet << '\n' << blueRet;
+
+    return 0;
+}

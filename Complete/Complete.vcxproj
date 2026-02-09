@@ -206,6 +206,7 @@
     <None Include="백준\2_Silver\S3_1018_체스판다시칠하기\Answer(정답_압축버전).cpp.txt" />
     <None Include="백준\2_Silver\S2_11053_가장긴증가하는부분수열\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S2_11279_최대힙\Answer(정답).cpp.txt" />
+    <None Include="백준\2_Silver\S2_11724_연결요소의개수\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S2_1912_연속합\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S2_2108_통계학\Answer(정답_Counting_STL미사용_효율적).cpp.txt" />
     <None Include="백준\2_Silver\S2_2108_통계학\Answer(성공_STL사용_비효율적).cpp.txt" />
@@ -401,6 +402,7 @@
     <None Include="백준\2_Silver\S3_1018_체스판다시칠하기\README.md" />
     <None Include="백준\2_Silver\S2_11053_가장긴증가하는부분수열\README.md" />
     <None Include="백준\2_Silver\S2_11279_최대힙\README.md" />
+    <None Include="백준\2_Silver\S2_11724_연결요소의개수\README.md" />
     <None Include="백준\2_Silver\S2_1912_연속합\README.md" />
     <None Include="백준\2_Silver\S2_2108_통계학\README.md" />
     <None Include="백준\2_Silver\S2_2630_색종이만들기\README.md" />

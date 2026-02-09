@@ -1,0 +1,60 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int         n, m;          // n : 정점의 개수, m : 간선의 개수
+vector<int> adj[1004];     // 인접 리스트 (양방향 그래프)
+int         visited[1004]; // 방문 체크
+int         ret = 0;       // 연결 요소의 개수
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m;
+
+    // 간선 양방향
+    int u, v;
+    for (int i = 0; i < m; i++)
+    {
+        cin >> u >> v;
+        adj[u].emplace_back(v);
+        adj[v].emplace_back(u);
+    }
+
+    // 모든 정점을 순회하면서 연결 요소 탐색
+    for (int i = 1; i <= n; i++)
+    {
+        // 이미 방문한 정점은 스킵
+        if (visited[i] == 1) continue;
+
+        // BFS 시작 (새로운 연결 요소 발견)
+        queue<int> q;
+        visited[i] = 1;
+        q.emplace(i);
+
+        // BFS 탐색
+        while (!q.empty())
+        {
+            int cur = q.front();
+            q.pop();
+
+            // 현재 정점과 연결된 모든 정점 확인
+            for (int next : adj[cur])
+            {
+                // 이미 방문한 정점은 스킵
+                if (visited[next] == 1) continue;
+
+                // 방문 처리 및 큐에 추가
+                visited[next] = 1;
+                q.emplace(next);
+            }
+        }
+
+        ret++;  // 연결 요소 하나 완료
+    }
+
+    // 결과 출력
+    cout << ret << "\n";
+
+    return 0;
+}

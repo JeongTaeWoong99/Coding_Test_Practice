@@ -202,6 +202,7 @@
     <None Include="백준\2_Silver\S2_1012_유기농배추\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S2_1260_DFS와BFS\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S2_1541_잃어버린괄호\Answer(성공_정리버전).cpp.txt" />
+    <None Include="백준\2_Silver\S2_18111_마인크래프트\Answer(성공_브루트포스+계수정렬).cpp.txt" />
     <None Include="백준\2_Silver\S3_1003_피보나치함수\Answer(정답_최적화 버전).cpp.txt" />
     <None Include="백준\2_Silver\S3_1018_체스판다시칠하기\Answer(정답_압축버전).cpp.txt" />
     <None Include="백준\2_Silver\S2_11053_가장긴증가하는부분수열\Answer(성공).cpp.txt" />
@@ -214,6 +215,7 @@
     <None Include="백준\2_Silver\S2_2805_나무자르기\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S2_14620_꽃길\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S2_14627_파닭파닭\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S2_18111_마인크래프트\Answer(성공_브루트포스).cpp.txt" />
     <None Include="백준\2_Silver\S2_1927_최소힙\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S2_1654_랜선자르기\Answer(성공_최적화).cpp.txt" />
     <None Include="백준\2_Silver\S2_1874_스택수열\Answer(성공_최적화버전).cpp.txt" />
@@ -409,6 +411,7 @@
     <None Include="백준\2_Silver\S2_2805_나무자르기\README.md" />
     <None Include="백준\2_Silver\S2_14620_꽃길\README.md" />
     <None Include="백준\2_Silver\S2_14627_파닭파닭\README.md" />
+    <None Include="백준\2_Silver\S2_18111_마인크래프트\README.md" />
     <None Include="백준\2_Silver\S2_1927_최소힙\README.md" />
     <None Include="백준\2_Silver\S2_1654_랜선자르기\README.md" />
     <None Include="백준\2_Silver\S2_1874_스택수열\README.md" />

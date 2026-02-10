@@ -1,0 +1,63 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, m, b;            // 세로, 가로, 보유 블록
+int num[257];           // 계수정렬 : num[h] = 높이 h인 칸의 개수
+int minTime = INT_MAX;  // 최소 시간
+int goalHight;          // 목표 높이
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> n >> m >> b;
+
+    // ★ 계수정렬 : 높이별 칸 개수 세기
+    int h;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            cin >> h;
+            num[h]++;
+        }
+    }
+
+    // 브루트포스 (모든 목표 높이 비교)
+    for (int curHeight = 0; curHeight <= 256; curHeight++)
+    {
+        // 초기화
+        int removBlk = 0; // 제거해야 할 블록 수
+        int placeBlk = 0; // 놓아야 할 블록 수
+
+        // ★ 계수정렬 배열로 비교 (0~256만 순회)
+        for (int i = 0; i <= 256; i++)
+        {
+            if (num[i] == 0) continue; // ★ 해당 높이 칸 없으면 스킵
+
+            int diff = i - curHeight;
+
+            if (diff > 0) removBlk += diff * num[i]; // ★ 높은 칸들 제거
+            else          placeBlk -= diff * num[i]; // ★ 낮은 칸들 채우기
+        }
+
+        // 인벤토리 검증 : 제거한 블록 + 보유 블록 >= 놓아야 할 블록
+        if (removBlk + b < placeBlk) continue;
+
+        // 시간 계산 : 제거 2초, 놓기 1초
+        int time = removBlk * 2 + placeBlk * 1;
+
+        // 최소 시간 갱신 (같은 시간이면 높이가 높은 쪽 선택 = 0부터 시작하기 때문에 자동으로 늦게 선택된게 더 높은 쪽)
+        if (time <= minTime)
+        {
+            minTime   = time;
+            goalHight = curHeight;
+        }
+    }
+
+    // 결과 출력
+    cout << minTime << " " << goalHight << "\n";
+
+    return 0;
+}

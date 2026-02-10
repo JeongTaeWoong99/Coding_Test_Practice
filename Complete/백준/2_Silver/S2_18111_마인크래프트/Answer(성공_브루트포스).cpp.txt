@@ -1,0 +1,58 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, m, b;            // 세로, 가로, 보유 블록
+int ar[504][504];       // 원본 맵 (땅 높이)
+int minTime = INT_MAX;  // 최소 시간
+int goalHight;          // 목표 높이
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> n >> m >> b;
+
+    // ★ 원본 맵 입력
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            cin >> ar[i][j];
+
+    // 브루트포스(모든 높이 비교)
+    for (int curHeight = 0; curHeight <= 256; curHeight++)
+    {
+        // 초기화
+        int removBlk = 0; // 제거해야 할 블록 수
+        int placeBlk = 0; // 놓아야 할 블록 수
+
+        // ★ 원본 배열과 모든 높이에 대해 비교
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                int diff = ar[i][j] - curHeight;
+
+                if (diff > 0) removBlk += diff; // ★ 현재가 높으면 제거
+                else          placeBlk -= diff; // ★ 현재가 낮으면 채우기
+            }
+        }
+
+        // 인벤토리 검증 : 제거한 블록 + 보유 블록 >= 놓아야 할 블록
+        if (removBlk + b < placeBlk) continue;
+
+        // 시간 계산 : 제거 2초, 놓기 1초
+        int time = removBlk * 2 + placeBlk * 1;
+
+        // 최소 시간 갱신 (같은 시간이면 높이가 높은 쪽 선택 = 0부터 시작하기 때문에 자동으로 늦게 선택된게 더 높은 쪽)
+        if (time <= minTime)
+        {
+            minTime   = time;
+            goalHight = curHeight;
+        }
+    }
+
+    // 결과 출력
+    cout << minTime << " " << goalHight << "\n";
+
+    return 0;
+}

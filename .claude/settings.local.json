@@ -90,7 +90,13 @@
       "Bash(\"/mnt/c/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe\" Test/Test.vcxproj /p:Configuration=Debug /p:Platform=x64)",
       "Bash(\"Complete/백준/2_Silver/S4_10816_숫자카드2/Answer\\(다른정답_배열\\).cpp.txt\")",
       "Bash(\"Complete/백준/2_Silver/S4_10816_숫자카드2/Answer\\(다른정답_이분탐색\\).cpp.txt\")",
-      "Skill(keybindings-help)"
+      "Skill(keybindings-help)",
+      "Bash(git -C 'C:/Users/ASUS/Desktop/Unity/Project/ZETA\\(Git\\)' log --oneline --after=\"2025-07-03\" --before=\"2025-07-05\")",
+      "Bash(git -C 'C:/Users/ASUS/Desktop/Unity/Project/ZETA' log --oneline --after=\"2025-07-03\" --before=\"2025-07-05\")",
+      "Bash(git -C 'C:/Users/ASUS/Desktop/Unity/Project/ZETA\\(Git\\)' log --format=\"%H %ad %s\" --date=short --after=\"2025-07-03\" --before=\"2025-07-05\")",
+      "Bash(git -C 'C:/Users/ASUS/Desktop/Unity/Project/ZETA\\(Git\\)' log --oneline -20)",
+      "Bash(git -C 'C:/Users/ASUS/Desktop/Unity/Project/ZETA\\(Git\\)' log --format=\"%H %ad %s\" --date=short --reverse)",
+      "Bash(git rebase:*)"
     ]
   },
   "outputStyle": "korean-terminal"

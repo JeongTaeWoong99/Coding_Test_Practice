@@ -188,6 +188,7 @@
     <None Include="백준\2_Silver\S1_1189_컴백홈\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_1325_효율적인해킹\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_1629_곱셈\Answer(정답).cpp.txt" />
+    <None Include="백준\2_Silver\S1_1697_숨바꼭질\Answer(성공_최적화버전).cpp.txt" />
     <None Include="백준\2_Silver\S1_1992_쿼드트리\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_2178_미로탐색\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_2468_안전영역\Answer.cpp.txt" />
@@ -388,6 +389,7 @@
     <None Include="백준\2_Silver\S1_1189_컴백홈\README.md" />
     <None Include="백준\2_Silver\S1_1325_효율적인해킹\README.md" />
     <None Include="백준\2_Silver\S1_1629_곱셈\README.md" />
+    <None Include="백준\2_Silver\S1_1697_숨바꼭질\README.md" />
     <None Include="백준\2_Silver\S1_1992_쿼드트리\README.md" />
     <None Include="백준\2_Silver\S1_2178_미로탐색\README.md" />
     <None Include="백준\2_Silver\S1_2468_안전영역\README.md" />

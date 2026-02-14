@@ -1,0 +1,41 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int         n;
+vector<int> v, origin;
+
+int main()
+{
+    // 입력 출력 많음 필수
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    // 미리 할당
+    v.reserve(n);
+
+    // n개 넣기
+    int temp;
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> temp;
+        v.emplace_back(temp);
+    }
+
+    // 출력 순서 보장을 위해, 오리지널 백터 저장
+    origin = v;
+
+    // 오름차순 정렬
+    sort(v.begin(), v.end());
+
+    // 연속된 중복 숫자 제거(꼭 sort 후 사용해야 함!!!)
+    v.erase(unique(v.begin(), v.end()), v.end());
+
+    // origin[i] 순서대로 정렬된 v에서 몇 번째에 처음 나오는지 출력
+    for (int i = 0; i < n; ++i)
+    {
+        cout << lower_bound(v.begin(), v.end(), origin[i]) - v.begin() << " ";
+    }
+
+    return 0;
+}

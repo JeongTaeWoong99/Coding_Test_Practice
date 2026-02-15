@@ -1,0 +1,50 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int  n, r, c, cnt; // 1 <= n <= 15
+bool found = false; // 찾았는지 여부
+
+// 직관적인 방법 : 진짜로 Z순서대로 한 칸씩 방문하면서 cnt++
+// (r, c)에 도착하면 그때의 cnt를 출력
+// ⚠️ 시간복잡도 : O(4^N) → N=15일 때 약 10억 → 시간 초과!
+void div(int curSize, int curY, int curX)
+{
+    // 이미 찾았으면 더 이상 탐색 X
+    if (found)
+        return;
+
+    // 크기가 1 = 실제 칸 하나에 도착
+    if (curSize == 1)
+    {
+        // (r, c) 도착!
+        if (curY == r && curX == c)
+        {
+            cout << cnt;
+            found = true;
+            return;
+        }
+
+        cnt++; // 아니면 다음 칸으로
+        return;
+    }
+
+    // Z순서대로 4개 사분면 전부 방문
+    int half = curSize / 2;
+    div(half, curY       , curX       ); // 1. 왼쪽 위칸
+    div(half, curY       , curX + half); // 2. 오른쪽 위칸
+    div(half, curY + half, curX       ); // 3. 왼쪽 아래칸
+    div(half, curY + half, curX + half); // 4. 오른쪽 아래칸
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 2^n 크기 배열, [r][c]자리가 몇번째에 방문하는지 찾기
+    cin >> n >> r >> c;
+
+    // 2^n값과 (0,0)에서 시작
+    div(pow(2, n), 0, 0);
+
+    return 0;
+}

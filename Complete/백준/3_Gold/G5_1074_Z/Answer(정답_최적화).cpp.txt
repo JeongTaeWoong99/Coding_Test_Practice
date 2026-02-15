@@ -1,0 +1,51 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, r, c, cnt; // 1 <= n <= 15
+
+// 최적화된 방법 : (r, c)가 포함된 사분면만 재귀 진입
+// 나머지 사분면은 방문하지 않고 넓이(curSize²)만큼 cnt에 누적
+// ⚠️ 시간복잡도 : O(N) → N=15여도 약 60번만 호출 → 통과!
+void div(int curSize, int curY, int curX)
+{
+    // (r, c)자리 방문 => 종료
+    if (curY == r && curX == c)
+    {
+        cout << cnt;
+        return;
+    }
+
+    // (r, c)가 현재 사분면 안에 있는지 확인
+    bool inY = (r >= curY) && (r < curY + curSize); // r이 현재 Y범위 안에 있는지
+    bool inX = (c >= curX) && (c < curX + curSize); // c가 현재 X범위 안에 있는지
+
+    // 안에 있다면 4 구역으로 재귀(왼쪽 위칸 / 오른쪽 위칸 / 왼쪽 아래칸 / 오른쪽 아래칸)
+    if (inY && inX)
+    {
+        int half = curSize / 2;
+        
+        div(half, curY       , curX       ); // 1. 왼쪽 위칸
+        div(half, curY       , curX + half); // 2. 오른쪽 위칸
+        div(half, curY + half, curX       ); // 3. 왼쪽 아래칸
+        div(half, curY + half, curX + half); // 4. 오른쪽 아래칸
+    }
+    // 없다면 → 이 사분면 전체를 건너뛰기 (핵심!)
+    // 실제로 방문하지 않고, 칸 수만큼 cnt를 한번에 더함
+    else
+    {
+        cnt += curSize * curSize;
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 2^n 크기 배열, [r][c]자리가 몇번째에 방문하는지 찾기
+    cin >> n >> r >> c;
+
+    // 2^n값과 (0,0)에서 시작
+    div(pow(2, n), 0, 0);
+
+    return 0;
+}

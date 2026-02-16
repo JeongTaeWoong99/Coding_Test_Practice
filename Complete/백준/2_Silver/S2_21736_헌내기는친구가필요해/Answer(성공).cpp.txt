@@ -1,0 +1,80 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 우하좌상(4방향 이동 가능)
+const int dirX[4] = {1, 0, -1,  0};
+const int dirY[4] = {0, 1,  0, -1};
+
+int  n, m, cnt;      // n x m 크기 지도, 만날 수 있는 사람 수           
+char arr[604][604];  // 배열 지도
+bool vit[604][604];  // 방문 체크
+int  sY, sX;         // 시작 위치
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    
+    // n x m 크기 입력
+    cin >> n >> m;
+
+    // 배열 채우기 및 시작 위치 찾기
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < m; ++j)
+        {
+            cin >> arr[i][j];
+            
+            // 시작 위치 찾기
+            if (arr[i][j] == 'I')
+            {
+                sY = i;
+                sX = j;
+            }
+        }
+    }
+
+    // BFS 너비 우선 찾기 세팅
+    queue<pair<int,int>> bfsQ;
+    bfsQ.emplace(sY,sX);    // 시작 위치
+    vit[sY][sX] = true;           // 방문 체크
+
+    // 탐색 진행
+    while (!bfsQ.empty())
+    {
+        // 맨 앞 값 사용
+        int curY = bfsQ.front().first;
+        int curX = bfsQ.front().second;
+        bfsQ.pop();
+
+        // 4방향 탐색
+        for (int i = 0; i < 4; ++i)
+        {
+            // 새로운 방향
+            int newY = curY + dirY[i];
+            int newX = curX + dirX[i];
+
+            // 범위 벗어나는지 체크
+            if (newY < 0 || newY >= n || newX < 0 || newX >= m) continue;
+            
+            // 이미 방문했는지 체크
+            if (vit[newY][newX] == true) continue;
+            
+            // 'X'는 벽 체크
+            if (arr[newY][newX] == 'X') continue;
+
+            // 'O'는 빈 공간 or 'P'는 사람 경우
+            bfsQ.emplace(newY,newX);  // 새 탐색 위치 넣기
+            vit[newY][newX] = true;         // 방문 체크
+
+            // 'P'인 경우만 cnt++
+            if (arr[newY][newX] == 'P')
+                cnt++;
+        }
+    }
+
+    // 결과 출력
+    if (cnt == 0) cout << "TT";
+    else          cout << cnt;
+
+    return 0;
+}

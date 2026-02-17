@@ -217,6 +217,7 @@
     <None Include="백준\2_Silver\S2_2805_나무자르기\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S2_14620_꽃길\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S2_14627_파닭파닭\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S2_30804_과일탕후루\Answer(성공_최적화버전).cpp.txt" />
     <None Include="백준\2_Silver\S2_18111_마인크래프트\Answer(성공_브루트포스).cpp.txt" />
     <None Include="백준\2_Silver\S2_21736_헌내기는친구가필요해\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S2_1927_최소힙\Answer(정답).cpp.txt" />
@@ -419,6 +420,7 @@
     <None Include="백준\2_Silver\S2_2805_나무자르기\README.md" />
     <None Include="백준\2_Silver\S2_14620_꽃길\README.md" />
     <None Include="백준\2_Silver\S2_14627_파닭파닭\README.md" />
+    <None Include="백준\2_Silver\S2_30804_과일탕후루\README.md" />
     <None Include="백준\2_Silver\S2_18111_마인크래프트\README.md" />
     <None Include="백준\2_Silver\S2_21736_헌내기는친구가필요해\README.md" />
     <None Include="백준\2_Silver\S2_1927_최소힙\README.md" />

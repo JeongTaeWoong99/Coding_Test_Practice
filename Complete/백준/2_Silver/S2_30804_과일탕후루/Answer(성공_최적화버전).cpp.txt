@@ -1,0 +1,50 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, ans, kinds; // n, 최대 구간 값, 현재 구간 내 과일 종류 수        
+int arr[200001];   // 1 <= n <= 200000 (입력 길이)
+int cnt[10];       // 1 <= s <= 9      (각 과일 종류별 개수)
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> n;
+    
+    for(int i = 0; i < n; i++)
+        cin >> arr[i];
+
+    // 투 포인터 (슬라이딩 윈도우)
+    int lef = 0;
+
+    // 오른쪽으로 증가하면 체크 진행
+    for(int right = 0; right < n; right++)
+    {
+        // 해당하는 과일의 현재 갯수가 0개라면 => 종류 수 1 증가
+        if(cnt[arr[right]] == 0)
+            kinds++;
+
+        // 해당 과일 증가
+        cnt[arr[right]]++;
+
+        // 종류가 3 이상이면 왼쪽에서 제거
+        while(kinds > 2)
+        {
+            cnt[arr[lef]]--;
+            
+            if(cnt[arr[lef]] == 0)
+                kinds--;
+            
+            lef++;
+        }
+
+        // 최대 길이 갱신
+        ans = max(ans, right - lef + 1);
+    }
+
+    // 출력
+    cout << ans << "\n";
+    
+    return 0;
+}

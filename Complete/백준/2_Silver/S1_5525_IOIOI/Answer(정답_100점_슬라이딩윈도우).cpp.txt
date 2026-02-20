@@ -1,0 +1,35 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int    n, m, cnt, consec;  // PN 개수, 연속된 IOI 개수
+string s;                  // 입력 스트링
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m >> s;
+
+    for (int i = 0; i + 2 < m; )
+    {
+        if (s[i] == 'I' && s[i + 1] == 'O' && s[i + 2] == 'I')
+        {
+            consec++;        // 연속된 IOI 개수 증가
+
+            if (consec >= n) // n개 이상이면 PN 발견
+                cnt++;
+
+            i += 2;          // 다음 IOI는 2칸 뒤에서 시작 (IOIOI 겹침)
+        }
+        else
+        {
+            consec  = 0;     // 연속 끊김, 리셋
+            i      += 1;     // 1칸 이동
+        }
+    }
+
+    // 결과 출력
+    cout << cnt;
+
+    return 0;
+}

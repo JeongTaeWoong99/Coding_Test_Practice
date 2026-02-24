@@ -1,0 +1,70 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int         n, m;                        // 사람 수, 연결 횟수
+int         selectedN, minCnt = INT_MAX; // 선택된 사람 번호, 최소 케빈 베이컨 수
+bool        visited[104];                // 방문 체크
+vector<int> v[104];                      // 각 사람마다 연결된 친구 저장
+
+int main()
+{
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m;
+
+    // m 만큼 연결
+    int a, b;
+    for (int i = 0; i < m; ++i)
+    {
+        cin >> a >> b;
+
+        // 양방향 연결 저장
+        v[a].emplace_back(b);
+        v[b].emplace_back(a);
+    }
+
+    // 모든 1 ~ n 번째 사람을 시작으로 탐색 진행
+    for (int i = 1; i <= n; ++i)
+    {
+        // BFS 탐색(매번 초기화)
+        queue<pair<int,int>> bfsQ;           // {노드 번호, 현재 거리}
+        int totalDist = 0;                   // 케빈 베이컨 수 (모든 거리의 합)
+        memset(visited, 0, sizeof(visited)); // 방문 초기화
+
+        bfsQ.emplace(i, 0); // i에서 시작
+        visited[i] = true;  // 방문 체크
+
+        while (!bfsQ.empty())
+        {
+            // 맨 앞 꺼내기
+            int curNum = bfsQ.front().first;
+            int dist   = bfsQ.front().second;
+            bfsQ.pop();
+
+            // 현재 번호에서 연결된 사람들 확인
+            for (int conected : v[curNum])
+            {
+                // 미방문 확인
+                if (!visited[conected])
+                {
+                    visited[conected] = true;         // 방문 체크
+                    bfsQ.emplace(conected, dist + 1); // 큐에 추가 (거리 1 증가)
+                    totalDist += dist + 1;            // 케빈 베이컨 수에 거리 누적
+                }
+            }
+        }
+
+        // 최솟값 갱신 (같으면 번호가 작은 쪽 유지)
+        if (totalDist < minCnt)
+        {
+            minCnt    = totalDist; // 최소 케빈 베이컨 수 갱신
+            selectedN = i;         // 최소값을 가진 사람 번호 변경
+        }
+    }
+
+    // 출력
+    cout << selectedN;
+
+    return 0;
+}

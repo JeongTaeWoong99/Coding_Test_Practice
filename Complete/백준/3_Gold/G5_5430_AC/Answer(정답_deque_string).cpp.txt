@@ -1,0 +1,92 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int    t;       // 테스트 케이스 수
+string pString; // 수행할 함수 (R : 뒤집기, D : 첫번째 삭제)
+int    nInt;    // 배열 원소 수
+string xString; // [x1,...,xn] 형태 입력
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> t;
+
+    while (t--)
+    {
+        cin >> pString >> nInt >> xString;
+
+        // x 파싱 → 덱에 삽입
+        deque<string> dq;
+        string        numString; // 누적 저장용
+
+        for (char c : xString) // 추출 진행
+        {
+            // 숫자 만남 => 숫자 누적
+            if (isdigit(c))
+            {
+                numString += c;
+            }
+            // ',' 또는 ']' 만남 => 저장
+            else if (!numString.empty())
+            {
+                dq.push_back(numString);
+                numString = "";
+            }
+        }
+
+        bool rev   = false; // 뒤집힌 상태 여부
+        bool error = false; // 에러 발생 여부
+
+        // 함수 실행
+        for (char i : pString)
+        {
+            // 뒤집기 : 실제 뒤집지 않고 플래그만 토글 (O(1))
+            if (i == 'R')
+            {
+                rev = !rev;
+            }
+            // 첫번째 숫자 삭제
+            if (i == 'D')
+            {
+                if (dq.empty())
+                {
+                    error = true;
+                    break;
+                }
+
+                if (rev) dq.pop_back();  // 뒤집힌 상태 : 맨 뒤 제거
+                else     dq.pop_front(); // 정방향     : 맨 앞 제거
+            }
+        }
+
+        // 에러 출력
+        if (error)
+        {
+            cout << "error\n";
+            continue;
+        }
+
+        // 정상 출력
+        cout << "[";
+        if (rev)
+        {
+            for (int i = (int)dq.size() - 1; i >= 0; --i)
+            {
+                cout << dq[i];
+                if (i > 0) cout << ",";
+            }
+        }
+        else
+        {
+            for (int i = 0; i < (int)dq.size(); ++i)
+            {
+                cout << dq[i];
+                if (i < (int)dq.size() - 1) cout << ",";
+            }
+        }
+        cout << "]\n";
+    }
+
+    return 0;
+}

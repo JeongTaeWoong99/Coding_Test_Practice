@@ -1,0 +1,97 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int    t;              // 테스트 케이스 수
+string pString;        // 수행할 함수 (R : 뒤집기, D : 첫번째 삭제)
+int    nInt;           // 배열 원소 수
+string xString;        // [x1,...,xn] 형태 입력
+int    arr[100004];    // 파싱된 배열 (전역 : 매 테스트마다 재사용)
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> t;
+
+    while (t--)
+    {
+        cin >> pString >> nInt >> xString;
+
+        // x 파싱 → 배열에 삽입 (string 대신 int로 직접 저장)
+        int  left  = 0;   // 배열 왼쪽 인덱스
+        int  right = -1;  // 배열 오른쪽 인덱스
+        int  num   = 0;   // 누적 숫자
+        bool inNum = false;
+
+        for (char c : xString)
+        {
+            // 숫자 만남 => 숫자 누적 (다자리 처리)
+            if (isdigit(c))
+            {
+                num   = num * 10 + (c - '0');
+                inNum = true;
+            }
+            // ',' 또는 ']' 만나면 배열에 저장
+            else if (inNum)
+            {
+                arr[++right] = num;
+                num          = 0;
+                inNum        = false;
+            }
+        }
+
+        bool rev   = false; // 뒤집힌 상태 여부
+        bool error = false; // 에러 발생 여부
+
+        // 함수 실행
+        for (char i : pString)
+        {
+            // 뒤집기 : 플래그만 토글 (O(1))
+            if (i == 'R')
+            {
+                rev = !rev;
+            }
+            // 첫번째 숫자 삭제 : 인덱스만 이동 (O(1), 힙 할당 없음)
+            if (i == 'D')
+            {
+                if (left > right) // 배열이 비어있으면 => error
+                {
+                    error = true;
+                    break;
+                }
+
+                if (rev) right--; // 뒤집힌 상태 : 오른쪽 인덱스 감소
+                else     left++;  // 정방향      : 왼쪽 인덱스 증가
+            }
+        }
+
+        // 에러 출력
+        if (error)
+        {
+            cout << "error\n";
+            continue;
+        }
+
+        // 정상 출력
+        cout << "[";
+        if (rev)
+        {
+            for (int i = right; i >= left; --i)
+            {
+                cout << arr[i];
+                if (i > left) cout << ",";
+            }
+        }
+        else
+        {
+            for (int i = left; i <= right; ++i)
+            {
+                cout << arr[i];
+                if (i < right) cout << ",";
+            }
+        }
+        cout << "]\n";
+    }
+
+    return 0;
+}

@@ -140,7 +140,7 @@ bool Check(char x, char y, char op) { }
 ```cpp
 int main()
 {
-    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);  // 필수
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);  // 필수
 
     // 입력 처리
     cin >> n >> l >> r;
@@ -155,7 +155,7 @@ int main()
 ```
 
 **필수 포함 사항 :**
-- 입출력 최적화 : `ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);`
+- 입출력 최적화 : `ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);`
 - 간결한 구조 : 입력 → 처리 → 출력 순서
 - 명확한 구분 : 각 단계별로 주석으로 구분
 - 필요시 메서드 : 메인 로직이 너무 길어지면 핵심 알고리즘을 메서드로 묶기

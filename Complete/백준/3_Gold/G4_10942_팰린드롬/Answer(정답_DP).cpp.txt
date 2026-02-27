@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int  n, m;
+int  s, e;
+int  arr[2004];       // 수열 (1-indexed)
+bool dp[2004][2004];  // dp[i][j] : arr[i..j]가 팰린드롬이면 true, 아니면 false
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 수열 입력
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> arr[i];
+
+    // DP 전처리 : 짧은 구간부터 긴 구간 순서로 채우기
+
+    // 길이 1 : 원소 1개는 항상 팰린드롬
+    for (int i = 1; i <= n; ++i)
+        dp[i][i] = true;
+
+    // 길이 2 : 두 원소가 같으면 팰린드롬 (다르면 false, bool 기본값으로 유지)
+    for (int i = 1; i < n; ++i)
+    {
+        if (arr[i] == arr[i + 1])
+            dp[i][i + 1] = true;
+    }
+
+    // 길이 3 이상
+    // gap   : i와 j 사이의 거리 (gap = j - i)
+    //         gap = 2 → j = i + 2, 길이 3 (arr[i], arr[i+1], arr[i+2])
+    //         gap = 3 → j = i + 3, 길이 4, ... gap = n-1 → 길이 n (전체 수열)
+    // 짧은 gap부터 채워야 dp[i+1][j-1] (안쪽 구간)이 이미 계산된 상태가 보장됨
+    for (int gap = 2; gap < n; ++gap)
+    {
+        // i       : 구간의 시작 인덱스
+        // i + gap : 구간의 끝 인덱스 j
+        //           j <= n 이어야 하므로, i + gap <= n → i <= n - gap
+        for (int i = 1; i <= n - gap; ++i)
+        {
+            // arr[i] == arr[i+gap] : 구간 양 끝 원소가 같은가?
+            // dp[i+1][i+gap-1]     : 양 끝 제외한 안쪽 구간이 팰린드롬인가?
+            //                        (gap이 2 작으므로 이전 단계에서 이미 계산됨)
+            // ex) gap=4, i=2 → j=6 → dp[3][5] && arr[2]==arr[6]
+            // ★ arr에서 양끝 2와 6 확인하고, dp에서 안쪽 3와5 확인하고 ★
+            if (arr[i] == arr[i + gap] && dp[i + 1][i + gap - 1])
+                dp[i][i + gap] = true;
+        }
+    }
+
+    // 쿼리 응답 : O(1)
+    cin >> m;
+    while (m--)
+    {
+        cin >> s >> e;
+        cout << dp[s][e] << "\n";
+    }
+
+    return 0;
+}

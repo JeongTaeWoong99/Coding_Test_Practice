@@ -1,0 +1,35 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, m;
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m;
+
+    // 조합 마스크 : 0 = 선택, 1 = 미선택
+    // ex) N=4, M=2 → {0,0,1,1}
+    vector<int> v(n, 1);     // 전부 1(미선택)로 초기화
+    fill_n(v.begin(), m, 0); // 앞 M개만 0(선택)으로 세팅
+
+    // next_permutation으로 v의 모든 순열을 생성
+    // → 0이 있는 위치가 바뀌면서 자동으로 모든 조합을 순회
+    do
+    {
+        for(int i = 0; i < n; i++)
+        {
+            if(v[i] == 0) // 0인 위치 = i+1번 숫자 선택됨
+            {
+                cout << i + 1 << " ";
+            }
+        }
+
+        cout << "\n";
+
+    }
+    while(next_permutation(v.begin(), v.end()));
+
+    return 0;
+}

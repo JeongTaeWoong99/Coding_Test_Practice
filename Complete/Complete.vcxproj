@@ -195,6 +195,7 @@
     <None Include="백준\2_Silver\S1_2468_안전영역\Answer.cpp.txt" />
     <None Include="백준\2_Silver\S1_2529_부등호\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_2583_영역구하기\Answer(정답).cpp.txt" />
+    <None Include="백준\2_Silver\S1_2667_단지번호붙이기\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_2792_보석상자\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S1_5525_IOIOI\Answer(성공_50점_최적화버전).cpp.txt" />
     <None Include="백준\2_Silver\S1_5525_IOIOI\Answer(정답_100점_슬라이딩윈도우).cpp.txt" />
@@ -409,6 +410,7 @@
     <None Include="백준\2_Silver\S1_2468_안전영역\README.md" />
     <None Include="백준\2_Silver\S1_2529_부등호\README.md" />
     <None Include="백준\2_Silver\S1_2583_영역구하기\README.md" />
+    <None Include="백준\2_Silver\S1_2667_단지번호붙이기\README.md" />
     <None Include="백준\2_Silver\S1_2792_보석상자\README.md" />
     <None Include="백준\2_Silver\S1_5525_IOIOI\README.md" />
     <None Include="백준\2_Silver\S1_6236_용돈관리\README.md" />

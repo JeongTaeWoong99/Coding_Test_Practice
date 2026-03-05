@@ -1,0 +1,46 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, x;
+// {절댓값, 원본값} - 절댓값 오름차순 정렬 (동일 절댓값 시 원본값 작은 것 우선)
+// 자료구조 형태 vector가 기본(내부는 동일하게 pair<int,int>로 맞춤)
+// 오름차순(내부는 동일하게 pair<int,int>로 맞춤)
+priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int, int>>> pQ;
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    
+    cin >> n;
+
+    while (n--)
+    {
+        cin >> x;
+
+        // 만약 x가 0이 아니라면
+        // => 배열에 x라는 값을 넣는(추가하는) 연산
+        if (x != 0)
+        {
+            // 절대값으로 정렬 - 원본값 보존
+            pQ.emplace(abs(x),x);
+        }
+        // x가 0이라면
+        // => 배열에서 절댓값이 가장 작은 값을 출력하고 그 값을 배열에서 제거하는 경우
+        else
+        {
+            // 값이 있으면, 맨위 출력 및 삭제
+            if (!pQ.empty())
+            {
+                cout << pQ.top().second << '\n';
+                pQ.pop();
+            }
+            // 값이 없으면, 0 출력
+            else
+            {
+                cout << "0\n";
+            }
+        }
+    }
+
+    return 0;
+}

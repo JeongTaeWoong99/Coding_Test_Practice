@@ -146,7 +146,8 @@
       "Bash(xxd:*)",
       "Bash(\"C:/Users/ASUS/Desktop/Code/CoTe/Coding-Test-Practice/Complete/백준/3_Gold/G5_1074_Z/Answer\\(실패\\).cpp.txt\")",
       "Bash(\"C:/Users/ASUS/Desktop/Code/CoTe/Coding-Test-Practice/Complete/백준/3_Gold/G5_1074_Z/Answer\\(정답_최적화\\).cpp.txt\")",
-      "Bash(\"/mnt/c/Users/ASUS/Desktop/Code/CoTe/Coding-Test-Practice/Complete/백준/2_Silver/S2_30804_과일탕후루/Answer\\(성공\\).cpp.txt\")"
+      "Bash(\"/mnt/c/Users/ASUS/Desktop/Code/CoTe/Coding-Test-Practice/Complete/백준/2_Silver/S2_30804_과일탕후루/Answer\\(성공\\).cpp.txt\")",
+      "Bash(New-Item:*)"
     ]
   },
   "outputStyle": "korean-terminal"

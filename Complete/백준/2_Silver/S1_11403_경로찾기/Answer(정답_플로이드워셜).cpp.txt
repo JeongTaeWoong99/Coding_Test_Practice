@@ -1,0 +1,36 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+int dist[101][101]; // dist[i][j] : i에서 j로 가는 경로 존재 여부
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> n;
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < n; j++)
+            cin >> dist[i][j];
+
+    // 플로이드-워셜 : 경유지 k를 거쳐 i -> j 경로 존재 여부 갱신
+    for(int k = 0; k < n; k++)
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < n; j++)
+                if(dist[i][k] && dist[k][j])
+                    dist[i][j] = 1;
+
+    // 결과 출력
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            if(j) cout << " ";
+            cout << dist[i][j];
+        }
+        cout << "\n";
+    }
+
+    return 0;
+}

@@ -1,0 +1,75 @@
+// ❌ 실패 원인 : visited[start] = 1로 초기화하면,
+//               사이클을 통해 start로 돌아오는 경우 체크 불가
+//               → dist[i][i] = 0으로 출력 (오답)
+//
+// 예) 0 → 1 → 2 → 0 사이클에서
+//     BFS(start=0) : visited[0]=1로 시작
+//     2에서 0으로 돌아올 때 visited[0]==1 → skip
+//     → result[0][0] = 0 (오답, 정답은 1)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int         n;                // 정점의 개수
+vector<int> adj[101];         // adj[i] : i에서 연결된 정점 목록 (인접 리스트)
+int         result[101][101]; // result[i][j] : i에서 j로 가는 경로 존재 여부
+int         visited[101];     // BFS 방문 체크
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 입력 : 인접 행렬 → 인접 리스트로 변환
+    cin >> n;
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            int x;
+            cin >> x;
+            if(x)
+                adj[i].emplace_back(j); // 간선이 있으면 인접 리스트에 추가
+        }
+    }
+
+    // 모든 정점에서 BFS 수행
+    for(int start = 0; start < n; start++)
+    {
+        // 매번 방문 초기화
+        memset(visited, 0, sizeof(visited));
+
+        // BFS 시작
+        queue<int> q;
+        visited[start] = 1;  // ❌ 문제 : start를 처음부터 방문 처리
+        q.emplace(start);
+
+        while(!q.empty())
+        {
+            int cur = q.front();
+            q.pop();
+
+            // 현재 정점과 연결된 모든 정점 확인
+            for(int next : adj[cur])
+            {
+                if(visited[next]) continue; // 이미 방문한 정점은 스킵
+
+                visited[next]       = 1; // 방문 처리
+                result[start][next] = 1; // start에서 next로 가는 경로 존재
+                q.emplace(next);
+            }
+        }
+    }
+
+    // 결과 출력
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            if(j) cout << " ";
+            cout << result[i][j];
+        }
+        cout << "\n";
+    }
+
+    return 0;
+}

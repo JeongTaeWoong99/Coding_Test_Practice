@@ -1,0 +1,106 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// 6방향 : {층, 행, 열} 변화량 (앞뒤/좌우/위아래)
+const int dH[6] = { 0,  0,  0,  0, -1, 1};
+const int dY[6] = {-1,  1,  0,  0,  0, 0};
+const int dX[6] = { 0,  0, -1,  1,  0, 0};
+
+// 보관 후 하루가 지나면, 익은 토마토들의 인접한 곳에 있는 익지 않은 토마토들은 익은 토마토의 영향을 받아 익게 된다.
+// 위, 아래, 왼쪽, 오른쪽, 앞, 뒤 여섯 방향
+// 정수 1  => 익은 토마토
+// 정수 0  => 익지 않은 토마토
+// 정수 -1 => 토마토가 들어있지 않은 칸
+
+int x, y, h;
+int arr[104][104][104];      // arr[층][행][열]
+int visited[104][104][104];  // 방문 여부 체크 + 경과 일수 저장
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> x >> y >> h;
+
+    // 층별 입력
+    for (int k = 0; k < h; k++)
+    {
+        for (int i = 0; i < y; i++)
+        {
+            for (int j = 0; j < x; j++)
+            {
+                cin >> arr[k][i][j];
+            }
+        }
+    }
+
+    // BFS 시작 (큐) - 익은 토마토를 모두 큐에 넣기 (멀티 소스 BFS)
+    queue<tuple<int, int, int>> bfsQ;
+    for (int k = 0; k < h; k++)
+    {
+        for (int i = 0; i < y; i++)
+        {
+            for (int j = 0; j < x; j++)
+            {
+                // 시작 큐에 넣기(정수 1 => 익은 토마토)
+                if (arr[k][i][j] == 1)
+                {
+                    visited[k][i][j] = 1;  // 시작 지점 방문 체크
+                    bfsQ.emplace(k, i, j); // 큐에 넣기
+                }
+            }
+        }
+    }
+
+    // 큐가 빌 때까지 진행
+    while (!bfsQ.empty())
+    {
+        tuple<int, int, int> cur = bfsQ.front();  // 큐 맨 앞 원소 가져오기
+        int ck = get<0>(cur);                     // 층 인덱스
+        int ci = get<1>(cur);                     // 행 인덱스
+        int cj = get<2>(cur);                     // 열 인덱스
+        bfsQ.pop();                               // 큐 맨 앞 원소 제거
+
+        // 6방향 탐색 (앞뒤/좌우/위아래 동일 처리)
+        for (int d = 0; d < 6; d++)
+        {
+            int nk = ck + dH[d];  // 새 층
+            int ni = ci + dY[d];  // 새 행
+            int nj = cj + dX[d];  // 새 열
+
+            if (nk < 0 || ni < 0 || nj < 0 || nk >= h || ni >= y || nj >= x) continue;  // 범위 나감
+            if (arr[nk][ni][nj] == -1)                                       continue;  // 토마토 없는 칸
+            if (visited[nk][ni][nj])                                         continue;  // 이미 방문
+
+            visited[nk][ni][nj] = visited[ck][ci][cj] + 1;  // 이동 체크
+            arr[nk][ni][nj] = 1;                            // 익음 처리
+            bfsQ.emplace(nk, ni, nj);                       // 새로 넣기
+        }
+    }
+
+    // 결과 계산
+    int ans = 0;
+    for (int k = 0; k < h; k++)
+    {
+        for (int i = 0; i < y; i++)
+        {
+            for (int j = 0; j < x; j++)
+            {
+                // 익지 못한 토마토 존재 => 불가 및 종료
+                if (arr[k][i][j] == 0)
+                {
+                    cout << -1 << "\n";
+                    return 0;
+                }
+
+                // 가장 큰 값 갱신
+                ans = max(ans, visited[k][i][j]);
+            }
+        }
+    }
+
+    // visited는 1부터 시작했으므로 -1
+    cout << ans - 1 << "\n";
+
+    return 0;
+}

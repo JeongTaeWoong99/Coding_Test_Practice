@@ -11,6 +11,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		SPECIAL.md = SPECIAL.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Skills Items", "Skills Items", "{B2345678-9ABC-DEF0-1234-567890BCDEF0}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\skills\boj_info.md = .claude\skills\boj_info.md
+		.claude\skills\coding_style.md = .claude\skills\coding_style.md
+		.claude\skills\complete_process.md = .claude\skills\complete_process.md
+		.claude\skills\encoding.md = .claude\skills\encoding.md
+		.claude\skills\vcxproj.md = .claude\skills\vcxproj.md
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCS", "TestCS\TestCS.csproj", "{DBAE0D31-41AC-4F7D-9FC0-275A36901A45}"
 EndProject
 Global

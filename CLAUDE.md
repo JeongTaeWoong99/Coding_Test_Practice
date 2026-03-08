@@ -11,13 +11,13 @@
 
 ## 📚 스킬 파일 — 필요한 상황에만 Read 툴로 읽기
 
-| 상황 | 읽어야 할 파일 |
-|------|-------------|
-| 백준 문제 작업 시 (난이도 확인, 정보 파악) | `.claude/skills/boj_info.md` |
-| 코드 작성 / 스타일 확인 시 | `.claude/skills/coding_style.md` |
-| 정리 키워드 감지 시 → 즉시 읽고 작업 시작 | `.claude/skills/complete_process.md` |
-| 한글 깨짐 / 인코딩 문제 발생 시 | `.claude/skills/encoding.md` |
-| vcxproj 수정 / 파일 등록 시 | `.claude/skills/vcxproj.md` |
+| 상황                                      | 읽어야 할 파일 |
+|-------------------------------------------|----------------|
+| 백준 문제 작업 시 (난이도 확인, 정보 파악) | [boj_info.md](.claude/skills/boj_info.md) |
+| 코드 작성 / 스타일 확인 시                 | [coding_style.md](.claude/skills/coding_style.md) |
+| 정리 키워드 감지 시 → 즉시 읽고 작업 시작 | [complete_process.md](.claude/skills/complete_process.md) |
+| 한글 깨짐 / 인코딩 문제 발생 시            | [encoding.md](.claude/skills/encoding.md) |
+| vcxproj 수정 / 파일 등록 시                | [vcxproj.md](.claude/skills/vcxproj.md) |
 
 ---
 

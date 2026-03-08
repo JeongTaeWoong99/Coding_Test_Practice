@@ -1,0 +1,39 @@
+﻿\xEF\xBB\xBF#include <bits/stdc++.h>
+using namespace std;
+
+int n, m;
+int arr[9]; // 현재 수열
+
+// start : 현재 선택 시작 숫자 (중복 허용 비내림차순)
+void DFS(int depth, int start)
+{
+    if(depth == m)
+    {
+        for(int i = 0; i < m; i++)
+        {
+            cout << arr[i];
+
+            if(i == m - 1) cout << "\n"; // 마지막 원소 → 줄바꿈
+            else           cout << " ";  // 중간 원소  → 공백
+        }
+        return;
+    }
+
+    for(int i = start; i <= n; i++)
+    {
+        arr[depth] = i;
+
+        DFS(depth + 1, i); // 같은 수 다시 선택 가능 → i부터 시작
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m;
+
+    DFS(0, 1);
+
+    return 0;
+}

@@ -1,3 +1,8 @@
+---
+name: encoding
+description: 한글 깨짐 및 인코딩 문제 발생 시 참고. UTF-8 BOM 설정 방법.
+---
+
 # 🌏 한글 인코딩 설정
 
 ## 🔧 UTF-8 BOM 설정

@@ -1,3 +1,8 @@
+---
+name: vcxproj
+description: vcxproj 수정 및 파일 등록 시 참고. Visual Studio 프로젝트 파일 관리.
+---
+
 # 🔧 Visual Studio 프로젝트 파일 관리
 
 ## ⚠️ 파일 생성 후 프로젝트 등록 필수!

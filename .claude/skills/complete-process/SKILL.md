@@ -1,3 +1,8 @@
+---
+name: complete-process
+description: Complete 정리 작업 프로세스. "컴플리트에 작업한 내용을 옮겨서 정리", "컴플리트로 정리", "완료한 문제 정리해줘" 키워드 감지 시 즉시 호출.
+---
+
 # 🔄 Complete 정리 작업 프로세스
 
 ## 🎯 Complete 정리 9단계

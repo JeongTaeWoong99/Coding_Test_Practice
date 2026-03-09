@@ -9,21 +9,21 @@
 
 ---
 
-## 📚 스킬 파일 — 필요한 상황에만 Read 툴로 읽기
+## 📚 스킬 파일 — 필요한 상황에서 자동 호출
 
-| 상황                                      | 읽어야 할 파일 |
+| 상황                                      | 스킬 |
 |-------------------------------------------|----------------|
-| 백준 문제 작업 시 (난이도 확인, 정보 파악) | [boj_info.md](.claude/skills/boj_info.md) |
-| 코드 작성 / 스타일 확인 시                 | [coding_style.md](.claude/skills/coding_style.md) |
-| 정리 키워드 감지 시 → 즉시 읽고 작업 시작 | [complete_process.md](.claude/skills/complete_process.md) |
-| 한글 깨짐 / 인코딩 문제 발생 시            | [encoding.md](.claude/skills/encoding.md) |
-| vcxproj 수정 / 파일 등록 시                | [vcxproj.md](.claude/skills/vcxproj.md) |
+| 백준 문제 작업 시 (난이도 확인, 정보 파악) | [boj-info](.claude/skills/boj-info/SKILL.md) |
+| 코드 작성 / 스타일 확인 시                 | [coding-style](.claude/skills/coding-style/SKILL.md) |
+| 정리 키워드 감지 시 → 즉시 자동 작업 시작  | [complete-process](.claude/skills/complete-process/SKILL.md) |
+| 한글 깨짐 / 인코딩 문제 발생 시            | [encoding](.claude/skills/encoding/SKILL.md) |
+| vcxproj 수정 / 파일 등록 시                | [vcxproj](.claude/skills/vcxproj/SKILL.md) |
 
 ---
 
 ## ⚡ 정리 키워드 트리거
 
-다음 키워드 감지 시 **즉시** `.claude/skills/complete_process.md` 읽고 자동 작업 시작:
+다음 키워드 감지 시 **즉시** `complete-process` 스킬 자동 실행:
 
 - "컴플리트에 작업한 내용을 옮겨서 정리"
 - "컴플리트로 정리"

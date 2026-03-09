@@ -1,3 +1,8 @@
+---
+name: coding-style
+description: C++ 코드 작성 및 스타일 확인 시 참고. 코딩 스타일 가이드.
+---
+
 # 🎨 코딩 스타일
 
 > ✅ **Complete 프로젝트는 공부를 완료한 코드들**

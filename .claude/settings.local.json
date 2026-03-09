@@ -149,7 +149,8 @@
       "Bash(\"/mnt/c/Users/ASUS/Desktop/Code/CoTe/Coding-Test-Practice/Complete/백준/2_Silver/S2_30804_과일탕후루/Answer\\(성공\\).cpp.txt\")",
       "Bash(New-Item:*)",
       "Bash(powershell.exe:*)",
-      "Bash(printf \\\\xEF\\\\xBB\\\\xBF:*)"
+      "Bash(printf \\\\xEF\\\\xBB\\\\xBF:*)",
+      "Bash(rm nul:*)"
     ]
   },
   "outputStyle": "korean-terminal"

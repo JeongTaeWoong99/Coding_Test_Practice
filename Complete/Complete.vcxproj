@@ -242,6 +242,7 @@
     <None Include="백준\2_Silver\S3_1463_1로만들기\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_1535_안녕\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S3_15652_N과M(4)\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S3_15654_N과M(5)\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_17626_FourSquares\Answer(정답).cpp.txt" />
     <None Include="백준\2_Silver\S3_18870_좌표압축\Answer(성공_최적화버전).cpp.txt" />
     <None Include="백준\2_Silver\S3_1929_소수구하기\Answer(정답).cpp.txt" />
@@ -458,6 +459,7 @@
     <None Include="백준\2_Silver\S3_1463_1로만들기\README.md" />
     <None Include="백준\2_Silver\S3_1535_안녕\README.md" />
     <None Include="백준\2_Silver\S3_15652_N과M(4)\README.md" />
+    <None Include="백준\2_Silver\S3_15654_N과M(5)\README.md" />
     <None Include="백준\2_Silver\S3_17626_FourSquares\README.md" />
     <None Include="백준\2_Silver\S3_18870_좌표압축\README.md" />
     <None Include="백준\2_Silver\S3_1929_소수구하기\README.md" />

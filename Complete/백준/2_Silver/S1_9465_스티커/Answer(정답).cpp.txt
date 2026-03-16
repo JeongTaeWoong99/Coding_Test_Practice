@@ -1,0 +1,45 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int sticker[2][100001]; // sticker[행][열] 점수
+int dp[100001][3];      // dp[열][상태] : 0=선택없음, 1=위, 2=아래
+int n, t;
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> t;
+    
+    while(t--)
+    {
+        cin >> n;
+
+        for(int i = 0; i < 2; i++)
+        {
+            for(int j = 0; j < n; j++)
+            {
+                cin >> sticker[i][j];
+            }
+        }
+
+        // 초기값 : 첫 번째 열
+        dp[0][0] = 0;
+        dp[0][1] = sticker[0][0]; // 위 선택
+        dp[0][2] = sticker[1][0]; // 아래 선택
+
+        for(int i = 1; i < n; i++)
+        {
+            // 아무것도 선택 안함
+            dp[i][0] = max({dp[i-1][0], dp[i-1][1], dp[i-1][2]});
+
+            // 하나 선택함
+            dp[i][1] = max(dp[i-1][0] , dp[i-1][2]) + sticker[0][i];   // 위 선택 : 이전에 아무것도 or 아래
+            dp[i][2] = max(dp[i-1][0] , dp[i-1][1]) + sticker[1][i];   // 아래 선택 : 이전에 아무것도 or 위
+        }
+
+        cout << max({dp[n-1][0], dp[n-1][1], dp[n-1][2]}) << "\n";
+    }
+    
+    return 0;
+}

@@ -150,7 +150,9 @@
       "Bash(New-Item:*)",
       "Bash(powershell.exe:*)",
       "Bash(printf \\\\xEF\\\\xBB\\\\xBF:*)",
-      "Bash(rm nul:*)"
+      "Bash(rm nul:*)",
+      "Bash(xxd \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Complete\\\\백준\\\\3_Gold\\\\G1_1285_동전뒤집기\\\\Answer\\(정답\\).cpp.txt\")",
+      "Bash(xxd \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Complete\\\\백준\\\\3_Gold\\\\G1_1509_팰린드롬분할\\\\Answer\\(정답\\).cpp.txt\")"
     ]
   },
   "outputStyle": "korean-terminal"

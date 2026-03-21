@@ -1,0 +1,40 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int         n, m;
+vector<int> v;
+
+int main(int argc, char* argv[])
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m;
+
+    for (int i = 0; i < n; i++)
+    {
+        int temp;
+        cin >> temp;
+        
+        v.push_back(temp);
+    }
+
+    sort(v.begin(), v.end());
+
+    set<vector<int>> result; // 중복 수열 자동 제거 + 사전순 정렬
+
+    do
+    {
+        // 전체 순열의 앞 m개만 잘라서 저장
+        result.insert(vector<int>(v.begin(), v.begin() + m));
+    } 
+    while (next_permutation(v.begin(), v.end()));
+
+    for (const auto& seq : result)
+    {
+        for (int x : seq)
+            cout << x << " ";
+        cout << "\n";
+    }
+
+    return 0;
+}

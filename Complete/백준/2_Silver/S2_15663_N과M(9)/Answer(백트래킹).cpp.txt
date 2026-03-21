@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int         n, m;
+vector<int> v;
+vector<int> seq;
+bool        visited[8];
+
+// depth : 현재 수열의 길이
+void Back(int depth)
+{
+    // m개 선택 완료 => 출력
+    if (depth == m)
+    {
+        for (int x : seq)
+            cout << x << " ";
+        cout << "\n";
+
+        return;
+    }
+
+    int prev = -1; // 같은 깊이에서 이전에 사용한 값 (중복 수열 방지)
+    for (int i = 0; i < n; i++)
+    {
+        if (visited[i])    continue; // 이미 사용한 인덱스
+        if (v[i] == prev)  continue; // 같은 깊이에서 같은 값 → 중복 수열
+
+        visited[i] = true;      // 방문 체크
+        seq.push_back(v[i]);    // 현재 선택 벡터에 넣기
+        prev = v[i];            // 이전 사용값 저장(중복 방지)
+
+        Back(depth + 1);        // 백트래킹
+
+        visited[i] = false;     // 복구
+        seq.pop_back();         // 복구
+    }
+}
+
+int main(int argc, char* argv[])
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m;
+
+    for (int i = 0; i < n; i++)
+    {
+        int temp;
+        cin >> temp;
+        v.push_back(temp);
+    }
+
+    sort(v.begin(), v.end());
+
+    Back(0);
+
+    return 0;
+}

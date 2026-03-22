@@ -1,0 +1,52 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int              n, m;
+int              idx[8];
+vector<int>      curV;
+set<vector<int>> setV;
+
+void Back(int depth, int start)
+{
+    // m개 선택 완료
+    if (depth == m)
+    {
+        setV.emplace(curV);
+
+        return;
+    }
+
+    for (int i = start; i < n; ++i)
+    {
+        curV.push_back(idx[i]);
+
+        Back(depth + 1, i); // i+1 아닌 i (재선택 허용)
+
+        curV.pop_back();
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m;
+
+    for (int i = 0; i < n; ++i)
+        cin >> idx[i];
+
+    sort(idx, idx + n); // 정렬 필수
+
+    Back(0, 0);
+
+    // setV 출력
+    for (auto& v : setV)
+    {
+        for (int x : v) 
+            cout << x << " ";
+           
+        cout << "\n";
+    }
+
+    return 0;
+}

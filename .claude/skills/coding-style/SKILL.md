@@ -31,14 +31,29 @@ vector<pair<int,int>> uni;
 ## 🔧 함수 및 주석 스타일
 
 ```cpp
+// 함수명 : BFS, DFS 등 알고리즘 약어는 대문자 그대로 사용
 // 함수 : 중괄호는 다음 줄에, 4칸 들여쓰기
-void dfs(int y, int x)
+int BFS()
 {
-    for(int i = 0; i < 4; i++)
+    int areaCnt = 0;  // 변수명 : 맥락이 담긴 이름 (cnt ❌ → areaCnt ✅)
+    queue<pair<int,int>> bfsQ;
+
+    // 함수 내 단계별로 주석 추가
+    // 모든 시작점 체크
+    for (int i = 0; i < n; ++i)
     {
-        visited[ny][nx] = 1;     // 라인별 주석 정렬
-        uni.push_back({ny, nx}); // 연합에 추가
+        for (int j = 0; j < n; ++j)
+        {
+            if (!visited[i][j])
+            {
+                areaCnt++;  // 중요한 상태 변경 뒤에는 빈 줄로 시각 구분
+
+                visited[i][j] = true;
+                bfsQ.emplace(i, j);
+            }
+        }
     }
+    return areaCnt;
 }
 
 // 매개변수 주석 : 콜론(`:`) 앞뒤 공백
@@ -52,6 +67,37 @@ bool Check(char x, char y, char op) { }
 - 콜론 공백 : 매개변수 설명 시 `: 앞뒤로 공백` (예 : `x : 설명`)
 - 라인 정렬 : 같은 블록 내 주석들의 시작 위치 통일
 - 명확성 : 알고리즘 로직을 이해하기 쉽게 설명
+- 단계 주석 : 함수 내부도 역할별로 `// 단계 설명` 주석 추가
+
+**함수명 규칙 :**
+- BFS, DFS, LCS 등 알고리즘 약어 → **대문자 그대로** (`bfsAll` ❌ → `BFS` ✅)
+- 일반 함수명 → PascalCase (`Check`, `Solve`)
+
+**변수명 규칙 :**
+- 단순 `cnt` 대신 맥락이 담긴 이름 사용 (`areaCnt`, `colorCnt`, `nodeCnt`)
+
+## 🔲 중괄호 규칙
+
+```cpp
+// ✅ for/if 단일 문장이라도 항상 중괄호 사용
+for (int i = 0; i < n; ++i)
+{
+    for (int j = 0; j < n; ++j)
+    {
+        cin >> arr[i][j];
+    }
+}
+
+if (arr[i][j] == 'G')
+{
+    arr[i][j] = 'R';
+}
+
+// ❌ 중괄호 생략 금지
+for (int i = 0; i < n; ++i)
+    for (int j = 0; j < n; ++j)
+        cin >> arr[i][j];
+```
 
 ## ⚡ main 함수 구조
 
@@ -68,7 +114,8 @@ int main()
 
     // 결과 출력
     cout << cnt << "\n";
-    return 0;
+
+    return 0;  // return 0 직전에 빈 줄 추가
 }
 ```
 
@@ -90,6 +137,10 @@ int main()
 **체크리스트 :**
 - [ ] 전역 변수 정렬이 올바른가?
 - [ ] 주석이 정렬되어 있는가?
-- [ ] 중괄호 스타일이 일관된가?
+- [ ] 중괄호 스타일이 일관된가? (단일 문장도 항상 중괄호 사용)
 - [ ] ios_base 최적화가 포함되었는가?
 - [ ] PDF 교안의 패턴을 따르고 있는가?
+- [ ] 함수명이 BFS/DFS 등 약어를 대문자로 유지하는가?
+- [ ] 변수명이 맥락을 담고 있는가? (cnt ❌ → areaCnt ✅)
+- [ ] 중요 상태 변경 뒤 빈 줄이 있는가?
+- [ ] return 0 직전에 빈 줄이 있는가?

@@ -362,6 +362,7 @@
     <None Include="백준\3_Gold\G4_19942_다이어트\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_1987_알파벳\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_9935_문자열폭발\Answer(정답_스택).cpp.txt" />
+    <None Include="백준\3_Gold\G5_10026_적록색약\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G5_1068_트리\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_1074_Z\Answer(실패).cpp.txt" />
     <None Include="백준\3_Gold\G5_1074_Z\Answer(정답_최적화).cpp.txt" />
@@ -563,6 +564,7 @@
     <None Include="백준\3_Gold\G4_4179_불\README.md" />
     <None Include="백준\3_Gold\G4_4781_사탕가게\README.md" />
     <None Include="백준\3_Gold\G4_9935_문자열폭발\README.md" />
+    <None Include="백준\3_Gold\G5_10026_적록색약\README.md" />
     <None Include="백준\3_Gold\G5_1068_트리\README.md" />
     <None Include="백준\3_Gold\G5_1074_Z\README.md" />
     <None Include="백준\3_Gold\G5_12852_1로만들기2\README.md" />

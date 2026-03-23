@@ -1,0 +1,96 @@
+\ufeff#include <bits/stdc++.h>
+using namespace std;
+
+const int dy[4] = {0, 1,  0, -1};
+const int dx[4] = {1, 0, -1,  0};
+
+int  n;
+char arr[104][104];
+bool visited[104][104];
+
+// BFS로 연결된 같은 색 구역 탐색, 전체 구역 수 반환
+int BFS()
+{
+    int areaCnt = 0;
+    queue<pair<int,int>> bfsQ;
+
+    // 모든 시작점 체크
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+        {
+            if (!visited[i][j])
+            {
+                areaCnt++;                    // 새 구역 시작
+
+                visited[i][j] = true;
+                bfsQ.emplace(i, j);
+
+                while (!bfsQ.empty())
+                {
+                    int curY = bfsQ.front().first;
+                    int curX = bfsQ.front().second;
+                    bfsQ.pop();
+
+                    for (int k = 0; k < 4; ++k)
+                    {
+                        int newY = curY + dy[k];
+                        int newX = curX + dx[k];
+
+                        // 범위 체크
+                        if (newY < 0 || newY >= n || newX < 0 || newX >= n) continue;
+                        // 방문 체크
+                        if (visited[newY][newX]) continue;
+                        // 색 비교 (같은 색만 같은 구역)
+                        if (arr[newY][newX] != arr[curY][curX]) continue;
+
+                        visited[newY][newX] = true;
+                        bfsQ.emplace(newY, newX);
+                    }
+                }
+            }
+        }
+    }
+    return areaCnt;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    // 배열 입력
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+        {
+            cin >> arr[i][j];
+        }
+    }
+
+    // 일반인 : 구역 탐색
+    memset(visited, 0, sizeof(visited));
+    int normal = BFS();
+
+    // 색약 전처리 : G → R 치환
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+        {
+            if (arr[i][j] == 'G')
+            {
+                arr[i][j] = 'R';
+            }
+        }
+    }
+
+    // 색약인 : 동일한 BFS 재사용
+    memset(visited, 0, sizeof(visited));
+    int colorblind = BFS();
+
+    // 결과 출력
+    cout << normal << " " << colorblind;
+
+    return 0;
+}

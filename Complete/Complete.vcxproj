@@ -185,6 +185,7 @@
     <None Include="백준\1_Bronze\B3_2442_별찍기5\Answer(성공).cpp.txt" />
     <None Include="백준\1_Bronze\B4_1159_농구경기\Answer(성공).cpp.txt" />
     <None Include="백준\1_Bronze\B1_1546_평균\Answer(성공).cpp.txt" />
+    <None Include="백준\2_Silver\S1_1149_RGB거리\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_1189_컴백홈\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_1325_효율적인해킹\Answer(성공).cpp.txt" />
     <None Include="백준\2_Silver\S1_1389_케빈베이컨의6단계법칙\Answer(성공).cpp.txt" />
@@ -416,6 +417,7 @@
     <None Include="백준\1_Bronze\B3_2442_별찍기5\README.md" />
     <None Include="백준\1_Bronze\B4_1159_농구경기\README.md" />
     <None Include="백준\1_Bronze\B1_1546_평균\README.md" />
+    <None Include="백준\2_Silver\S1_1149_RGB거리\README.md" />
     <None Include="백준\2_Silver\S1_1189_컴백홈\README.md" />
     <None Include="백준\2_Silver\S1_1325_효율적인해킹\README.md" />
     <None Include="백준\2_Silver\S1_1389_케빈베이컨의6단계법칙\README.md" />

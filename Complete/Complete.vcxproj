@@ -360,6 +360,7 @@
     <None Include="백준\3_Gold\G4_4781_사탕가게\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_9935_문자열폭발\Answer(정답_erase).cpp.txt" />
     <None Include="백준\3_Gold\G4_17298_오큰수\Answer.cpp.txt" />
+    <None Include="백준\3_Gold\G4_17404_RGB거리2\Answer(성공_최적화).cpp.txt" />
     <None Include="백준\3_Gold\G4_19942_다이어트\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_1987_알파벳\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_9935_문자열폭발\Answer(정답_스택).cpp.txt" />
@@ -556,6 +557,7 @@
     <None Include="백준\3_Gold\G4_16234_인구이동\README.md" />
     <None Include="백준\3_Gold\G4_17144_미세먼지안녕\README.md" />
     <None Include="백준\3_Gold\G4_17298_오큰수\README.md" />
+    <None Include="백준\3_Gold\G4_17404_RGB거리2\README.md" />
     <None Include="백준\3_Gold\G4_17406_배열돌리기4\README.md" />
     <None Include="백준\3_Gold\G4_1987_알파벳\README.md" />
     <None Include="백준\3_Gold\G4_19942_다이어트\README.md" />

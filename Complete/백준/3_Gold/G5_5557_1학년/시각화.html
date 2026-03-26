@@ -1,0 +1,183 @@
+
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f5f4f0;--text:#1a1a19;--text2:#6b6a64;--text3:#9c9a92;
+  --border:#c8c6bc;--border2:#a8a69c;
+  --blue-fill:#378ADD;--blue-stroke:#185FA5;
+  --green-fill:#1D9E75;--green-stroke:#0F6E56;
+  --red-fill:#E24B4A;--red-stroke:#A32D2D;
+  --amber-fill:#BA7517;--amber-stroke:#854F0B;
+  --node-text:#fff;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1e1e1c;--bg2:#2a2a28;--text:#e8e6dc;--text2:#9c9a92;--text3:#6b6a64;
+    --border:#48473f;--border2:#5c5b52;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{padding:16px 0;background:transparent}
+h3{font-size:15px;font-weight:500;margin-bottom:4px;color:var(--text)}
+.sub{font-size:12px;color:var(--text2);margin-bottom:14px}
+.controls{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+button{font-size:12px;padding:5px 12px;border:0.5px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--text);cursor:pointer;transition:background .15s}
+button:hover{background:var(--bg2)}
+button.act{background:#dbeeff;border-color:#378ADD;color:#185FA5}
+@media(prefers-color-scheme:dark){button.act{background:#0c3a6a;border-color:#378ADD;color:#85B7EB}}
+.info-box{font-size:12px;color:var(--text2);padding:8px 12px;background:var(--bg2);border-radius:8px;margin-bottom:12px;min-height:42px;line-height:1.7;border:0.5px solid var(--border)}
+.info-box b{color:var(--text);font-weight:500}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--text2);margin-top:10px}
+.li{display:flex;align-items:center;gap:4px}
+.ld{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+</style>
+<div class="wrap">
+<h3>DP(idx, sum) 재귀 호출 추적 — arr=[2,2,2,2], n=4</h3>
+<p class="sub">최종 결과: <b style="color:#1D9E75;font-size:13px">2</b> &nbsp;|&nbsp; 유효한 수식: 2+2−2=2 과 2−2+2=2</p>
+
+<div class="controls">
+  <button onclick="prev()">← 이전</button>
+  <button onclick="next()">다음 →</button>
+  <button onclick="goStep(0)">처음</button>
+  <button id="autoBtn" onclick="toggleAuto()">▶ 자동</button>
+  <span style="font-size:12px;color:var(--text2);margin-left:4px" id="sc">1 / 1</span>
+</div>
+
+<div class="info-box" id="info">다음 버튼을 눌러 진행하세요.</div>
+
+<svg width="100%" viewBox="0 0 680 390" id="svg"></svg>
+
+<div class="legend">
+  <div class="li"><div class="ld" style="background:#378ADD"></div><span style="color:var(--text2)">현재 호출</span></div>
+  <div class="li"><div class="ld" style="background:#1D9E75"></div><span style="color:var(--text2)">→ 1 반환 (유효)</span></div>
+  <div class="li"><div class="ld" style="background:#E24B4A"></div><span style="color:var(--text2)">→ 0 반환 (불일치/범위초과)</span></div>
+  <div class="li"><div class="ld" style="background:#BA7517"></div><span style="color:var(--text2)">메모이제이션 적중</span></div>
+  <div class="li"><div class="ld" style="border:0.5px solid #a8a69c;background:transparent"></div><span style="color:var(--text2)">대기 중</span></div>
+</div>
+</div>
+
+<script>
+const NW=94, NH=36;
+// 레이어 라벨을 위해 x를 80px 우측으로 이동
+// 레이어 라벨: x=0~72, 노드: x=80~
+const NODES = [
+  {id:'n0', x:293, y:16,  text:'DP(0, 2)',  kind:'call'},
+  {id:'n1', x:130, y:102, text:'DP(1, 4)',  kind:'call'},
+  {id:'n2', x:456, y:102, text:'DP(1, 0)',  kind:'call'},
+  {id:'n3', x:83,  y:194, text:'DP(2, 6)',  kind:'base0'},
+  {id:'n4', x:213, y:194, text:'DP(2, 2)',  kind:'base1'},
+  {id:'n5', x:373, y:194, text:'DP(2, 2)',  kind:'memo'},
+  {id:'n6', x:503, y:194, text:'DP(2,−2)', kind:'oor'},
+  {id:'n7', x:83,  y:300, text:'6≠2 → 0', kind:'leaf0'},
+  {id:'n8', x:213, y:300, text:'2=2 → 1', kind:'leaf1'},
+  {id:'n9', x:373, y:300, text:'memo → 1', kind:'leafm'},
+  {id:'n10',x:503, y:300, text:'<0 → 0',  kind:'leaf0'},
+];
+const EDGES=[
+  {f:'n0',t:'n1',lbl:'+2'},{f:'n0',t:'n2',lbl:'−2'},
+  {f:'n1',t:'n3',lbl:'+2'},{f:'n1',t:'n4',lbl:'−2'},
+  {f:'n2',t:'n5',lbl:'+2'},{f:'n2',t:'n6',lbl:'−2'},
+  {f:'n3',t:'n7',lbl:''},{f:'n4',t:'n8',lbl:''},
+  {f:'n5',t:'n9',lbl:''},{f:'n6',t:'n10',lbl:''},
+];
+const nm={};
+NODES.forEach(n=>nm[n.id]=n);
+
+const STEPS=[
+  {active:'n0',done:[],info:'<b>DP(0, arr[0]=2)</b> 호출 — 첫 번째 숫자 2를 초기 sum으로 시작합니다.'},
+  {active:'n1',done:[],info:'idx(0) ≠ n-2(2) → 재귀 분기. <b>arr[1]=2를 더해서 DP(1, 4)</b> 먼저 호출'},
+  {active:'n3',done:[],info:'DP(1,4): idx(1) ≠ n-2(2) → 재귀. <b>arr[2]=2 더해서 DP(2, 6)</b> 호출'},
+  {active:'n7',done:['n3'],info:'DP(2,6): idx==n-2(=2) → 베이스케이스! <b>sum=6 ≠ arr[3]=2</b> → return 0. dp[2][6]=0'},
+  {active:'n4',done:['n3','n7'],info:'DP(1,4)로 돌아와 <b>arr[2]=2를 빼서 DP(2, 2)</b> 호출'},
+  {active:'n8',done:['n3','n7','n4'],info:'DP(2,2): idx==n-2(=2) → 베이스케이스! <b>sum=2 == arr[3]=2</b> → return 1. dp[2][2]=1 저장!'},
+  {active:'n1',done:['n3','n7','n4','n8'],info:'DP(1,4): ret = 0+1 = <b>1 반환</b>. dp[1][4]=1 저장'},
+  {active:'n2',done:['n1','n3','n7','n4','n8'],info:'DP(0,2)로 돌아와 <b>arr[1]=2를 빼서 DP(1, 0)</b> 호출'},
+  {active:'n5',done:['n1','n3','n7','n4','n8','n2'],info:'DP(1,0): arr[2]=2 더해서 DP(2,2) 호출 → <b>dp[2][2]=1 이미 저장됨!</b>'},
+  {active:'n9',done:['n1','n3','n7','n4','n8','n2','n5'],memo:true,info:'<b>메모이제이션 적중!</b> dp[2][2]=1 즉시 반환. 재귀 호출 없이 절약'},
+  {active:'n6',done:['n1','n3','n7','n4','n8','n2','n5','n9'],info:'DP(1,0): arr[2]=2 빼서 <b>DP(2, −2)</b> 호출'},
+  {active:'n10',done:['n1','n3','n7','n4','n8','n2','n5','n9','n6'],info:'DP(2,−2): <b>sum=−2 &lt; 0</b> → 범위 초과! return 0'},
+  {active:'n2',done:['n1','n3','n7','n4','n8','n5','n9','n6','n10'],info:'DP(1,0): ret = 1+0 = <b>1 반환</b>. dp[1][0]=1 저장'},
+  {active:'n0',done:['n1','n2','n3','n4','n5','n6','n7','n8','n9','n10'],final:true,
+   info:'DP(0,2): ret = dp[1][4]+dp[1][0] = 1+1 = <b style="color:#1D9E75">2 반환</b> ✓  유효한 수식: (2+2−2=2), (2−2+2=2)'},
+];
+
+let cur=0, timer=null;
+
+function getColor(id, si) {
+  const s=STEPS[si], nd=nm[id];
+  const isActive=s.active===id;
+  const isDone=s.done&&s.done.includes(id);
+  const isMemoActive=(id==='n5'||id==='n9')&&s.memo&&isActive;
+  if(isMemoActive) return{fill:'#BA7517',stroke:'#854F0B'};
+  if(isActive)     return{fill:'#378ADD',stroke:'#185FA5'};
+  if(isDone){
+    if(nd.kind==='base1'||nd.kind==='leaf1'||nd.kind==='leafm') return{fill:'#1D9E75',stroke:'#0F6E56'};
+    if(nd.kind==='base0'||nd.kind==='leaf0'||nd.kind==='oor')   return{fill:'#E24B4A',stroke:'#A32D2D'};
+    if(nd.kind==='memo') return{fill:'#BA7517',stroke:'#854F0B'};
+    return{fill:'#1D9E75',stroke:'#0F6E56'};
+  }
+  // 대기 중: 다크/라이트 모드 모두 대응
+  return{fill:'var(--bg2)',stroke:'var(--border)'};
+}
+
+// 텍스트 색: 고정색 노드는 흰색, 대기 중은 --text2
+function getTextColor(fill){
+  if(fill==='var(--bg2)') return 'var(--text2)';
+  return '#ffffff';
+}
+
+function render(){
+  const s=STEPS[cur];
+  document.getElementById('info').innerHTML=s.info;
+  document.getElementById('sc').textContent=`${cur+1} / ${STEPS.length}`;
+  const svg=document.getElementById('svg');
+
+  // 레이어 라벨 위치 (x=4, 노드 y에 맞춤)
+  const layers=[
+    {y:16, label:'idx=0'},
+    {y:102,label:'idx=1'},
+    {y:194,label:'idx=2'},
+    {y:300,label:'leaf'},
+  ];
+
+  let h=`<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>`;
+
+  // 레이어 구분선 (연한 점선)
+  layers.forEach(l=>{
+    h+=`<line x1="78" y1="${l.y-6}" x2="680" y2="${l.y-6}" stroke="var(--border)" stroke-width="0.4" stroke-dasharray="3 4"/>`;
+    h+=`<text x="4" y="${l.y+NH/2}" dominant-baseline="central" font-size="10" fill="var(--text3)" font-family="sans-serif">${l.label}</text>`;
+  });
+
+  // 엣지
+  EDGES.forEach(e=>{
+    const f=nm[e.f],t=nm[e.t];
+    const fx=f.x+NW/2,fy=f.y+NH,tx=t.x+NW/2,ty=t.y;
+    const mx=(fx+tx)/2,my=(fy+ty)/2-4;
+    const isMemo=(e.f==='n5'||e.t==='n9');
+    h+=`<path d="M${fx} ${fy} C${fx} ${fy+18} ${tx} ${ty-18} ${tx} ${ty}" fill="none" stroke="var(--border2)" stroke-width="0.7" marker-end="url(#arr)" stroke-dasharray="${isMemo?'4 3':''}"/>`;
+    if(e.lbl) h+=`<text x="${mx}" y="${my}" font-size="10" text-anchor="middle" fill="var(--text3)" font-family="monospace">${e.lbl}</text>`;
+  });
+
+  // 노드
+  NODES.forEach(nd=>{
+    const c=getColor(nd.id,cur);
+    const tc=getTextColor(c.fill);
+    const sw=c.fill==='var(--bg2)'?'0.5':'1.2';
+    h+=`<g>
+      <rect x="${nd.x}" y="${nd.y}" width="${NW}" height="${NH}" rx="6" fill="${c.fill}" stroke="${c.stroke}" stroke-width="${sw}"/>
+      <text x="${nd.x+NW/2}" y="${nd.y+NH/2}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="${tc}" font-family="monospace" font-weight="500">${nd.text}</text>
+    </g>`;
+  });
+
+  svg.innerHTML=h;
+}
+
+function next(){if(cur<STEPS.length-1){cur++;render();}}
+function prev(){if(cur>0){cur--;render();}}
+function goStep(i){cur=i;render();}
+function toggleAuto(){
+  const b=document.getElementById('autoBtn');
+  if(timer){clearInterval(timer);timer=null;b.textContent='▶ 자동';b.classList.remove('act');}
+  else{b.textContent='■ 정지';b.classList.add('act');timer=setInterval(()=>{if(cur<STEPS.length-1){cur++;render();}else{clearInterval(timer);timer=null;b.textContent='▶ 자동';b.classList.remove('act');}},1300);}
+}
+render();
+</script>

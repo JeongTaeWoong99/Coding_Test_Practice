@@ -14,17 +14,23 @@ description: C++ 코드 작성 및 스타일 확인 시 참고. 코딩 스타일
 #include <bits/stdc++.h>
 using namespace std;
 
+typedef long long ll; // 사용 이유 주석 (예 : '2^63 - 1' 까지 필요하므로 ll 사용)
+
 // 전역 변수는 상단에 선언하고 타입/의미별로 정렬
-int    visited[54][54], a[54][54];
-int    n, l, r;
-int    sum = 0, cnt = 0;
-bool   flag = false;  // int보다 bool 권장 (메모리 효율, 의미 명확)
-vector<pair<int,int>> uni;
+// 주석은 선언 위 별도 줄이 아닌, 같은 줄 오른쪽 인라인으로 작성
+// 주석 시작 위치(// )는 컬럼 정렬로 맞춤
+int    n;                    // n     : 숫자 개수
+int    arr[54];              // arr   : 입력 배열
+ll     dp[54][21];           // dp    : dp[idx][sum] = 경우의 수 (값이 커지므로 ll)
+bool   flag = false;         // flag  : 상태 플래그 (int보다 bool 권장)
+vector<pair<int,int>> uni;   // uni   : 유니온 파인드용 벡터
 ```
 
 **정렬 규칙 :**
 - 타입 정렬 : 동일한 타입끼리 그룹화
-- 컬럼 정렬 : 타입 / 변수명 / = / 초기값 정렬
+- 컬럼 정렬 : 타입 / 변수명 / `//` 주석 시작 위치 정렬
+- 인라인 주석 : 변수 주석은 선언 위 별도 줄이 아닌 **같은 줄 오른쪽**에 작성
+- typedef 주석 : `typedef` 선언에도 인라인 주석으로 사용 이유 명시
 - 의미별 그룹 : 관련 변수들끼리 묶어서 선언
 - bool 권장 : 사용 여부 체크는 int보다 bool 타입 권장
 

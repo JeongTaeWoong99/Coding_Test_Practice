@@ -1,0 +1,63 @@
+﻿// ❌ 그리디 풀이 (틀린 접근)
+// 매 주사위마다 1~6 중 이동 후 위치가 가장 큰 주사위 값 선택
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int           n, m;          // n : 사다리 수, m : 뱀 수
+map<int, int> movLadder;     // movLadder : 사다리 이동 정보 (from -> to)
+                             // 그리디니까 뒤로가는 뱀은 어차피 선택 안 되므로 아예 제외
+                             // → 사다리만 따로 map으로 관리
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m;
+
+    // 사다리 정보만 저장 (앞으로 이동)
+    for (int i = 0; i < n; ++i)
+    {
+        int from, to;
+        cin >> from >> to;
+
+        movLadder[from] = to;
+    }
+
+    // 뱀 정보는 읽기만 하고 버림 (그리디 특성상 뒤로 가는 선택지는 bestPos 갱신 안 됨)
+    for (int i = 0; i < m; ++i)
+    {
+        int from, to;
+        cin >> from >> to;
+    }
+
+    // 시뮬레이션 진행
+    // 시작 1에서 주사위 1~6 중 이동 후 위치가 가장 큰 값 선택
+    int pos     = 1;
+    int rollCnt = 0;
+
+    while (pos < 100)
+    {
+        int bestPos = pos;
+
+        for (int dice = 1; dice <= 6; ++dice)
+        {
+            int next = pos + dice;
+
+            if (next > 100) continue;
+
+            // 사다리 이동 반영 (키에 해당하는 값이 있는 경우)
+            if (movLadder.count(next)) next = movLadder[next];
+
+            // 이동 위치가 더 커진 경우 반영
+            if (next > bestPos) bestPos = next;
+        }
+
+        pos = bestPos;
+        rollCnt++;
+    }
+
+    cout << rollCnt << "\n";
+
+    return 0;
+}

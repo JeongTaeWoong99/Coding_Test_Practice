@@ -1,0 +1,64 @@
+﻿// ✅ BFS 풀이 (정답)
+// 각 칸을 노드, 주사위 1회 굴림을 노드 간 이동으로 보고 최단 경로 탐색
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int           n, m;   // n : 사다리 수, m : 뱀 수
+map<int, int> mov;    // mov : from -> to (사다리/뱀 이동 정보)
+
+int BFS()
+{
+    queue<int>  bfsQ;
+    vector<int> dist(101, -1); // dist[i] : 칸 i까지 최소 주사위 굴림 횟수
+                               // 크기 101짜리 벡터를 만들고 -1로 초기화 (미방문 표시)
+
+    dist[1] = 0;    // 시작점 1의 도착 거리는 0
+    bfsQ.push(1);   // bfs 시작점 넣기
+
+    while (!bfsQ.empty())
+    {
+        int cur = bfsQ.front();
+        bfsQ.pop();
+
+        for (int dice = 1; dice <= 6; ++dice)
+        {
+            int next = cur + dice;
+
+            // 100 초과 시 이동 불가
+            if (next > 100) continue;
+
+            // 사다리/뱀 이동 반영 (키가 존재하는 경우, 이동 반영)
+            if (mov.count(next)) next = mov[next];
+
+            // 이미 방문한 칸은 스킵 (최초로 값이 저장된 순간이 최단 도착 거리이므로, 다시 기록할 필요 없음)
+            if (dist[next] != -1) continue;
+
+            // 도착 거리 저장 및 큐 푸시
+            dist[next] = dist[cur] + 1;
+            bfsQ.push(next);
+        }
+    }
+
+    return dist[100];
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n >> m;
+
+    // 사다리 or 뱀 이동 정보 저장
+    for (int i = 0; i < n + m; ++i)
+    {
+        int from, to;
+        cin >> from >> to;
+
+        mov[from] = to;
+    }
+
+    cout << BFS() << "\n";
+
+    return 0;
+}

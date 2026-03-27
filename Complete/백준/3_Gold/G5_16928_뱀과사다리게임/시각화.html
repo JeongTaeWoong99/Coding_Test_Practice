@@ -1,0 +1,334 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+#root{padding:.75rem 0;font-family:var(--font-mono)}
+
+#layout{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+
+#board-wrap{flex:0 0 auto}
+canvas{display:block;border-radius:6px;border:.5px solid var(--color-border-tertiary)}
+
+#side{flex:1;min-width:200px;display:flex;flex-direction:column;gap:10px}
+
+.panel{border:.5px solid var(--color-border-tertiary);border-radius:8px;background:var(--color-background-secondary);padding:10px 12px;font-size:12px;line-height:1.75}
+
+#queue-box{font-size:11px;line-height:1.6;word-break:break-all;max-height:70px;overflow:hidden}
+
+#controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+#controls button{font-size:12px;padding:5px 12px;border-radius:6px;border:.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer}
+#controls button:hover{background:var(--color-background-secondary)}
+#controls button:disabled{opacity:.4;cursor:default}
+
+#speed-wrap{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--color-text-secondary)}
+#speed-wrap input{width:72px}
+
+#step-info{font-size:11px;color:var(--color-text-secondary);margin-left:auto}
+
+#legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--color-text-secondary);margin-top:8px;align-items:center}
+.sq{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:3px;vertical-align:middle}
+</style>
+
+<div id="root">
+<div id="layout">
+  <div id="board-wrap">
+    <canvas id="c" width="500" height="500"></canvas>
+  </div>
+  <div id="side">
+    <div class="panel">
+      <div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:4px">현재 상태</div>
+      <div id="state-txt">▶ 시작 버튼을 눌러주세요</div>
+    </div>
+    <div class="panel">
+      <div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:4px">코드 추적</div>
+      <div id="code-txt" style="white-space:pre;font-size:11px;line-height:1.7"></div>
+    </div>
+    <div class="panel">
+      <div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:3px">큐 (앞 → 뒤)</div>
+      <div id="queue-box">-</div>
+    </div>
+  </div>
+</div>
+
+<div id="controls">
+  <button id="btn-prev" onclick="go(-1)" disabled>◀ 이전</button>
+  <button id="btn-play" onclick="togglePlay()">▶ 재생</button>
+  <button id="btn-next" onclick="go(1)">다음 ▶</button>
+  <button onclick="goTo(0)">↺ 처음</button>
+  <div id="speed-wrap">
+    속도<input type="range" id="spd" min="50" max="800" value="350" step="50"
+      oninput="setSpeed(this.value)">
+    <span id="spd-lbl">350ms</span>
+  </div>
+  <span id="step-info">0 / 90</span>
+</div>
+
+<div id="legend">
+  <span><span class="sq" style="background:#f5f4f0;border:.5px solid #ccc"></span>미방문(-1)</span>
+  <span><span class="sq" style="background:#3B8BD4;opacity:.5"></span>방문완료</span>
+  <span><span class="sq" style="background:#1D9E75"></span>방금 갱신</span>
+  <span><span class="sq" style="background:#534AB7"></span>현재 cur</span>
+  <span><span class="sq" style="background:#EF9F27"></span>사다리</span>
+  <span><span class="sq" style="background:#E24B4A"></span>뱀</span>
+</div>
+</div>
+
+<script>
+const CELL = 50, N = 10;
+const LADDERS = {32:62,42:68,12:98};
+const SNAKES  = {95:13,97:25,93:37,79:27,75:19,49:47,67:17};
+const MOV = {...LADDERS,...SNAKES};
+
+// BFS events (pre-computed)
+const EVENTS = [{"type":"init","cell":1,"dist":0},{"type":"update","cur":1,"dice":1,"land":2,"final":2,"teleport":false,"isLadder":false,"dist":1},{"type":"update","cur":1,"dice":2,"land":3,"final":3,"teleport":false,"isLadder":false,"dist":1},{"type":"update","cur":1,"dice":3,"land":4,"final":4,"teleport":false,"isLadder":false,"dist":1},{"type":"update","cur":1,"dice":4,"land":5,"final":5,"teleport":false,"isLadder":false,"dist":1},{"type":"update","cur":1,"dice":5,"land":6,"final":6,"teleport":false,"isLadder":false,"dist":1},{"type":"update","cur":1,"dice":6,"land":7,"final":7,"teleport":false,"isLadder":false,"dist":1},{"type":"update","cur":2,"dice":6,"land":8,"final":8,"teleport":false,"isLadder":false,"dist":2},{"type":"update","cur":3,"dice":6,"land":9,"final":9,"teleport":false,"isLadder":false,"dist":2},{"type":"update","cur":4,"dice":6,"land":10,"final":10,"teleport":false,"isLadder":false,"dist":2},{"type":"update","cur":5,"dice":6,"land":11,"final":11,"teleport":false,"isLadder":false,"dist":2},{"type":"update","cur":6,"dice":6,"land":12,"final":98,"teleport":true,"isLadder":true,"dist":2},{"type":"update","cur":7,"dice":6,"land":13,"final":13,"teleport":false,"isLadder":false,"dist":2},{"type":"update","cur":8,"dice":6,"land":14,"final":14,"teleport":false,"isLadder":false,"dist":3},{"type":"update","cur":9,"dice":6,"land":15,"final":15,"teleport":false,"isLadder":false,"dist":3},{"type":"update","cur":10,"dice":6,"land":16,"final":16,"teleport":false,"isLadder":false,"dist":3},{"type":"update","cur":11,"dice":6,"land":17,"final":17,"teleport":false,"isLadder":false,"dist":3},{"type":"update","cur":98,"dice":1,"land":99,"final":99,"teleport":false,"isLadder":false,"dist":3},{"type":"update","cur":98,"dice":2,"land":100,"final":100,"teleport":false,"isLadder":false,"dist":3},{"type":"update","cur":13,"dice":5,"land":18,"final":18,"teleport":false,"isLadder":false,"dist":3},{"type":"update","cur":13,"dice":6,"land":19,"final":19,"teleport":false,"isLadder":false,"dist":3},{"type":"update","cur":14,"dice":6,"land":20,"final":20,"teleport":false,"isLadder":false,"dist":4},{"type":"update","cur":15,"dice":6,"land":21,"final":21,"teleport":false,"isLadder":false,"dist":4},{"type":"update","cur":16,"dice":6,"land":22,"final":22,"teleport":false,"isLadder":false,"dist":4},{"type":"update","cur":17,"dice":6,"land":23,"final":23,"teleport":false,"isLadder":false,"dist":4},{"type":"update","cur":18,"dice":6,"land":24,"final":24,"teleport":false,"isLadder":false,"dist":4},{"type":"update","cur":19,"dice":6,"land":25,"final":25,"teleport":false,"isLadder":false,"dist":4},{"type":"update","cur":20,"dice":6,"land":26,"final":26,"teleport":false,"isLadder":false,"dist":5},{"type":"update","cur":21,"dice":6,"land":27,"final":27,"teleport":false,"isLadder":false,"dist":5},{"type":"update","cur":22,"dice":6,"land":28,"final":28,"teleport":false,"isLadder":false,"dist":5},{"type":"update","cur":23,"dice":6,"land":29,"final":29,"teleport":false,"isLadder":false,"dist":5},{"type":"update","cur":24,"dice":6,"land":30,"final":30,"teleport":false,"isLadder":false,"dist":5},{"type":"update","cur":25,"dice":6,"land":31,"final":31,"teleport":false,"isLadder":false,"dist":5},{"type":"update","cur":26,"dice":6,"land":32,"final":62,"teleport":true,"isLadder":true,"dist":6},{"type":"update","cur":27,"dice":6,"land":33,"final":33,"teleport":false,"isLadder":false,"dist":6},{"type":"update","cur":28,"dice":6,"land":34,"final":34,"teleport":false,"isLadder":false,"dist":6},{"type":"update","cur":29,"dice":6,"land":35,"final":35,"teleport":false,"isLadder":false,"dist":6},{"type":"update","cur":30,"dice":6,"land":36,"final":36,"teleport":false,"isLadder":false,"dist":6},{"type":"update","cur":31,"dice":6,"land":37,"final":37,"teleport":false,"isLadder":false,"dist":6},{"type":"update","cur":62,"dice":1,"land":63,"final":63,"teleport":false,"isLadder":false,"dist":7},{"type":"update","cur":62,"dice":2,"land":64,"final":64,"teleport":false,"isLadder":false,"dist":7},{"type":"update","cur":62,"dice":3,"land":65,"final":65,"teleport":false,"isLadder":false,"dist":7},{"type":"update","cur":62,"dice":4,"land":66,"final":66,"teleport":false,"isLadder":false,"dist":7},{"type":"update","cur":62,"dice":6,"land":68,"final":68,"teleport":false,"isLadder":false,"dist":7},{"type":"update","cur":33,"dice":5,"land":38,"final":38,"teleport":false,"isLadder":false,"dist":7},{"type":"update","cur":33,"dice":6,"land":39,"final":39,"teleport":false,"isLadder":false,"dist":7},{"type":"update","cur":34,"dice":6,"land":40,"final":40,"teleport":false,"isLadder":false,"dist":7},{"type":"update","cur":35,"dice":6,"land":41,"final":41,"teleport":false,"isLadder":false,"dist":7},{"type":"update","cur":37,"dice":6,"land":43,"final":43,"teleport":false,"isLadder":false,"dist":7},{"type":"update","cur":63,"dice":6,"land":69,"final":69,"teleport":false,"isLadder":false,"dist":8},{"type":"update","cur":64,"dice":6,"land":70,"final":70,"teleport":false,"isLadder":false,"dist":8},{"type":"update","cur":65,"dice":6,"land":71,"final":71,"teleport":false,"isLadder":false,"dist":8},{"type":"update","cur":66,"dice":6,"land":72,"final":72,"teleport":false,"isLadder":false,"dist":8},{"type":"update","cur":68,"dice":5,"land":73,"final":73,"teleport":false,"isLadder":false,"dist":8},{"type":"update","cur":68,"dice":6,"land":74,"final":74,"teleport":false,"isLadder":false,"dist":8},{"type":"update","cur":38,"dice":6,"land":44,"final":44,"teleport":false,"isLadder":false,"dist":8},{"type":"update","cur":39,"dice":6,"land":45,"final":45,"teleport":false,"isLadder":false,"dist":8},{"type":"update","cur":40,"dice":6,"land":46,"final":46,"teleport":false,"isLadder":false,"dist":8},{"type":"update","cur":41,"dice":6,"land":47,"final":47,"teleport":false,"isLadder":false,"dist":8},{"type":"update","cur":43,"dice":5,"land":48,"final":48,"teleport":false,"isLadder":false,"dist":8},{"type":"update","cur":70,"dice":6,"land":76,"final":76,"teleport":false,"isLadder":false,"dist":9},{"type":"update","cur":71,"dice":6,"land":77,"final":77,"teleport":false,"isLadder":false,"dist":9},{"type":"update","cur":72,"dice":6,"land":78,"final":78,"teleport":false,"isLadder":false,"dist":9},{"type":"update","cur":74,"dice":6,"land":80,"final":80,"teleport":false,"isLadder":false,"dist":9},{"type":"update","cur":44,"dice":6,"land":50,"final":50,"teleport":false,"isLadder":false,"dist":9},{"type":"update","cur":45,"dice":6,"land":51,"final":51,"teleport":false,"isLadder":false,"dist":9},{"type":"update","cur":46,"dice":6,"land":52,"final":52,"teleport":false,"isLadder":false,"dist":9},{"type":"update","cur":47,"dice":6,"land":53,"final":53,"teleport":false,"isLadder":false,"dist":9},{"type":"update","cur":48,"dice":6,"land":54,"final":54,"teleport":false,"isLadder":false,"dist":9},{"type":"update","cur":76,"dice":5,"land":81,"final":81,"teleport":false,"isLadder":false,"dist":10},{"type":"update","cur":76,"dice":6,"land":82,"final":82,"teleport":false,"isLadder":false,"dist":10},{"type":"update","cur":77,"dice":6,"land":83,"final":83,"teleport":false,"isLadder":false,"dist":10},{"type":"update","cur":78,"dice":6,"land":84,"final":84,"teleport":false,"isLadder":false,"dist":10},{"type":"update","cur":80,"dice":5,"land":85,"final":85,"teleport":false,"isLadder":false,"dist":10},{"type":"update","cur":80,"dice":6,"land":86,"final":86,"teleport":false,"isLadder":false,"dist":10},{"type":"update","cur":50,"dice":5,"land":55,"final":55,"teleport":false,"isLadder":false,"dist":10},{"type":"update","cur":50,"dice":6,"land":56,"final":56,"teleport":false,"isLadder":false,"dist":10},{"type":"update","cur":51,"dice":6,"land":57,"final":57,"teleport":false,"isLadder":false,"dist":10},{"type":"update","cur":52,"dice":6,"land":58,"final":58,"teleport":false,"isLadder":false,"dist":10},{"type":"update","cur":53,"dice":6,"land":59,"final":59,"teleport":false,"isLadder":false,"dist":10},{"type":"update","cur":54,"dice":6,"land":60,"final":60,"teleport":false,"isLadder":false,"dist":10},{"type":"update","cur":81,"dice":6,"land":87,"final":87,"teleport":false,"isLadder":false,"dist":11},{"type":"update","cur":82,"dice":6,"land":88,"final":88,"teleport":false,"isLadder":false,"dist":11},{"type":"update","cur":83,"dice":6,"land":89,"final":89,"teleport":false,"isLadder":false,"dist":11},{"type":"update","cur":84,"dice":6,"land":90,"final":90,"teleport":false,"isLadder":false,"dist":11},{"type":"update","cur":85,"dice":6,"land":91,"final":91,"teleport":false,"isLadder":false,"dist":11},{"type":"update","cur":86,"dice":6,"land":92,"final":92,"teleport":false,"isLadder":false,"dist":11},{"type":"update","cur":55,"dice":6,"land":61,"final":61,"teleport":false,"isLadder":false,"dist":11},{"type":"update","cur":88,"dice":6,"land":94,"final":94,"teleport":false,"isLadder":false,"dist":12},{"type":"update","cur":90,"dice":6,"land":96,"final":96,"teleport":false,"isLadder":false,"dist":12}];
+
+// Rebuild state snapshots
+// state[i] = {dist:[], cur, justUpdated, queue:[]}
+function buildStates() {
+  const states = [];
+  const dist = new Array(101).fill(-1);
+  const queue = [];
+  
+  // step 0: init
+  dist[1] = 0;
+  queue.push(1);
+  states.push({ dist:[...dist], cur:1, justUpdated:-1, queue:[...queue], ev: EVENTS[0] });
+
+  for (let i = 1; i < EVENTS.length; i++) {
+    const e = EVENTS[i];
+    dist[e.final] = e.dist;
+    // update queue: remove cur if all its dice done, add final
+    // simpler: just track queue membership
+    const idx = queue.indexOf(e.final);
+    if (idx < 0) queue.push(e.final);
+    states.push({ dist:[...dist], cur:e.cur, justUpdated:e.final, queue:[...queue], ev: e });
+  }
+  return states;
+}
+
+const STATES = buildStates();
+const MAX = STATES.length - 1;
+let idx = 0;
+let playing = false;
+let timer = null;
+let speed = 350;
+
+// Board: 1 = top-left, goes right then snakes down
+// Row 0 (top): cells 1..10
+// Row 1: cells 11..20, but right-to-left? NO — user wants left=1, right=100 simple layout
+// Standard: 1 top-left, row by row left-to-right, 100 bottom-right
+function cellXY(n) {
+  const idx0 = n - 1;
+  const row = Math.floor(idx0 / N); // 0=top
+  const col = idx0 % N;
+  // Even rows: left-to-right. Odd rows: right-to-left (classic snake ladder zigzag)
+  // But user said "왼쪽 위 1, 오른쪽 끝 100" → simple left-to-right, top-to-bottom
+  return {
+    x: col * CELL + CELL/2,
+    y: row * CELL + CELL/2
+  };
+}
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+// Dist value → color
+function distColor(d) {
+  if (d < 0) return null;
+  const colors = [
+    '#2C6094','#1D6E5A','#5A3D8A','#7A4020','#1A6B6B',
+    '#5C6B1A','#6B1A3A','#1A3A6B','#6B4A1A','#3A1A6B',
+    '#1A6B2A','#6B1A1A','#4A6B1A'
+  ];
+  return colors[d % colors.length];
+}
+
+function draw(s) {
+  const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+  ctx.clearRect(0, 0, 500, 500);
+
+  // Grid cells
+  for (let n = 1; n <= 100; n++) {
+    const {x, y} = cellXY(n);
+    const cx = x - CELL/2, cy = y - CELL/2;
+    const d = s.dist[n];
+    const isJust = n === s.justUpdated;
+    const isCur = n === s.cur;
+
+    // bg
+    if (isJust) {
+      ctx.fillStyle = '#1D9E75';
+    } else if (isCur) {
+      ctx.fillStyle = '#534AB7';
+    } else if (d >= 0) {
+      const dc = distColor(d);
+      ctx.fillStyle = dc;
+      ctx.globalAlpha = 0.45;
+    } else {
+      ctx.fillStyle = dark ? '#1a1a18' : '#f7f6f2';
+    }
+    ctx.globalAlpha = isJust ? 0.85 : isCur ? 0.7 : d >= 0 ? 0.45 : 1;
+    ctx.fillRect(cx+.5, cy+.5, CELL-1, CELL-1);
+    ctx.globalAlpha = 1;
+
+    // Teleport marker background tint
+    const isLadderSrc = LADDERS[n] !== undefined;
+    const isSnakeSrc  = SNAKES[n] !== undefined;
+    const isLadderDst = Object.values(LADDERS).includes(n);
+    const isSnakeDst  = Object.values(SNAKES).includes(n);
+    if (d < 0) {
+      if (isLadderSrc || isLadderDst) {
+        ctx.fillStyle = '#EF9F27'; ctx.globalAlpha = .15;
+        ctx.fillRect(cx+.5, cy+.5, CELL-1, CELL-1);
+        ctx.globalAlpha = 1;
+      } else if (isSnakeSrc || isSnakeDst) {
+        ctx.fillStyle = '#E24B4A'; ctx.globalAlpha = .15;
+        ctx.fillRect(cx+.5, cy+.5, CELL-1, CELL-1);
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    // Cell number (top-left)
+    ctx.font = '8px monospace';
+    ctx.fillStyle = d >= 0 ? '#fff' : (dark ? '#5F5E5A' : '#b0ae a6');
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(n, cx+2, cy+2);
+
+    // dist value (center)
+    ctx.font = `bold ${d >= 0 ? 13 : 10}px monospace`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = d >= 0 ? '#fff' : (dark ? '#3d3d3a' : '#ccc');
+    ctx.fillText(d < 0 ? '-1' : String(d), x, y);
+  }
+
+  // Draw teleport lines
+  function drawTele(from, to, color) {
+    const f = cellXY(from), t = cellXY(to);
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = 0.6;
+    ctx.setLineDash([4,3]);
+    ctx.beginPath();
+    ctx.moveTo(f.x, f.y);
+    ctx.lineTo(t.x, t.y);
+    ctx.stroke();
+    // arrowhead
+    const ang = Math.atan2(t.y-f.y, t.x-f.x);
+    ctx.setLineDash([]);
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.7;
+    ctx.beginPath();
+    ctx.moveTo(t.x, t.y);
+    ctx.lineTo(t.x-8*Math.cos(ang-Math.PI/7), t.y-8*Math.sin(ang-Math.PI/7));
+    ctx.lineTo(t.x-8*Math.cos(ang+Math.PI/7), t.y-8*Math.sin(ang+Math.PI/7));
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+  Object.entries(LADDERS).forEach(([f,t])=>drawTele(+f,t,'#EF9F27'));
+  Object.entries(SNAKES).forEach(([f,t])=>drawTele(+f,t,'#E24B4A'));
+
+  // Grid lines
+  ctx.strokeStyle = dark ? '#2d2d2b' : '#dddcd6';
+  ctx.lineWidth = 0.5;
+  for (let i=0;i<=N;i++){
+    ctx.beginPath(); ctx.moveTo(i*CELL,0); ctx.lineTo(i*CELL,500); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,i*CELL); ctx.lineTo(500,i*CELL); ctx.stroke();
+  }
+
+  // Highlight edge on cur cell
+  if (s.cur > 0) {
+    const {x,y} = cellXY(s.cur);
+    ctx.strokeStyle = '#534AB7';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x-CELL/2+1, y-CELL/2+1, CELL-2, CELL-2);
+  }
+  // Highlight edge on justUpdated
+  if (s.justUpdated > 0) {
+    const {x,y} = cellXY(s.justUpdated);
+    ctx.strokeStyle = '#1D9E75';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x-CELL/2+1, y-CELL/2+1, CELL-2, CELL-2);
+  }
+}
+
+function getStateText(s) {
+  const e = s.ev;
+  if (e.type === 'init') {
+    return `dist[1] = 0 으로 초기화\n시작점 1을 큐에 삽입`;
+  }
+  let txt = `cur = ${e.cur}  (dist[${e.cur}] = ${e.dist-1})\n주사위 = ${e.dice}  →  착지 = ${e.land}`;
+  if (e.teleport) {
+    txt += `\nmov[${e.land}] = ${e.final}  ← ${e.isLadder?'사다리🪜':'뱀🐍'}`;
+    txt += `\nnext = ${e.final}`;
+  }
+  txt += `\n\ndist[${e.final}]: -1 → ${e.dist} ✓`;
+  txt += `\nbfsQ.push(${e.final})`;
+  if (e.final === 100) txt += `\n\n🎉 dist[100] = ${e.dist} 확정!`;
+  return txt;
+}
+
+function getCodeText(s) {
+  const e = s.ev;
+  if (e.type === 'init') {
+    return `dist[1] = 0;\nbfsQ.push(1);`;
+  }
+  let c = `cur = ${e.cur};\nfor (dice=1..6) {\n  next = ${e.cur}+${e.dice} = ${e.land};`;
+  if (e.teleport) {
+    c += `\n  // mov[${e.land}]=${e.final}`;
+    c += `\n  next = ${e.final};`;
+  }
+  c += `\n  // dist[${e.final}]==-1 → 미방문`;
+  c += `\n  dist[${e.final}] = ${e.dist};`;
+  c += `\n  bfsQ.push(${e.final});\n}`;
+  return c;
+}
+
+function render() {
+  const s = STATES[idx];
+  draw(s);
+
+  document.getElementById('state-txt').textContent = getStateText(s);
+  document.getElementById('code-txt').textContent = getCodeText(s);
+
+  const qShow = s.queue.slice(-20).join(' → ');
+  document.getElementById('queue-box').textContent = s.queue.length
+    ? `[ ${qShow}${s.queue.length>20?'...':''} ]` : '[ 비어있음 ]';
+
+  document.getElementById('step-info').textContent = `${idx} / ${MAX}`;
+  document.getElementById('btn-prev').disabled = idx===0;
+  document.getElementById('btn-next').disabled = idx===MAX;
+  document.getElementById('btn-play').textContent = playing ? '⏸ 일시정지' : '▶ 재생';
+}
+
+function go(d) {
+  idx = Math.max(0, Math.min(MAX, idx+d));
+  render();
+}
+function goTo(i) {
+  idx = i; render();
+}
+function togglePlay() {
+  playing = !playing;
+  if (playing) {
+    if (idx >= MAX) idx = 0;
+    tick();
+  } else {
+    clearTimeout(timer);
+  }
+  render();
+}
+function tick() {
+  if (!playing || idx >= MAX) { playing=false; render(); return; }
+  go(1);
+  timer = setTimeout(tick, speed);
+}
+function setSpeed(v) {
+  speed = +v;
+  document.getElementById('spd-lbl').textContent = v+'ms';
+}
+
+render();
+</script>

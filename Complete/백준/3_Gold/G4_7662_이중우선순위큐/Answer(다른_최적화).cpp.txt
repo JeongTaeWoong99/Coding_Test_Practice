@@ -1,0 +1,95 @@
+﻿// ────────────────────────────────────────────────────────
+// [최적화] multiset → map<int,int> 변경
+//
+// ▸ 변경 이유
+//   multiset : 중복값마다 개별 노드 생성 → 트리 노드 수 = 총 원소 수
+//   map<int,int> : 키=값, 값=개수 → 중복은 count만 증가, 노드 수 = 고유값 수
+//
+// ▸ 결과 (백준 제출)
+//   multiset     : 49016 KB / 1268 ms
+//   map<int,int> : 49016 KB /  784 ms  ← 시간 38% 단축
+//
+// ▸ 시간이 줄어든 이유
+//   노드 수 감소 → RB-트리 높이(log n) 감소 → 삽입/삭제 탐색 빠름
+//   동적 메모리 할당(new/delete) 횟수 감소 → 할당 오버헤드 절감
+//
+// ▸ 메모리가 동일한 이유
+//   map 노드는 key+value(8B) vs multiset value(4B) → 1개당 크기가 더 커서 상쇄
+//   백준은 KB 단위 피크 메모리 측정 → 수십KB 이하 절약은 수치에 미반영
+// ────────────────────────────────────────────────────────
+#include <bits/stdc++.h>
+using namespace std;
+
+int t;
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> t;
+
+    while (t--)
+    {
+        int k;
+        cin >> k;
+
+        map<int, int> dpq; // dpq : dual priority queue (키=정수값, 값=개수)
+
+        // k개의 연산 처리
+        for (int i = 0; i < k; ++i)
+        {
+            char cmd;
+            int  n;
+            cin >> cmd >> n;
+
+            // I = 넣기 (해당 값의 count 증가)
+            if (cmd == 'I')
+            {
+                dpq[n]++;
+            }
+            // D = 빼기
+            else
+            {
+                // 큐가 비어있으면 무시
+                if (dpq.empty()) continue;
+
+                // n == 1 : 최댓값 삭제 (맨 오른쪽 키)
+                if (n == 1)
+                {
+                    auto maxIt = prev(dpq.end()); // prev(it) : end()는 마지막 원소 다음 → 직접 접근 불가
+                    maxIt->second--;                            // 해당 값의 count 1 감소
+
+                    // count가 0이 되면 노드 자체를 제거
+                    if (maxIt->second == 0)
+                    {
+                        dpq.erase(maxIt);
+                    }
+                }
+                // n == -1 : 최솟값 삭제 (맨 왼쪽 키)
+                else
+                {
+                    auto minIt = dpq.begin();     
+                    minIt->second--;          // 해당 값의 count 1 감소
+
+                    // count가 0이 되면 노드 자체를 제거
+                    if (minIt->second == 0)
+                    {
+                        dpq.erase(minIt);
+                    }
+                }
+            }
+        }
+
+        // 결과 출력
+        if (dpq.empty())
+        {
+            cout << "EMPTY\n";
+        }
+        else
+        {
+            cout << dpq.rbegin()->first << " " << dpq.begin()->first << "\n";
+        }
+    }
+
+    return 0;
+}

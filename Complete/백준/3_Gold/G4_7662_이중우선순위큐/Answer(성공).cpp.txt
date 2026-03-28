@@ -1,0 +1,62 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int t;
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> t;
+
+    while (t--)
+    {
+        int k;
+        cin >> k;
+
+        multiset<int> dpq; // dpq : dual priority queue (레드블랙트리 — 양끝 O(log n) 보장)
+
+        // k개의 연산 처리
+        for (int i = 0; i < k; ++i)
+        {
+            char cmd;
+            int  n;
+            cin >> cmd >> n;
+
+            // I = 넣기
+            if (cmd == 'I')
+            {
+                dpq.insert(n);
+            }
+            // D = 빼기
+            else
+            {
+                // 큐가 비어있으면 무시
+                if (dpq.empty()) continue;
+
+                // n == 1 : 최댓값 삭제 (맨 오른쪽)
+                if (n == 1)
+                {
+                    dpq.erase(prev(dpq.end())); // prev(it) : it 바로 이전 이터레이터 반환 — end()는 마지막 원소 다음을 가리키므로 직접 erase하면 UB 발생
+                }
+                // n == -1 : 최솟값 삭제 (맨 왼쪽)
+                else 
+                {
+                    dpq.erase(dpq.begin());
+                }
+            }
+        }
+
+        // 결과 출력
+        if (dpq.empty())
+        {
+            cout << "EMPTY\n";
+        }
+        else
+        {
+            cout << *dpq.rbegin() << " " << *dpq.begin() << "\n";
+        }
+    }
+
+    return 0;
+}

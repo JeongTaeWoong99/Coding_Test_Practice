@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>BOJ 9019 DSLR - BFS 큐 시각화</title>
+<style>
+:root {
+  --bg:#0d1117; --panel:#161b22; --border:#30363d;
+  --accent:#58a6ff; --green:#3fb950; --red:#f85149;
+  --yellow:#d29922; --orange:#e3b341; --purple:#bc8cff;
+  --text:#c9d1d9; --muted:#8b949e; --dim:#21262d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Consolas','D2Coding',monospace;font-size:13px;padding:16px}
+
+/* ── 헤더 ── */
+.hdr{text-align:center;margin-bottom:16px}
+.hdr h1{color:var(--accent);font-size:1.4rem;letter-spacing:1px}
+.hdr p{color:var(--muted);font-size:.8rem;margin-top:4px}
+
+/* ── 컨트롤 ── */
+.ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;padding:10px 14px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
+.ctrl label{color:var(--muted);font-size:.8rem}
+.ctrl input[type=number]{background:var(--dim);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:5px;font-family:inherit;font-size:.85rem;width:70px}
+.btn{padding:5px 14px;border-radius:5px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;transition:opacity .15s}
+.btn-primary{background:var(--accent);color:#0d1117;font-weight:bold}
+.btn-secondary{background:var(--dim);border:1px solid var(--border);color:var(--text)}
+.btn:hover{opacity:.8}
+.btn:disabled{opacity:.35;cursor:default}
+.speed-wrap{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.75rem;margin-left:auto}
+
+/* ── 예제 ── */
+.ex-btns{display:flex;gap:6px}
+.ex-btn{padding:3px 10px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;font-size:.75rem;cursor:pointer;transition:all .15s}
+.ex-btn:hover{border-color:var(--accent);color:var(--text)}
+.ex-btn.on{background:var(--accent);border-color:var(--accent);color:#0d1117;font-weight:bold}
+
+/* ── 레이아웃 ── */
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:980px){.layout{grid-template-columns:1fr}}
+.layout-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px}
+@media(max-width:980px){.layout-3{grid-template-columns:1fr}}
+
+/* ── 패널 ── */
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px}
+.panel-title{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.panel-title .badge{background:var(--dim);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:.7rem}
+
+/* ══════════════════════════════════════
+   🔑 핵심 1: BFS 큐 시각화
+══════════════════════════════════════ */
+.queue-section{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px}
+.queue-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.queue-label span{background:var(--dim);border:1px solid var(--border);border-radius:4px;padding:1px 7px;font-size:.75rem;color:var(--text)}
+
+/* 큐 레일 */
+.queue-rail{display:flex;gap:0;align-items:stretch;min-height:54px;overflow-x:auto;padding-bottom:4px}
+.queue-rail::-webkit-scrollbar{height:4px}
+.queue-rail::-webkit-scrollbar-track{background:var(--dim)}
+.queue-rail::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* 큐 아이템 */
+.q-cell{
+  min-width:54px;
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;padding:4px 8px;
+  transition:all .3s;
+  position:relative;flex-shrink:0;
+}
+.q-cell:last-child{border-right:none}
+.q-cell .qv{font-size:1rem;font-weight:bold;transition:all .3s}
+.q-cell .qi{font-size:.65rem;color:var(--muted)}
+/* 첫 번째 (front) */
+.q-cell.front{background:#1c2333;border-top:2px solid var(--accent);border-bottom:2px solid var(--accent)}
+.q-cell.front .qv{color:var(--accent)}
+.q-cell.front .qi{color:var(--accent)}
+/* 새로 추가된 항목 */
+.q-cell.new-add{background:#1a2614;border-top:2px solid var(--green);border-bottom:2px solid var(--green)}
+.q-cell.new-add .qv{color:var(--green)}
+/* 처리 중 (pop) */
+.q-cell.processing{background:#1c1412;border-top:2px solid var(--orange);border-bottom:2px solid var(--orange)}
+.q-cell.processing .qv{color:var(--orange)}
+/* 목표값 */
+.q-cell.goal{background:#1a1030;border-top:2px solid var(--purple);border-bottom:2px solid var(--purple)}
+.q-cell.goal .qv{color:var(--purple)}
+
+/* 큐 범례 */
+.queue-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:.7rem;color:var(--muted)}
+.leg-item{display:flex;align-items:center;gap:4px}
+.leg-dot{width:10px;height:10px;border-radius:2px}
+
+/* ══════════════════════════════════════
+   🔑 핵심 2: 현재 처리 중인 상태 + 4연산
+══════════════════════════════════════ */
+.cur-state-wrap{display:flex;align-items:center;gap:12px;margin-bottom:10px;padding:10px;background:var(--dim);border-radius:6px}
+.cur-arrow{color:var(--muted);font-size:1.2rem}
+.cur-state-val{font-size:2rem;font-weight:bold;color:var(--orange);min-width:56px;text-align:center}
+.cur-state-label{font-size:.7rem;color:var(--muted);text-align:center}
+
+.ops-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
+.op-card{border:1px solid var(--border);border-radius:6px;padding:8px;text-align:center;transition:all .25s}
+.op-card .op-ch{font-size:1.2rem;font-weight:bold;margin-bottom:2px}
+.op-card .op-val{font-size:1rem;font-weight:bold;margin-bottom:2px}
+.op-card .op-status{font-size:.65rem;padding:2px 5px;border-radius:3px;display:inline-block;margin-top:2px}
+/* 연산별 색상 */
+.op-D .op-ch{color:var(--accent)}
+.op-S .op-ch{color:var(--red)}
+.op-L .op-ch{color:var(--green)}
+.op-R .op-ch{color:var(--orange)}
+/* 상태별 배경 */
+.op-card.added{background:#0d1f0d;border-color:var(--green)}
+.op-card.added .op-val{color:var(--green)}
+.op-card.added .op-status{background:#1a3a1a;color:var(--green)}
+.op-card.already{background:#1c1c1c;border-color:#333;opacity:.55}
+.op-card.already .op-status{background:#2a2020;color:var(--red)}
+.op-card.goal-op{background:#160d2a;border-color:var(--purple)}
+.op-card.goal-op .op-val{color:var(--purple)}
+.op-card.goal-op .op-status{background:#1e1030;color:var(--purple)}
+
+/* ══════════════════════════════════════
+   🔑 핵심 3: prevState / prevOp 테이블
+══════════════════════════════════════ */
+.record-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.record-table th{color:var(--muted);font-weight:normal;padding:4px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:.7rem}
+.record-table td{padding:3px 8px;border-bottom:1px solid #1a1e24;text-align:center;transition:background .3s}
+.record-table tr.rec-new td{background:#0d1f0d;color:var(--green)}
+.record-table tr.rec-goal td{background:#160d2a;color:var(--purple)}
+.rec-op-D{color:var(--accent);font-weight:bold}
+.rec-op-S{color:var(--red);font-weight:bold}
+.rec-op-L{color:var(--green);font-weight:bold}
+.rec-op-R{color:var(--orange);font-weight:bold}
+
+/* ══════════════════════════════════════
+   🔑 핵심 4: BFS 단계 로그
+══════════════════════════════════════ */
+.step-log{max-height:280px;overflow-y:auto;font-size:.75rem;line-height:1.8}
+.step-log::-webkit-scrollbar{width:4px}
+.step-log::-webkit-scrollbar-track{background:var(--dim)}
+.step-log::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.log-entry{padding:4px 0;border-bottom:1px solid #1a1e24;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.log-entry.log-pop{border-left:3px solid var(--orange);padding-left:6px}
+.log-entry.log-add{border-left:3px solid var(--green);padding-left:6px}
+.log-entry.log-skip{border-left:3px solid var(--border);padding-left:6px;opacity:.55}
+.log-entry.log-found{border-left:3px solid var(--purple);padding-left:6px;background:#160d2a}
+.log-tag{border-radius:3px;padding:1px 5px;font-size:.68rem}
+.tag-pop{background:#2a1a0a;color:var(--orange)}
+.tag-add{background:#0a2a0a;color:var(--green)}
+.tag-skip{background:var(--dim);color:var(--muted)}
+.tag-found{background:#1e1030;color:var(--purple)}
+.log-num{color:var(--accent)}
+.log-op{font-weight:bold}
+.log-op-D{color:var(--accent)}
+.log-op-S{color:var(--red)}
+.log-op-L{color:var(--green)}
+.log-op-R{color:var(--orange)}
+.log-arrow{color:var(--muted)}
+
+/* ══════════════════════════════════════
+   경로 복원
+══════════════════════════════════════ */
+.path-visual{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:36px}
+.pv-state{background:var(--dim);border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:.85rem}
+.pv-state.pv-start{border-color:var(--green);color:var(--green)}
+.pv-state.pv-end{border-color:var(--purple);color:var(--purple)}
+.pv-op{border-radius:3px;padding:2px 7px;font-size:.78rem;font-weight:bold;color:#fff}
+.pv-op-D{background:var(--accent)}
+.pv-op-S{background:var(--red)}
+.pv-op-L{background:#1f6e45}
+.pv-op-R{background:#7a4e10}
+.pv-arrow{color:var(--muted)}
+
+/* 완료 배너 */
+.done-bar{display:none;background:#0d2010;border:1px solid var(--green);border-radius:6px;padding:8px 14px;color:var(--green);text-align:center;margin-bottom:12px;font-size:.9rem;letter-spacing:.5px}
+.done-bar.show{display:block}
+
+/* 통계 */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.stat-item{background:var(--dim);border-radius:5px;padding:6px 10px;text-align:center}
+.stat-item .sv{font-size:1.3rem;font-weight:bold;color:var(--accent)}
+.stat-item .sl{font-size:.68rem;color:var(--muted);margin-top:2px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>⚙️ BOJ 9019 — DSLR</h1>
+  <p>while (!bfsQ.empty()) 내부 동작 · BFS 큐 변화 · prevState/prevOp 기록 과정 시각화</p>
+</div>
+
+<!-- 컨트롤 -->
+<div class="ctrl">
+  <div class="ex-btns" id="exBtns">
+    <button class="ex-btn on" onclick="loadEx(0,this)">① 1234→3412</button>
+    <button class="ex-btn"   onclick="loadEx(1,this)">② 1000→1</button>
+    <button class="ex-btn"   onclick="loadEx(2,this)">③ 1→16</button>
+  </div>
+  <label>A: <input type="number" id="inA" value="1234" min="0" max="9999"></label>
+  <label>B: <input type="number" id="inB" value="3412" min="0" max="9999"></label>
+  <button class="btn btn-primary" id="btnStart" onclick="startAuto()">▶ 자동 실행</button>
+  <button class="btn btn-secondary" id="btnStep" onclick="doStep()">⏭ 1단계</button>
+  <button class="btn btn-secondary" onclick="doReset()">↺ 초기화</button>
+  <div class="speed-wrap">
+    🐢<input type="range" id="spd" min="100" max="1500" value="700" style="width:80px" oninput="document.getElementById('spdVal').textContent=this.value+'ms'">🐇
+    <span id="spdVal">700ms</span>
+  </div>
+</div>
+
+<!-- 완료 배너 -->
+<div class="done-bar" id="doneBanner"></div>
+
+<!-- ── 큐 시각화 (최상단 전체 폭) ── -->
+<div class="queue-section">
+  <div class="queue-label">
+    <span>📦 BFS 큐 (bfsQ) — front ← 처리 중 / back ← 새로 추가</span>
+    <span id="qSizeLabel">크기: 0</span>
+  </div>
+  <div class="queue-rail" id="queueRail"></div>
+  <div class="queue-legend">
+    <div class="leg-item"><div class="leg-dot" style="background:var(--orange)"></div> 현재 처리(pop)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--accent)"></div> 대기 중(front)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div> 방금 추가(new)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--purple)"></div> 목표값</div>
+  </div>
+</div>
+
+<!-- ── 현재 단계: 처리 + 4연산 ── -->
+<div class="layout">
+  <div class="panel">
+    <div class="panel-title">🔄 현재 처리 중인 상태 → 4가지 연산</div>
+    <div class="cur-state-wrap">
+      <div>
+        <div class="cur-state-val" id="curVal">—</div>
+        <div class="cur-state-label">cur (pop됨)</div>
+      </div>
+      <div class="cur-arrow">→</div>
+      <div style="font-size:.75rem;color:var(--muted);line-height:1.9">
+        <div>D: 2×cur mod 10000</div>
+        <div>S: cur−1 (0→9999)</div>
+        <div>L: d2 d3 d4 d1</div>
+        <div>R: d4 d1 d2 d3</div>
+      </div>
+    </div>
+    <div class="ops-row" id="opsRow">
+      <div class="op-card op-D" id="opD"><div class="op-ch">D</div><div class="op-val">—</div><div class="op-status">대기</div></div>
+      <div class="op-card op-S" id="opS"><div class="op-ch">S</div><div class="op-val">—</div><div class="op-status">대기</div></div>
+      <div class="op-card op-L" id="opL"><div class="op-ch">L</div><div class="op-val">—</div><div class="op-status">대기</div></div>
+      <div class="op-card op-R" id="opR"><div class="op-ch">R</div><div class="op-val">—</div><div class="op-status">대기</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">📊 통계</div>
+    <div class="stat-grid">
+      <div class="stat-item"><div class="sv" id="stVisited">1</div><div class="sl">방문한 상태</div></div>
+      <div class="stat-item"><div class="sv" id="stQueue">1</div><div class="sl">큐 크기</div></div>
+      <div class="stat-item"><div class="sv" id="stDepth">0</div><div class="sl">현재 깊이</div></div>
+      <div class="stat-item"><div class="sv" id="stResult">—</div><div class="sl">최단 명령어</div></div>
+    </div>
+    <div style="margin-top:12px">
+      <div class="panel-title">🗺 최단 경로</div>
+      <div class="path-visual" id="pathVis"><span style="color:var(--muted)">탐색 중...</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── prevState / prevOp 기록 + 로그 ── -->
+<div class="layout-3">
+  <div class="panel" style="grid-column:span 1">
+    <div class="panel-title">📋 prevOp / prevState 기록 <span class="badge" id="recCount">0개</span></div>
+    <div style="max-height:260px;overflow-y:auto">
+      <table class="record-table">
+        <thead><tr><th>상태</th><th>prevOp</th><th>prevState</th></tr></thead>
+        <tbody id="recTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel" style="grid-column:span 2">
+    <div class="panel-title">📜 BFS 단계 로그 (while 루프 내부)</div>
+    <div class="step-log" id="stepLog"></div>
+  </div>
+</div>
+
+<script>
+// ────────────────────────────────────────
+// 연산
+// ────────────────────────────────────────
+const OpD = n => (2*n)%10000;
+const OpS = n => n===0?9999:n-1;
+const OpL = n => (n%1000)*10 + Math.floor(n/1000);
+const OpR = n => (n%10)*1000 + Math.floor(n/10);
+const OPS = [{fn:OpD,ch:'D'},{fn:OpS,ch:'S'},{fn:OpL,ch:'L'},{fn:OpR,ch:'R'}];
+const EXAMPLES = [[1234,3412],[1000,1],[1,16]];
+
+// ────────────────────────────────────────
+// 상태
+// ────────────────────────────────────────
+let A,B,vis,prevS,prevO,depMap;
+let bfsQueue,qHead;
+let stepIdx;
+let allSteps=[];   // 사전계산된 BFS 단계
+let fullPath=[];
+let records=[];    // [{state,op,prev}]
+let timerID=null;
+let done=false;
+
+// ────────────────────────────────────────
+// 사전 계산 (전체 BFS)
+// ────────────────────────────────────────
+function precompute(a,b){
+  const vis   = new Uint8Array(10000);
+  const prev  = new Int16Array(10000).fill(-1);
+  const op    = new Uint8Array(10000);
+  const dep   = new Int16Array(10000).fill(-1);
+  const q=[a]; vis[a]=1; dep[a]=0;
+  let head=0, steps=[], found=false;
+  while(head<q.length){
+    const cur=q[head++];
+    const nexts=OPS.map((o,i)=>{
+      const nv=o.fn(cur);
+      return{val:nv,opIdx:i,opCh:o.ch,wasVis:!!vis[nv]};
+    });
+    steps.push({cur,nexts,depth:dep[cur]});
+    for(const nx of nexts){
+      if(!vis[nx.val]){
+        vis[nx.val]=1; prev[nx.val]=cur; op[nx.val]=nx.opIdx; dep[nx.val]=dep[cur]+1;
+        q.push(nx.val);
+        if(nx.val===b){found=true;}
+      }
+    }
+    if(found) break;
+  }
+  // 경로 복원
+  let path=[];
+  let cur=b;
+  while(cur!==a){path.push({state:cur,opCh:OPS[op[cur]].ch});cur=prev[cur];}
+  path.push({state:a,opCh:null}); path.reverse();
+  return{steps,path,queue:[...q],queueSnaps:buildQueueSnaps(a,b,steps,op,prev)};
+}
+
+// 각 BFS 단계에서 큐 스냅샷 생성
+function buildQueueSnaps(a,b,steps,op,prev){
+  // 실제 큐 변화를 추적
+  const snaps=[];
+  let q=[a], head=0;
+  const vis2=new Set([a]);
+  for(const st of steps){
+    // pop
+    head++;
+    const newAdds=[];
+    for(const nx of st.nexts){
+      if(!nx.wasVis){newAdds.push(nx.val);}
+    }
+    snaps.push({after:q.slice(head), newAdds, cur:st.cur, depth:st.depth});
+    for(const v of newAdds) q.push(v);
+  }
+  return snaps;
+}
+
+// ────────────────────────────────────────
+// 초기화
+// ────────────────────────────────────────
+function doReset(){
+  clearInterval(timerID); timerID=null; done=false;
+  A=parseInt(document.getElementById('inA').value)||0;
+  B=parseInt(document.getElementById('inB').value)||1;
+  const pre=precompute(A,B);
+  allSteps=pre.steps; fullPath=pre.path;
+  stepIdx=0; records=[];
+
+  // 초기 큐 상태: [A]
+  renderQueue([A],[],null);
+  renderCur(null); renderOps(null,[]);
+  document.getElementById('stVisited').textContent='1';
+  document.getElementById('stQueue').textContent='1';
+  document.getElementById('stDepth').textContent='0';
+  document.getElementById('stResult').textContent='—';
+  document.getElementById('recTbody').innerHTML='';
+  document.getElementById('recCount').textContent='0개';
+  document.getElementById('stepLog').innerHTML='';
+  document.getElementById('pathVis').innerHTML='<span style="color:var(--muted)">탐색 중...</span>';
+  document.getElementById('doneBanner').className='done-bar';
+  document.getElementById('btnStep').disabled=false;
+  document.getElementById('btnStart').disabled=false;
+
+  appendLog({type:'init', A, B});
+}
+
+// ────────────────────────────────────────
+// 단계 실행
+// ────────────────────────────────────────
+function doStep(){
+  if(done || stepIdx>=allSteps.length){showDone();return;}
+  const st=allSteps[stepIdx++];
+  const{cur,nexts,depth}=st;
+
+  // ① POP 표시
+  appendLog({type:'pop',cur,depth});
+  renderCur(cur);
+
+  // ② 4연산 결과 표시
+  renderOps(cur,nexts);
+
+  // ③ 각 연산 결과 처리
+  const newAdds=[];
+  for(const nx of nexts){
+    if(!nx.wasVis){
+      newAdds.push(nx.val);
+      records.push({state:nx.val,opCh:nx.opCh,prevState:cur});
+      appendLog({type:'add',cur,op:nx.opCh,val:nx.val,depth});
+      if(nx.val===B) appendLog({type:'found',val:nx.val,depth:depth+1});
+    } else {
+      appendLog({type:'skip',cur,op:nx.opCh,val:nx.val});
+    }
+  }
+
+  // ④ 큐 렌더링 (pop 이후 상태)
+  // 현재 큐 = 이전 큐에서 cur pop + newAdds 추가
+  // 아래에서 큐 상태를 직접 추적
+  renderQueueFromStep(stepIdx-1,cur,newAdds);
+
+  // ⑤ prevOp / prevState 테이블 갱신
+  renderRecords(newAdds);
+
+  // ⑥ 통계 갱신
+  const visCount=records.length+1;
+  document.getElementById('stVisited').textContent=visCount;
+  document.getElementById('stDepth').textContent=depth;
+
+  // ⑦ 목표 도달 체크
+  if(nexts.some(nx=>nx.val===B&&!nx.wasVis)){
+    done=true;
+    clearInterval(timerID); timerID=null;
+    showDone();
+  }
+}
+
+// 큐 상태 추적 (전체 스냅샷 기반)
+let _curQueue=[]; // 현재 큐 상태
+function renderQueueFromStep(processedIdx,cur,newAdds){
+  if(processedIdx===1){
+    // 첫 번째 pop: A를 pop하고 결과 추가
+    _curQueue=[...newAdds];
+  } else {
+    // 이미 front를 pop했으므로 현재 큐 = 이전 큐 + newAdds (cur 제거)
+    _curQueue=_curQueue.filter(v=>v!==cur);
+    _curQueue=[..._curQueue,...newAdds];
+  }
+  document.getElementById('stQueue').textContent=_curQueue.length;
+  renderQueue(_curQueue,newAdds,done?B:null);
+  document.getElementById('qSizeLabel').textContent='크기: '+_curQueue.length;
+}
+
+// ────────────────────────────────────────
+// 큐 렌더링
+// ────────────────────────────────────────
+function renderQueue(q,newAdds,goalVal){
+  const rail=document.getElementById('queueRail');
+  rail.innerHTML='';
+  const display=q.slice(0,40);
+  display.forEach((v,i)=>{
+    const cell=document.createElement('div');
+    cell.className='q-cell';
+    if(goalVal!==null&&v===goalVal) cell.classList.add('goal');
+    else if(newAdds.includes(v)) cell.classList.add('new-add');
+    else if(i===0) cell.classList.add('front');
+    cell.innerHTML=`<span class="qv">${v}</span><span class="qi">#${i}</span>`;
+    rail.appendChild(cell);
+  });
+  if(q.length>40){
+    const more=document.createElement('div');
+    more.className='q-cell';
+    more.innerHTML=`<span class="qv" style="font-size:.75rem;color:var(--muted)">+${q.length-40}</span>`;
+    rail.appendChild(more);
+  }
+  if(q.length===0){
+    rail.innerHTML='<div style="color:var(--muted);padding:14px;font-size:.8rem">큐가 비어있습니다</div>';
+  }
+  document.getElementById('qSizeLabel').textContent='크기: '+q.length;
+}
+
+// ────────────────────────────────────────
+// 현재 처리 상태 렌더링
+// ────────────────────────────────────────
+function renderCur(cur){
+  document.getElementById('curVal').textContent=cur===null?'—':cur;
+}
+
+// ────────────────────────────────────────
+// 4연산 카드 렌더링
+// ────────────────────────────────────────
+function renderOps(cur,nexts){
+  const ids=['opD','opS','opL','opR'];
+  ids.forEach((id,i)=>{
+    const card=document.getElementById(id);
+    const valEl=card.querySelector('.op-val');
+    const statusEl=card.querySelector('.op-status');
+    card.className='op-card op-'+OPS[i].ch;
+    if(cur===null){valEl.textContent='—';statusEl.textContent='대기';return;}
+    const nx=nexts[i];
+    valEl.textContent=nx.val;
+    if(nx.val===B&&!nx.wasVis){
+      card.classList.add('goal-op');
+      statusEl.textContent='🎯 목표!';
+    } else if(!nx.wasVis){
+      card.classList.add('added');
+      statusEl.textContent='✓ 큐에 추가';
+    } else {
+      card.classList.add('already');
+      statusEl.textContent='이미 방문';
+    }
+  });
+}
+
+// ────────────────────────────────────────
+// prevOp/prevState 테이블 렌더링
+// ────────────────────────────────────────
+function renderRecords(newAdds){
+  const tbody=document.getElementById('recTbody');
+  document.getElementById('recCount').textContent=records.length+'개';
+  // 새로 추가된 행만 append
+  const existing=tbody.querySelectorAll('tr').length;
+  const toAdd=records.slice(existing);
+  toAdd.forEach(r=>{
+    const tr=document.createElement('tr');
+    const isNew=newAdds.includes(r.state);
+    const isGoal=r.state===B;
+    if(isGoal) tr.className='rec-goal';
+    else if(isNew) tr.className='rec-new';
+    tr.innerHTML=`<td>${r.state}</td><td class="rec-op-${r.opCh}">${r.opCh}</td><td>${r.prevState}</td>`;
+    tbody.insertBefore(tr,tbody.firstChild);
+  });
+  // 최신 항목으로 스크롤
+  tbody.parentElement.scrollTop=0;
+}
+
+// ────────────────────────────────────────
+// 로그 추가
+// ────────────────────────────────────────
+function appendLog(entry){
+  const log=document.getElementById('stepLog');
+  const div=document.createElement('div');
+  if(entry.type==='init'){
+    div.className='log-entry';
+    div.innerHTML=`<span style="color:var(--muted)">── 초기화: A=<b style="color:var(--green)">${entry.A}</b>, B=<b style="color:var(--purple)">${entry.B}</b> · bfsQ에 ${entry.A} push ──</span>`;
+  } else if(entry.type==='pop'){
+    div.className='log-entry log-pop';
+    div.innerHTML=`<span class="log-tag tag-pop">POP</span> cur = <span class="log-num">${entry.cur}</span> <span style="color:var(--muted)">(깊이 ${entry.depth})</span>`;
+  } else if(entry.type==='add'){
+    div.className='log-entry log-add';
+    div.innerHTML=`<span class="log-tag tag-add">ADD</span> <span class="log-num">${entry.cur}</span> <span class="log-arrow">─<span class="log-op log-op-${entry.op}">${entry.op}</span>→</span> <span class="log-num" style="color:var(--green)">${entry.val}</span> · prevState[${entry.val}]=${entry.cur}, prevOp[${entry.val}]='${entry.op}'`;
+  } else if(entry.type==='skip'){
+    div.className='log-entry log-skip';
+    div.innerHTML=`<span class="log-tag tag-skip">SKIP</span> <span class="log-num">${entry.cur}</span> <span class="log-arrow">─<span class="log-op log-op-${entry.op}">${entry.op}</span>→</span> ${entry.val} <span style="color:var(--muted)">(이미 방문)</span>`;
+  } else if(entry.type==='found'){
+    div.className='log-entry log-found';
+    div.innerHTML=`<span class="log-tag tag-found">🎯 FOUND</span> B = <b style="color:var(--purple)">${entry.val}</b> 도달! 최단 깊이 = ${entry.depth}`;
+  }
+  log.appendChild(div);
+  log.scrollTop=log.scrollHeight;
+}
+
+// ────────────────────────────────────────
+// 완료 처리
+// ────────────────────────────────────────
+function showDone(){
+  done=true;
+  const ops=fullPath.filter(p=>p.opCh).map(p=>p.opCh).join('');
+  document.getElementById('stResult').textContent=ops+' ('+ops.length+'개)';
+  document.getElementById('doneBanner').textContent=`✅ ${A} → ${B} 완료! 최단 명령어: "${ops}" (${ops.length}개)`;
+  document.getElementById('doneBanner').className='done-bar show';
+  renderPath(fullPath);
+  document.getElementById('btnStep').disabled=true;
+  document.getElementById('btnStart').disabled=true;
+}
+
+function renderPath(path){
+  const wrap=document.getElementById('pathVis');
+  wrap.innerHTML='';
+  path.forEach((p,i)=>{
+    if(i>0){
+      const arr=document.createElement('span');
+      arr.className='pv-arrow'; arr.textContent='→';
+      wrap.appendChild(arr);
+      const op=document.createElement('span');
+      op.className=`pv-op pv-op-${p.opCh}`; op.textContent=p.opCh;
+      wrap.appendChild(op);
+      const arr2=document.createElement('span');
+      arr2.className='pv-arrow'; arr2.textContent='→';
+      wrap.appendChild(arr2);
+    }
+    const st=document.createElement('span');
+    st.className='pv-state'+(i===0?' pv-start':i===path.length-1?' pv-end':'');
+    st.textContent=p.state;
+    wrap.appendChild(st);
+  });
+}
+
+// ────────────────────────────────────────
+// 자동 실행
+// ────────────────────────────────────────
+function startAuto(){
+  doReset();
+  const delay=()=>1600-parseInt(document.getElementById('spd').value);
+  timerID=setInterval(()=>{
+    if(done||stepIdx>=allSteps.length){clearInterval(timerID);timerID=null;if(!done)showDone();return;}
+    doStep();
+  },delay());
+}
+
+// ────────────────────────────────────────
+// 예제 로드
+// ────────────────────────────────────────
+function loadEx(i,btn){
+  document.querySelectorAll('.ex-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('inA').value=EXAMPLES[i][0];
+  document.getElementById('inB').value=EXAMPLES[i][1];
+  doReset();
+}
+
+// ────────────────────────────────────────
+// 초기화
+// ────────────────────────────────────────
+_curQueue=[parseInt(document.getElementById('inA').value)||1234];
+doReset();
+</script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int  t;                 // t         : 테스트 케이스 수
+int  A, B;              // A, B      : 시작값, 목표값
+bool visited[10000];    // visited   : 방문 여부
+int  prevState[10000];  // prevState : 이전 상태 (역추적용)
+char prevOp[10000];     // prevOp    : 이전 연산 (역추적용)
+
+// n : 레지스터 현재값
+// 반환 : D 연산 결과 (2n mod 10000)
+int OpD(int n) { return (2 * n) % 10000; }
+
+// n : 레지스터 현재값
+// 반환 : S 연산 결과 (n-1, 0이면 9999)
+int OpS(int n) { return n == 0 ? 9999 : n - 1; }
+
+// n : 레지스터 현재값
+// 반환 : L 연산 결과 (d1 d2 d3 d4 -> d2 d3 d4 d1)
+int OpL(int n) { return (n % 1000) * 10 + (n / 1000); }
+
+// n : 레지스터 현재값
+// 반환 : R 연산 결과 (d1 d2 d3 d4 -> d4 d1 d2 d3)
+int OpR(int n) { return (n % 10) * 1000 + (n / 10); }
+
+// A -> B 최소 명령어 BFS 탐색
+string BFS()
+{
+    // 매 테스트케이스마다 방문 여부와 이전 상태를 초기화
+    fill_n(visited  , 10000, false);
+    fill_n(prevState, 10000, -1);
+
+    queue<int> bfsQ;
+    visited[A] = true; // 시작점 방문 처리
+    bfsQ.push(A);
+
+    // BFS : 최단 경로 탐색 (가장 먼저 B에 도달하는 경로 = 최소 명령어 수)
+    while (!bfsQ.empty())
+    {
+        int cur = bfsQ.front();
+        bfsQ.pop();
+
+        // 목표값 도달 시 즉시 종료 (BFS이므로 첫 도달 = 최단)
+        if (cur == B)
+        {
+            break;
+        }
+
+        // 현재 상태에서 4가지 연산(D, S, L, R) 결과를 미리 계산
+        int  next[4] = { OpD(cur), OpS(cur), OpL(cur), OpR(cur) };
+        char ops[4]  = { 'D', 'S', 'L', 'R' };
+
+        // 4가지 연산 각각에 대해 미방문 상태만 큐에 삽입
+        for (int i = 0; i < 4; ++i)
+        {
+            if (!visited[next[i]])
+            {
+                visited[next[i]]   = true;   // 방문 처리 (재방문 방지)
+                prevState[next[i]] = cur;    // 이전 상태 기록 (역추적용)
+                prevOp[next[i]]    = ops[i]; // 사용한 연산 기록 (역추적용)
+
+                bfsQ.push(next[i]);
+            }
+        }
+    }
+
+    // B에서 A까지 역추적으로 경로 복원
+    // prevState를 따라가며 사용된 연산을 역순으로 수집
+    string path = "";
+    int cur = B;
+
+    // A에 도달할 때까지 이전 상태를 거슬러 올라감
+    while (cur != A)
+    {
+        path += prevOp[cur];    // 현재 상태에 도달할 때 쓴 연산 추가
+        cur   = prevState[cur]; // 이전 상태로 이동
+    }
+
+    // 역추적 순서(B->A)로 쌓였으므로 뒤집어 A->B 순서로 변환
+    reverse(path.begin(), path.end());
+
+    return path;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 입력 처리
+    cin >> t;
+
+    // 테스트 케이스 처리
+    while (t--)
+    {
+        cin >> A >> B;
+
+        cout << BFS() << "\n";
+    }
+
+    return 0;
+}

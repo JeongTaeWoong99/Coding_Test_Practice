@@ -1,0 +1,94 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int  N, M;                   // N : 세로, M : 가로
+int  board[500][500];        // board : 격자 값
+bool visited[500][500];      // visited : DFS 방문 여부
+int  maxSum = 0;             // maxSum : 최댓값
+
+int dx[] = {0, 0, 1, -1};   // dx, dy : 상하좌우 이동
+int dy[] = {1, -1, 0, 0};
+
+// DFS로 4칸 연결 경로 탐색 (T자 제외 모든 테트로미노 커버)
+// x, y : 현재 위치  depth : 탐색 깊이  sum : 누적 합
+void DFS(int x, int y, int depth, int sum)
+{
+    if (depth == 4)
+    {
+        maxSum = max(maxSum, sum);
+        return;
+    }
+
+    for (int d = 0; d < 4; ++d)
+    {
+        int nx = x + dx[d];
+        int ny = y + dy[d];
+
+        if (nx >= 0 && nx < N && ny >= 0 && ny < M && !visited[nx][ny])
+        {
+            visited[nx][ny] = true;
+            DFS(nx, ny, depth + 1, sum + board[nx][ny]);
+            visited[nx][ny] = false;
+        }
+    }
+}
+
+// T자 테트로미노 : (x, y)를 중심으로 이웃 상위 3개 선택
+void CheckT(int x, int y)
+{
+    vector<int> neighborVals;
+
+    for (int d = 0; d < 4; ++d)
+    {
+        int nx = x + dx[d];
+        int ny = y + dy[d];
+
+        if (nx >= 0 && nx < N && ny >= 0 && ny < M)
+        {
+            neighborVals.push_back(board[nx][ny]);
+        }
+    }
+
+    // 이웃이 3개 미만이면 T자 불가
+    if ((int)neighborVals.size() < 3) { return; }
+
+    // 내림차순 정렬 후 상위 3개 선택
+    sort(neighborVals.rbegin(), neighborVals.rend());
+    int tSum = board[x][y] + neighborVals[0] + neighborVals[1] + neighborVals[2];
+
+    maxSum = max(maxSum, tSum);
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> N >> M;
+
+    for (int i = 0; i < N; ++i)
+    {
+        for (int j = 0; j < M; ++j)
+        {
+            cin >> board[i][j];
+        }
+    }
+
+    // 모든 칸에서 DFS + T자 체크
+    for (int i = 0; i < N; ++i)
+    {
+        for (int j = 0; j < M; ++j)
+        {
+            visited[i][j] = true;
+            DFS(i, j, 1, board[i][j]);
+            visited[i][j] = false;
+
+            CheckT(i, j);
+        }
+    }
+
+    // 결과 출력
+    cout << maxSum << "\n";
+
+    return 0;
+}

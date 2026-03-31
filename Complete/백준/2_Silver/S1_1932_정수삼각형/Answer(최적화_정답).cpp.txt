@@ -1,0 +1,59 @@
+﻿\ufeff#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+int arr[504][504];  // arr : 삼각형 입력 값
+int dp[504][504];   // dp  : dp[y][x] = (y, x)까지의 최대 합
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 입력
+    cin >> n;
+    for (int y = 0; y < n; ++y)
+    {
+        for (int x = 0; x <= y; ++x)
+        {
+            cin >> arr[y][x];
+        }
+    }
+
+    // DP 초기값
+    dp[0][0] = arr[0][0];
+
+    // DP 채우기
+    // 각 위치 (y, x)는 (y-1, x-1) 또는 (y-1, x)에서만 올 수 있음
+    for (int y = 1; y < n; ++y)
+    {
+        for (int x = 0; x <= y; ++x)
+        {
+            // 왼쪽 끝 : 위 (y-1, 0)에서만 내려올 수 있음
+            if (x == 0)
+            {
+                dp[y][x] = dp[y-1][0] + arr[y][x];
+            }
+            // 오른쪽 끝 : 위 왼쪽 대각선 (y-1, x-1)에서만 내려올 수 있음
+            else if (x == y)
+            {
+                dp[y][x] = dp[y-1][x-1] + arr[y][x];
+            }
+            // 중간 : 위(y-1, x) 또는 위 왼쪽 대각선(y-1, x-1) 중 최대
+            else
+            {
+                dp[y][x] = max(dp[y-1][x-1], dp[y-1][x]) + arr[y][x];
+            }
+        }
+    }
+
+    // 마지막 줄에서 최댓값 출력
+    int maxSum = 0;
+    for (int x = 0; x < n; ++x)
+    {
+        maxSum = max(maxSum, dp[n-1][x]);
+    }
+
+    cout << maxSum;
+
+    return 0;
+}

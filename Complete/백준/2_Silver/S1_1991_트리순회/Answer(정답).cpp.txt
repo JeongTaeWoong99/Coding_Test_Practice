@@ -1,0 +1,74 @@
+﻿\xEF\xBB\xBF#include <bits/stdc++.h>
+using namespace std;
+
+int    n;                    // n     : 노드 개수
+int    lc[26];               // lc    : 왼쪽 자식 노드 인덱스 (-1 = 없음)
+int    rc[26];               // rc    : 오른쪽 자식 노드 인덱스 (-1 = 없음)
+
+// node : 현재 노드 인덱스 (0 = A, 1 = B, ...)
+void Preorder(int node)
+{
+    if (node == -1)
+    {
+        return;
+    }
+
+    cout << (char)('A' + node);
+    Preorder(lc[node]);
+    Preorder(rc[node]);
+}
+
+void Inorder(int node)
+{
+    if (node == -1)
+    {
+        return;
+    }
+
+    Inorder(lc[node]);
+    cout << (char)('A' + node);
+    Inorder(rc[node]);
+}
+
+void Postorder(int node)
+{
+    if (node == -1)
+    {
+        return;
+    }
+
+    Postorder(lc[node]);
+    Postorder(rc[node]);
+    cout << (char)('A' + node);
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 입력 처리
+    cin >> n;
+
+    for (int i = 0; i < n; ++i)
+    {
+        char node, left, right;
+        cin >> node >> left >> right;
+
+        int idx = node - 'A';
+
+        lc[idx] = (left  == '.') ? -1 : left  - 'A';
+        rc[idx] = (right == '.') ? -1 : right - 'A';
+    }
+
+    // 전위 / 중위 / 후위 순회 출력 (루트는 항상 A = 0)
+    Preorder(0);
+    cout << "\n";
+
+    Inorder(0);
+    cout << "\n";
+
+    Postorder(0);
+    cout << "\n";
+
+    return 0;
+}

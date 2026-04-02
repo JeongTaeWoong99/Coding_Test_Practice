@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>BOJ 11660 - 2D 누적합 시각화</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Malgun Gothic', monospace; background: #0d1117; color: #e6edf3; padding: 30px; }
+  h1 { text-align: center; font-size: 1.6rem; margin-bottom: 6px; color: #58a6ff; }
+  .subtitle { text-align: center; color: #8b949e; margin-bottom: 30px; font-size: 0.9rem; }
+
+  .section { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+  .section h2 { font-size: 1.1rem; margin-bottom: 16px; color: #f0883e; border-bottom: 1px solid #30363d; padding-bottom: 8px; }
+
+  /* 그리드 */
+  .grid-wrap { display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap; }
+  .grid-block { text-align: center; }
+  .grid-label { font-size: 0.8rem; color: #8b949e; margin-bottom: 8px; }
+  .grid { display: inline-grid; gap: 3px; }
+  .cell {
+    width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; font-size: 0.9rem; font-weight: bold; transition: all 0.4s;
+    border: 2px solid transparent;
+  }
+  .cell-input  { background: #21262d; color: #e6edf3; border-color: #30363d; }
+  .cell-dp     { background: #1c2b3a; color: #79c0ff; border-color: #1f6feb; }
+  .cell-hi-add { background: #1a3a2a; color: #56d364; border-color: #238636; }
+  .cell-hi-sub { background: #3a1a1a; color: #f85149; border-color: #da3633; }
+  .cell-hi-result { background: #2d2200; color: #e3b341; border-color: #9e6a03; animation: pulse 0.6s ease; }
+  .cell-query  { background: #2d2200; color: #e3b341; border-color: #9e6a03; }
+  .cell-dim    { opacity: 0.25; }
+  .cell-cur    { background: #2d1b69; color: #d2a8ff; border-color: #8957e5; transform: scale(1.1); }
+
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.12)} }
+
+  /* 수식 박스 */
+  .formula {
+    background: #21262d; border: 1px solid #30363d; border-radius: 8px;
+    padding: 14px 20px; font-family: monospace; font-size: 0.95rem;
+    line-height: 1.8; color: #e6edf3; margin-top: 12px;
+  }
+  .f-green { color: #56d364; }
+  .f-blue  { color: #79c0ff; }
+  .f-red   { color: #f85149; }
+  .f-yellow{ color: #e3b341; }
+  .f-purple{ color: #d2a8ff; }
+
+  /* 버튼 */
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  button {
+    padding: 8px 18px; border: none; border-radius: 6px; cursor: pointer;
+    font-size: 0.85rem; font-weight: bold; transition: opacity 0.2s;
+  }
+  button:hover { opacity: 0.8; }
+  .btn-next  { background: #238636; color: #fff; }
+  .btn-prev  { background: #30363d; color: #e6edf3; }
+  .btn-reset { background: #da3633; color: #fff; }
+  .btn-query { background: #1f6feb; color: #fff; }
+  .btn-active{ outline: 2px solid #fff; }
+
+  /* 스텝 설명 */
+  .step-box {
+    background: #21262d; border-left: 4px solid #58a6ff;
+    padding: 12px 16px; border-radius: 0 8px 8px 0; margin-top: 14px;
+    font-size: 0.9rem; line-height: 1.6;
+  }
+  .step-box b { color: #58a6ff; }
+
+  /* 쿼리 카드 */
+  .query-list { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .query-card {
+    background: #21262d; border: 2px solid #30363d; border-radius: 8px;
+    padding: 10px 16px; cursor: pointer; transition: all 0.2s; font-size: 0.85rem;
+  }
+  .query-card:hover { border-color: #58a6ff; }
+  .query-card.active { border-color: #e3b341; background: #2d2200; }
+  .query-card .qnum { color: #8b949e; font-size: 0.75rem; }
+  .query-card .qval { color: #e3b341; font-weight: bold; }
+
+  /* 범례 */
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; }
+  .legend-box { width: 18px; height: 18px; border-radius: 3px; border: 2px solid; }
+
+  .progress { color: #8b949e; font-size: 0.8rem; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<h1>📊 BOJ 11660 - 구간 합 구하기 5</h1>
+<p class="subtitle">2D 누적합(Prefix Sum) 시각화 — 예제 1번</p>
+
+<!-- ===== STEP 1: 입력 행렬 ===== -->
+<div class="section">
+  <h2>① 입력 행렬 (N=4)</h2>
+  <div class="grid-wrap">
+    <div class="grid-block">
+      <div class="grid-label">원본 arr[i][j]</div>
+      <div id="grid-input" class="grid" style="grid-template-columns:repeat(4,52px)"></div>
+    </div>
+    <div style="flex:1; min-width:260px;">
+      <div class="formula">
+arr[1][1]=1  arr[1][2]=2  arr[1][3]=3  arr[1][4]=4<br>
+arr[2][1]=2  arr[2][2]=3  arr[2][3]=4  arr[2][4]=5<br>
+arr[3][1]=3  arr[3][2]=4  arr[3][3]=5  arr[3][4]=6<br>
+arr[4][1]=4  arr[4][2]=5  arr[4][3]=6  arr[4][4]=7
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STEP 2: DP 구성 ===== -->
+<div class="section">
+  <h2>② dp 배열 채우기 (포함-배제 원리)</h2>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-box" style="background:#1c2b3a;border-color:#1f6feb"></div> 완성된 dp</div>
+    <div class="legend-item"><div class="legend-box" style="background:#2d1b69;border-color:#8957e5"></div> 현재 계산 중</div>
+    <div class="legend-item"><div class="legend-box" style="background:#1a3a2a;border-color:#238636"></div> 더하는 값 (+)</div>
+    <div class="legend-item"><div class="legend-box" style="background:#3a1a1a;border-color:#da3633"></div> 빼는 값 (−)</div>
+  </div>
+
+  <div class="grid-wrap">
+    <div class="grid-block">
+      <div class="grid-label">dp[i][j] (1-indexed, 0행/0열은 0)</div>
+      <div id="grid-dp" class="grid" style="grid-template-columns:repeat(5,52px)"></div>
+    </div>
+    <div style="flex:1; min-width:280px;">
+      <div id="dp-formula" class="formula">▶ [다음] 버튼을 눌러 dp가 채워지는 과정을 확인하세요.</div>
+      <div id="dp-step-box" class="step-box" style="display:none"></div>
+      <div class="btn-row">
+        <button class="btn-prev" onclick="dpStep(-1)">◀ 이전</button>
+        <button class="btn-next" onclick="dpStep(+1)">다음 ▶</button>
+        <button class="btn-reset" onclick="dpReset()">↺ 처음</button>
+      </div>
+      <div id="dp-progress" class="progress"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STEP 3: 쿼리 ===== -->
+<div class="section">
+  <h2>③ 쿼리 처리 — 각 쿼리 O(1)</h2>
+
+  <div class="query-list" id="query-list"></div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-box" style="background:#2d2200;border-color:#9e6a03"></div> 원하는 구간</div>
+    <div class="legend-item"><div class="legend-box" style="background:#1a3a2a;border-color:#238636"></div> dp[x2][y2] (+)</div>
+    <div class="legend-item"><div class="legend-box" style="background:#3a1a1a;border-color:#da3633"></div> 빼는 dp (−)</div>
+    <div class="legend-item"><div class="legend-box" style="background:#1c2b3a;border-color:#1f6feb"></div> 다시 더하는 dp (+)</div>
+  </div>
+
+  <div class="grid-wrap">
+    <div class="grid-block">
+      <div class="grid-label">원본 행렬 (구간 하이라이트)</div>
+      <div id="grid-query-input" class="grid" style="grid-template-columns:repeat(4,52px)"></div>
+    </div>
+    <div class="grid-block">
+      <div class="grid-label">dp 배열 (사용하는 4개 셀)</div>
+      <div id="grid-query-dp" class="grid" style="grid-template-columns:repeat(5,52px)"></div>
+    </div>
+    <div style="flex:1; min-width:280px;">
+      <div id="query-formula" class="formula">← 왼쪽에서 쿼리를 선택하세요.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== 데이터 =====
+const arr = [
+  [0,0,0,0,0],
+  [0,1,2,3,4],
+  [0,2,3,4,5],
+  [0,3,4,5,6],
+  [0,4,5,6,7]
+];
+
+const dp = Array.from({length:5}, ()=>Array(5).fill(0));
+for(let i=1;i<=4;i++)
+  for(let j=1;j<=4;j++)
+    dp[i][j] = arr[i][j] + dp[i-1][j] + dp[i][j-1] - dp[i-1][j-1];
+
+const queries = [
+  {x1:2,y1:2,x2:3,y2:4, ans:27},
+  {x1:3,y1:4,x2:3,y2:4, ans:6},
+  {x1:1,y1:1,x2:4,y2:4, ans:64},
+];
+
+// ===== dp 스텝 순서 =====
+const dpSteps = [];
+for(let i=1;i<=4;i++)
+  for(let j=1;j<=4;j++)
+    dpSteps.push({i,j});
+
+let dpCur = -1; // -1 = 시작 전
+
+// ===== 그리드 초기화 =====
+function makeGrid(id, rows, cols, cellClass) {
+  const g = document.getElementById(id);
+  g.innerHTML = '';
+  const cells = [];
+  for(let r=0;r<rows;r++){
+    const row=[];
+    for(let c=0;c<cols;c++){
+      const d=document.createElement('div');
+      d.className='cell '+cellClass;
+      d.id=`${id}-${r}-${c}`;
+      g.appendChild(d);
+      row.push(d);
+    }
+    cells.push(row);
+  }
+  return cells;
+}
+
+// 입력 그리드 (4×4, 1-indexed)
+const inputCells = makeGrid('grid-input',4,4,'cell-input');
+for(let i=1;i<=4;i++)
+  for(let j=1;j<=4;j++)
+    inputCells[i-1][j-1].textContent = arr[i][j];
+
+// dp 그리드 (5×5, 0행/0열 포함)
+const dpCells = makeGrid('grid-dp',5,5,'cell-dp');
+// 0행 0열
+for(let i=0;i<5;i++){
+  dpCells[0][i].textContent='0'; dpCells[0][i].style.opacity='0.4';
+  dpCells[i][0].textContent='0'; dpCells[i][0].style.opacity='0.4';
+}
+// 나머지 빈 칸
+for(let i=1;i<=4;i++)
+  for(let j=1;j<=4;j++)
+    dpCells[i][j].textContent='?';
+
+// 쿼리용 그리드
+makeGrid('grid-query-input',4,4,'cell-input');
+for(let i=1;i<=4;i++)
+  for(let j=1;j<=4;j++)
+    document.getElementById(`grid-query-input-${i-1}-${j-1}`).textContent = arr[i][j];
+makeGrid('grid-query-dp',5,5,'cell-dp');
+for(let i=0;i<5;i++){
+  document.getElementById(`grid-query-dp-0-${i}`).textContent='0';
+  document.getElementById(`grid-query-dp-0-${i}`).style.opacity='0.4';
+  document.getElementById(`grid-query-dp-${i}-0`).textContent='0';
+  document.getElementById(`grid-query-dp-${i}-0`).style.opacity='0.4';
+}
+for(let i=1;i<=4;i++)
+  for(let j=1;j<=4;j++)
+    document.getElementById(`grid-query-dp-${i}-${j}`).textContent = dp[i][j];
+
+// ===== dp 스텝 =====
+function dpReset(){
+  dpCur = -1;
+  for(let i=1;i<=4;i++)
+    for(let j=1;j<=4;j++){
+      const c = dpCells[i][j];
+      c.className='cell cell-dp';
+      c.textContent='?';
+    }
+  document.getElementById('dp-formula').innerHTML='▶ [다음] 버튼을 눌러 dp가 채워지는 과정을 확인하세요.';
+  document.getElementById('dp-step-box').style.display='none';
+  document.getElementById('dp-progress').textContent='';
+}
+
+function dpStep(dir){
+  dpCur = Math.max(-1, Math.min(dpSteps.length-1, dpCur+dir));
+
+  // 모든 dp 셀 상태 리셋
+  for(let i=1;i<=4;i++)
+    for(let j=1;j<=4;j++){
+      const c=dpCells[i][j];
+      if(dpCur < 0){
+        c.className='cell cell-dp'; c.textContent='?';
+      } else {
+        const stepIdx = dpSteps.findIndex(s=>s.i===i&&s.j===j);
+        if(stepIdx <= dpCur){
+          c.className='cell cell-dp'; c.textContent=dp[i][j];
+        } else {
+          c.className='cell cell-dp'; c.textContent='?';
+        }
+      }
+    }
+
+  if(dpCur < 0){
+    document.getElementById('dp-formula').innerHTML='▶ [다음] 버튼을 눌러 dp가 채워지는 과정을 확인하세요.';
+    document.getElementById('dp-step-box').style.display='none';
+    document.getElementById('dp-progress').textContent='';
+    return;
+  }
+
+  const {i,j} = dpSteps[dpCur];
+  const cur = arr[i][j];
+  const top = dp[i-1][j];
+  const left = dp[i][j-1];
+  const corner = dp[i-1][j-1];
+  const result = dp[i][j];
+
+  // 현재 셀 강조
+  dpCells[i][j].className='cell cell-cur';
+  dpCells[i][j].textContent=result;
+
+  // 관련 셀 강조
+  if(i>0) dpCells[i-1][j].className='cell cell-hi-add';
+  if(j>0) dpCells[i][j-1].className='cell cell-hi-add';
+  if(i>0&&j>0) dpCells[i-1][j-1].className='cell cell-hi-sub';
+
+  document.getElementById('dp-formula').innerHTML =
+    `<span class='f-purple'>dp[${i}][${j}]</span> = `+
+    `<span class='f-yellow'>arr[${i}][${j}](${cur})</span> + `+
+    `<span class='f-green'>dp[${i-1}][${j}](${top})</span> + `+
+    `<span class='f-green'>dp[${i}][${j-1}](${left})</span> - `+
+    `<span class='f-red'>dp[${i-1}][${j-1}](${corner})</span>`+
+    `\n= ${cur} + ${top} + ${left} - ${corner} = <b style='color:#e3b341'>${result}</b>`;
+
+  const stepBox = document.getElementById('dp-step-box');
+  stepBox.style.display='block';
+  stepBox.innerHTML =
+    `<b>왜 이 공식인가?</b><br>`+
+    `• <span style='color:#56d364'>dp[${i-1}][${j}]</span> : (1,1)~(${i-1},${j}) 영역의 합<br>`+
+    `• <span style='color:#56d364'>dp[${i}][${j-1}]</span> : (1,1)~(${i},${j-1}) 영역의 합<br>`+
+    `• 두 영역을 더하면 <span style='color:#f85149'>(1,1)~(${i-1},${j-1})</span> 이 <b>두 번</b> 포함됨<br>`+
+    `• 따라서 <span style='color:#f85149'>dp[${i-1}][${j-1}](${corner})</span> 을 한 번 빼줌`;
+
+  document.getElementById('dp-progress').textContent =
+    `진행: ${dpCur+1} / ${dpSteps.length} 칸 완료`;
+}
+
+// ===== 쿼리 카드 =====
+const queryList = document.getElementById('query-list');
+queries.forEach((q,idx)=>{
+  const card = document.createElement('div');
+  card.className='query-card';
+  card.id=`qcard-${idx}`;
+  card.innerHTML=`<div class='qnum'>쿼리 ${idx+1}</div><div class='qval'>(${q.x1},${q.y1})~(${q.x2},${q.y2})</div><div style='color:#8b949e;font-size:0.75rem'>정답: ${q.ans}</div>`;
+  card.onclick=()=>showQuery(idx);
+  queryList.appendChild(card);
+});
+
+function showQuery(idx){
+  // 카드 활성화
+  queries.forEach((_,i)=>document.getElementById(`qcard-${i}`).classList.remove('active'));
+  document.getElementById(`qcard-${idx}`).classList.add('active');
+
+  const {x1,y1,x2,y2,ans} = queries[idx];
+
+  // 입력 그리드 하이라이트
+  for(let i=1;i<=4;i++)
+    for(let j=1;j<=4;j++){
+      const c=document.getElementById(`grid-query-input-${i-1}-${j-1}`);
+      if(i>=x1&&i<=x2&&j>=y1&&j<=y2)
+        c.className='cell cell-query';
+      else
+        c.className='cell cell-input cell-dim';
+    }
+
+  // dp 그리드 하이라이트
+  for(let i=0;i<=4;i++)
+    for(let j=0;j<=4;j++){
+      if(i===0||j===0) continue;
+      const c=document.getElementById(`grid-query-dp-${i}-${j}`);
+      c.className='cell cell-dp';
+    }
+
+  // 4개 dp 셀 강조
+  // dp[x2][y2] → 초록 (더함)
+  document.getElementById(`grid-query-dp-${x2}-${y2}`).className='cell cell-hi-add';
+  // dp[x1-1][y2] → 빨강 (뺌)
+  if(x1-1>0) document.getElementById(`grid-query-dp-${x1-1}-${y2}`).className='cell cell-hi-sub';
+  // dp[x2][y1-1] → 빨강 (뺌)
+  if(y1-1>0) document.getElementById(`grid-query-dp-${x2}-${y1-1}`).className='cell cell-hi-sub';
+  // dp[x1-1][y1-1] → 파랑 (다시 더함)
+  if(x1-1>0&&y1-1>0) document.getElementById(`grid-query-dp-${x1-1}-${y1-1}`).className='cell cell-dp';
+
+  const v1 = dp[x2][y2];
+  const v2 = (x1-1>0) ? dp[x1-1][y2] : 0;
+  const v3 = (y1-1>0) ? dp[x2][y1-1] : 0;
+  const v4 = (x1-1>0&&y1-1>0) ? dp[x1-1][y1-1] : 0;
+
+  document.getElementById('query-formula').innerHTML =
+    `<b style='color:#e3b341'>쿼리: (${x1},${y1}) ~ (${x2},${y2})</b>\n\n`+
+    `정답 = dp[${x2}][${y2}]\n`+
+    `     - dp[${x1-1}][${y2}]    // 위쪽 제거\n`+
+    `     - dp[${x2}][${y1-1}]    // 왼쪽 제거\n`+
+    `     + dp[${x1-1}][${y1-1}]  // 좌상 복원\n\n`+
+    `     = <span class='f-green'>${v1}</span>`+
+    ` - <span class='f-red'>${v2}</span>`+
+    ` - <span class='f-red'>${v3}</span>`+
+    ` + <span class='f-blue'>${v4}</span>\n\n`+
+    `     = <b style='color:#e3b341;font-size:1.1rem'>${ans} ✅</b>`;
+}
+
+// 첫 쿼리 자동 선택
+showQuery(0);
+</script>
+</body>
+</html>

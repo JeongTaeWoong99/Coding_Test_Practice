@@ -1,0 +1,61 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int  N;                // N    : 입력값 (3 x 2^k)
+char grid[3073][6144]; // grid : 별 패턴 저장용 2D 배열
+
+// draw : (row, col) 을 좌상단으로 하는 size 크기 삼각형 재귀 출력
+// row : 시작 행, col : 시작 열, size : 삼각형 크기
+void Draw(int row, int col, int size)
+{
+    // 기저 : size == 3 이면 직접 출력
+    if (size == 3)
+    {
+        grid[row    ][col + 2] = '*'; // 첫번째 줄 중앙 별
+        grid[row + 1][col + 1] = '*'; // 두번째 줄 왼쪽 별
+        grid[row + 1][col + 3] = '*'; // 두번째 줄 오른쪽 별
+
+        // 3번째 줄 5개 별 채우기
+        for (int j = 0; j < 5; ++j)
+        {
+            grid[row + 2][col + j] = '*';
+        }
+
+        return;
+    }
+
+    int half = size / 2;
+
+    Draw(row       , col + half, half); // 상단 삼각형 : 중앙에 배치
+    Draw(row + half, col       , half); // 하단 좌측 삼각형
+    Draw(row + half, col + size, half); // 하단 우측 삼각형 : col + size 에서 시작
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> N;
+
+    int width = 2 * N - 1;
+
+    // 전체 grid를 공백으로 초기화
+    for (int i = 0; i < N; ++i)
+    {
+        for (int j = 0; j < width; ++j)
+        {
+            grid[i][j] = ' ';
+        }
+
+        grid[i][width] = '\0';
+    }
+
+    Draw(0, 0, N);
+
+    for (int i = 0; i < N; ++i)
+    {
+        cout << grid[i] << "\n";
+    }
+
+    return 0;
+}

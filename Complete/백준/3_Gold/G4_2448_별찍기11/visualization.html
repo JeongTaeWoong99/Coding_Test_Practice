@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>BOJ 2448 - 별 찍기 11 시각화</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            font-family: 'Courier New', monospace;
+            padding: 16px;
+            min-height: 100vh;
+        }
+        h1 { text-align: center; color: #cba6f7; margin-bottom: 5px; font-size: 1.4em; }
+        .subtitle { text-align: center; color: #a6adc8; font-size: 0.82em; margin-bottom: 14px; }
+
+        .layout { display: flex; gap: 14px; justify-content: center; align-items: flex-start; flex-wrap: wrap; }
+
+        .panel {
+            background: #181825;
+            border: 1px solid #45475a;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        /* ── 그리드 ── */
+        #grid-wrap { overflow-x: auto; }
+        #grid-table { border-collapse: collapse; font-size: 11.5px; line-height: 1; }
+        #grid-table td {
+            width: 12px; height: 14px;
+            text-align: center; padding: 0;
+            transition: background 0.12s, color 0.12s;
+        }
+
+        /* 하이라이트 (bounding box) */
+        .hl0 { background: rgba(203,166,247,0.22) !important; }
+        .hl1 { background: rgba(116,199,236,0.22) !important; }
+        .hl2 { background: rgba(166,227,161,0.22) !important; }
+        .hl3 { background: rgba(249,226,175,0.32) !important; }
+
+        /* 별 색상 (3개 그룹) */
+        .sg0 { color: #cba6f7; font-weight: bold; }   /* 상단 삼각형 - 보라 */
+        .sg1 { color: #89dceb; font-weight: bold; }   /* 하단 좌측   - 하늘 */
+        .sg2 { color: #a6e3a1; font-weight: bold; }   /* 하단 우측   - 초록 */
+        .empty { color: #2a2a3e; }
+
+        /* ── 컨트롤 ── */
+        .controls {
+            display: flex; gap: 6px; align-items: center;
+            flex-wrap: wrap; margin-top: 10px;
+        }
+        button {
+            background: #313244; color: #cdd6f4;
+            border: 1px solid #45475a;
+            padding: 4px 11px; border-radius: 5px;
+            cursor: pointer; font-family: inherit; font-size: 0.78em;
+        }
+        button:hover { background: #45475a; }
+        button.on  { background: #cba6f7; color: #1e1e2e; border-color: #cba6f7; }
+        input[type=range] { width: 90px; accent-color: #cba6f7; vertical-align: middle; }
+        .lbl { color: #a6adc8; font-size: 0.78em; }
+
+        /* 진행바 */
+        .prog-wrap { background: #313244; height: 4px; border-radius: 2px; margin-top: 7px; }
+        .prog-bar  { background: #cba6f7; height: 100%; border-radius: 2px; transition: width 0.1s; }
+
+        /* 단계 설명 */
+        .phase-box {
+            background: #313244; border-radius: 5px;
+            padding: 5px 10px; font-size: 0.78em;
+            color: #a6adc8; margin-bottom: 8px; text-align: center;
+            min-height: 1.8em;
+        }
+        .step-desc {
+            margin-top: 6px; font-size: 0.78em; color: #a6adc8; min-height: 1.5em;
+        }
+        .step-desc strong { color: #f9e2af; }
+
+        /* ── 우측 패널 ── */
+        .right-panel { width: 230px; }
+
+        /* 호출 로그 */
+        .call-log { height: 340px; overflow-y: auto; font-size: 0.72em; }
+        .call-log h3 { color: #cba6f7; font-size: 0.92em; margin-bottom: 6px; }
+        .log-item { padding: 2px 3px; border-radius: 3px; white-space: nowrap; }
+        .log-item.active {
+            background: rgba(249,226,175,0.18);
+            border-left: 2px solid #f9e2af;
+        }
+        .ld0 { color: #cba6f7; }
+        .ld1 { color: #74c7ec; }
+        .ld2 { color: #a6e3a1; }
+        .ld3 { color: #f9e2af; }
+
+        /* 범례 */
+        .legend { margin-top: 12px; font-size: 0.77em; }
+        .legend h3 { color: #cba6f7; font-size: 0.9em; margin-bottom: 5px; }
+        .leg-row { display: flex; align-items: center; gap: 5px; margin-bottom: 3px; }
+        .leg-box { width: 13px; height: 13px; border-radius: 2px; flex-shrink: 0; }
+        .leg-sep { border-top: 1px solid #45475a; margin: 6px 0; }
+
+        /* 스크롤바 */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #181825; }
+        ::-webkit-scrollbar-thumb { background: #45475a; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>⭐ BOJ 2448 · 별 찍기 11 시각화</h1>
+    <p class="subtitle">N = 24 | 재귀 프랙탈 별 패턴 — 초기화 → 재귀 호출 → 별 채우기 과정 애니메이션</p>
+
+    <div class="layout">
+
+        <!-- 왼쪽: 그리드 + 컨트롤 -->
+        <div class="panel">
+            <div class="phase-box" id="phase-box">📋 초기화: 24×47 그리드를 공백으로 채움</div>
+            <div id="grid-wrap">
+                <table id="grid-table"></table>
+            </div>
+            <div class="controls">
+                <button id="b-reset" title="처음">⏮</button>
+                <button id="b-prev"  title="이전">◀</button>
+                <button id="b-play"  class="on">▶ 재생</button>
+                <button id="b-next"  title="다음">▶</button>
+                <button id="b-end"   title="끝">⏭</button>
+                <span class="lbl">속도</span>
+                <input type="range" id="spd" min="1" max="10" value="5">
+            </div>
+            <div class="prog-wrap"><div class="prog-bar" id="prog" style="width:0"></div></div>
+            <div class="step-desc" id="step-desc">초기 상태 — 24×47 그리드 공백 초기화</div>
+        </div>
+
+        <!-- 오른쪽: 로그 + 범례 -->
+        <div class="panel right-panel">
+            <div class="call-log">
+                <h3>📞 재귀 호출 순서</h3>
+                <div id="log-list"></div>
+            </div>
+            <div class="legend">
+                <h3>🎨 범례</h3>
+                <div class="leg-row">
+                    <div class="leg-box" style="background:rgba(203,166,247,0.35)"></div>
+                    <span style="color:#cba6f7">깊이 0 — Draw(0,0,24)</span>
+                </div>
+                <div class="leg-row">
+                    <div class="leg-box" style="background:rgba(116,199,236,0.35)"></div>
+                    <span style="color:#74c7ec">깊이 1 — size=12 (3개)</span>
+                </div>
+                <div class="leg-row">
+                    <div class="leg-box" style="background:rgba(166,227,161,0.35)"></div>
+                    <span style="color:#a6e3a1">깊이 2 — size=6 (9개)</span>
+                </div>
+                <div class="leg-row">
+                    <div class="leg-box" style="background:rgba(249,226,175,0.45)"></div>
+                    <span style="color:#f9e2af">깊이 3 — size=3 기저 (27개)</span>
+                </div>
+                <div class="leg-sep"></div>
+                <div class="leg-row">
+                    <div class="leg-box" style="background:#cba6f7"></div>
+                    <span>★ 상단 삼각형</span>
+                </div>
+                <div class="leg-row">
+                    <div class="leg-box" style="background:#89dceb"></div>
+                    <span>★ 하단 좌측</span>
+                </div>
+                <div class="leg-row">
+                    <div class="leg-box" style="background:#a6e3a1"></div>
+                    <span>★ 하단 우측</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+(() => {
+    'use strict';
+    const N = 24, R = N, C = 2*N-1;
+
+    /* ── 1. 재귀 단계 사전 계산 ─────────────────────────── */
+    const steps    = [];   // {type:'call'|'fill', row,col,size,depth,group, cells?}
+    const logItems = [];   // call 단계만 저장 (로그용)
+    let   logSeq   = 0;
+
+    function collect(row, col, size, depth, group) {
+        const lid = logSeq++;
+        steps.push({ type:'call', row, col, size, depth, group, lid });
+        logItems.push({ lid, row, col, size, depth, group });
+
+        if (size === 3) {
+            steps.push({
+                type: 'fill', row, col, size: 3, depth, group, lid,
+                cells: [
+                    {r:row,   c:col+2},
+                    {r:row+1, c:col+1}, {r:row+1, c:col+3},
+                    {r:row+2, c:col  }, {r:row+2, c:col+1},
+                    {r:row+2, c:col+2}, {r:row+2, c:col+3},
+                    {r:row+2, c:col+4},
+                ]
+            });
+            return;
+        }
+
+        const h = size >> 1;
+        /* 깊이 0 에서 3가지 그룹 결정 */
+        const g = depth === 0 ? [0, 1, 2] : [group, group, group];
+        collect(row,     col + h,    h, depth+1, g[0]); // 상단 중앙
+        collect(row + h, col,        h, depth+1, g[1]); // 하단 좌측
+        collect(row + h, col + size, h, depth+1, g[2]); // 하단 우측
+    }
+
+    collect(0, 0, N, 0, 0);
+
+    /* ── 2. 그리드 DOM ──────────────────────────────────── */
+    const tbl   = document.getElementById('grid-table');
+    const tdArr = [];   // tdArr[r][c]
+
+    for (let r = 0; r < R; r++) {
+        tdArr[r] = [];
+        const tr = tbl.insertRow();
+        for (let c = 0; c < C; c++) {
+            const td = tr.insertCell();
+            td.textContent = '·';
+            td.className   = 'empty';
+            tdArr[r][c]    = td;
+        }
+    }
+
+    /* ── 3. 로그 DOM ────────────────────────────────────── */
+    const logList = document.getElementById('log-list');
+    const logEls  = {};   // lid → div
+
+    logItems.forEach(item => {
+        const d   = document.createElement('div');
+        const ind = '  '.repeat(item.depth);
+        const ico = item.size === 3 ? '★' : '▼';
+        d.textContent = `${ind}${ico} Draw(${item.row},${item.col},${item.size})`;
+        d.className   = `log-item ld${item.depth}`;
+        d.id          = `lg-${item.lid}`;
+        logList.appendChild(d);
+        logEls[item.lid] = d;
+    });
+
+    /* ── 4. 상태 변수 ───────────────────────────────────── */
+    const starData = Array.from({length:R}, () => Array(C).fill(null));
+    // starData[r][c] = null | { group }
+
+    let curStep    = 0;
+    let playing    = false;
+    let timer      = null;
+    let prevHL     = null;   // {row,col,size} — 현재 하이라이트 영역
+    let activeLid  = -1;
+
+    /* ── 5. 렌더 헬퍼 ───────────────────────────────────── */
+    function clearHL() {
+        if (!prevHL) return;
+        const {row, col, size} = prevHL;
+        const w = 2*size - 1;
+        for (let r = row; r < row+size && r < R; r++) {
+            for (let c = col; c < col+w && c < C; c++) {
+                tdArr[r][c].classList.remove('hl0','hl1','hl2','hl3');
+            }
+        }
+        prevHL = null;
+    }
+
+    function applyHL(row, col, size, depth) {
+        clearHL();
+        const cls = `hl${Math.min(depth, 3)}`;
+        const w   = 2*size - 1;
+        for (let r = row; r < row+size && r < R; r++) {
+            for (let c = col; c < col+w && c < C; c++) {
+                /* 이미 별이 있는 셀은 하이라이트 덮어쓰지 않음 */
+                if (!starData[r][c]) {
+                    tdArr[r][c].classList.add(cls);
+                }
+            }
+        }
+        prevHL = {row, col, size};
+    }
+
+    function paintCell(r, c) {
+        const td = tdArr[r][c];
+        const sd = starData[r][c];
+        /* 하이라이트 클래스 제거 후 재설정 */
+        td.classList.remove('hl0','hl1','hl2','hl3');
+        if (sd !== null) {
+            td.textContent = '*';
+            td.className   = `sg${sd.group}`;
+        } else {
+            td.textContent = '·';
+            td.className   = 'empty';
+        }
+    }
+
+    function updateLogHL(lid) {
+        if (activeLid >= 0 && logEls[activeLid]) {
+            logEls[activeLid].classList.remove('active');
+        }
+        activeLid = lid;
+        if (lid >= 0 && logEls[lid]) {
+            const el = logEls[lid];
+            el.classList.add('active');
+            el.scrollIntoView({block:'nearest', behavior:'smooth'});
+        }
+    }
+
+    /* ── 6. 스텝 적용 ───────────────────────────────────── */
+    function applyOne(step) {
+        /* fill 단계: 별 데이터 갱신 */
+        if (step.type === 'fill') {
+            step.cells.forEach(({r, c}) => {
+                starData[r][c] = {group: step.group};
+                paintCell(r, c);
+            });
+        }
+        /* 하이라이트 + 로그 */
+        applyHL(step.row, step.col, step.size, step.depth);
+        updateLogHL(step.lid);
+    }
+
+    /* 처음부터 targetStep 까지 재계산 (뒤로 가기 등) */
+    function rebuild(targetStep) {
+        for (let r = 0; r < R; r++) {
+            for (let c = 0; c < C; c++) {
+                starData[r][c] = null;
+                tdArr[r][c].className   = 'empty';
+                tdArr[r][c].textContent = '·';
+            }
+        }
+        prevHL = null;
+
+        for (let s = 0; s < targetStep; s++) {
+            const st = steps[s];
+            if (st.type === 'fill') {
+                st.cells.forEach(({r, c}) => { starData[r][c] = {group: st.group}; });
+            }
+        }
+        for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) paintCell(r, c);
+
+        if (targetStep > 0) {
+            const st = steps[targetStep-1];
+            applyHL(st.row, st.col, st.size, st.depth);
+            updateLogHL(st.lid);
+        } else {
+            updateLogHL(-1);
+        }
+    }
+
+    /* ── 7. 단계 이동 ───────────────────────────────────── */
+    function forward() {
+        if (curStep >= steps.length) return;
+        applyOne(steps[curStep]);
+        curStep++;
+        refreshUI();
+    }
+
+    function backward() {
+        if (curStep <= 0) return;
+        curStep--;
+        rebuild(curStep);
+        refreshUI();
+    }
+
+    function jumpToEnd() {
+        for (let s = curStep; s < steps.length; s++) {
+            const st = steps[s];
+            if (st.type === 'fill') {
+                st.cells.forEach(({r, c}) => { starData[r][c] = {group: st.group}; });
+            }
+        }
+        curStep = steps.length;
+        for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) paintCell(r, c);
+        clearHL();
+        const last = steps[steps.length-1];
+        updateLogHL(last.lid);
+        refreshUI();
+    }
+
+    /* ── 8. UI 갱신 ─────────────────────────────────────── */
+    function refreshUI() {
+        const total = steps.length;
+        const pct   = total > 0 ? (curStep / total * 100).toFixed(1) : 0;
+        document.getElementById('prog').style.width = pct + '%';
+
+        const phaseEl = document.getElementById('phase-box');
+        const descEl  = document.getElementById('step-desc');
+
+        if (curStep === 0) {
+            phaseEl.textContent = '📋 초기화: 24×47 그리드를 공백으로 채움';
+            descEl.innerHTML    = '초기 상태 — <strong>24 × 47</strong> 그리드 전체 공백(·)으로 초기화';
+            return;
+        }
+
+        const st    = steps[curStep - 1];
+        const gName = ['상단 삼각형', '하단 좌측', '하단 우측'];
+
+        if (st.type === 'call') {
+            if (st.size > 3) {
+                phaseEl.textContent = `📞 재귀 호출 — Draw(${st.row}, ${st.col}, ${st.size}) → 3개 서브 호출로 분해`;
+            } else {
+                phaseEl.textContent = `⭐ 기저 조건 (size=3) — Draw(${st.row}, ${st.col}, 3) : 8개 별 배치 준비`;
+            }
+            descEl.innerHTML =
+                `<strong>호출</strong> Draw(${st.row}, ${st.col}, ${st.size}) &nbsp;|&nbsp; ` +
+                `깊이 ${st.depth} &nbsp;|&nbsp; ${gName[st.group] ?? ''} &nbsp;|&nbsp; ` +
+                `[${curStep} / ${total}]`;
+        } else {
+            phaseEl.textContent = `⭐ 별 채우기 — (${st.row},${st.col}) 에 8개 별 배치 완료`;
+            descEl.innerHTML =
+                `<strong>채우기</strong> Draw(${st.row}, ${st.col}, 3) &nbsp;|&nbsp; ` +
+                `깊이 ${st.depth} &nbsp;|&nbsp; ${gName[st.group] ?? ''} &nbsp;|&nbsp; ` +
+                `[${curStep} / ${total}]`;
+        }
+    }
+
+    /* ── 9. 재생/정지 ───────────────────────────────────── */
+    function play() {
+        playing = true;
+        document.getElementById('b-play').textContent = '⏸ 정지';
+        document.getElementById('b-play').classList.add('on');
+
+        const spd   = parseInt(document.getElementById('spd').value);
+        const delay = Math.max(40, 1150 - spd * 110);
+
+        timer = setInterval(() => {
+            if (curStep >= steps.length) { pause(); return; }
+            forward();
+        }, delay);
+    }
+
+    function pause() {
+        playing = false;
+        document.getElementById('b-play').textContent = '▶ 재생';
+        document.getElementById('b-play').classList.remove('on');
+        clearInterval(timer);
+    }
+
+    /* ── 10. 이벤트 바인딩 ──────────────────────────────── */
+    document.getElementById('b-play').addEventListener('click', () => { playing ? pause() : play(); });
+    document.getElementById('b-next').addEventListener('click', () => { pause(); forward(); });
+    document.getElementById('b-prev').addEventListener('click', () => { pause(); backward(); });
+    document.getElementById('b-reset').addEventListener('click', () => {
+        pause(); curStep = 0; rebuild(0); refreshUI();
+    });
+    document.getElementById('b-end').addEventListener('click', () => { pause(); jumpToEnd(); });
+    document.getElementById('spd').addEventListener('input', () => { if (playing) { pause(); play(); } });
+
+    /* ── 11. 초기 렌더링 ────────────────────────────────── */
+    refreshUI();
+
+    /* 자동 재생 시작 */
+    play();
+})();
+</script>
+</body>
+</html>

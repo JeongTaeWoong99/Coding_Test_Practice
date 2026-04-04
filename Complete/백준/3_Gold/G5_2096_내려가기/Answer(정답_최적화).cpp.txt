@@ -1,0 +1,56 @@
+\ufeff#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+int maxDP[3]; // maxDP : 최대 점수 DP (슬라이딩 윈도우, 이전 행만 유지)
+int minDP[3]; // minDP : 최소 점수 DP (슬라이딩 윈도우, 이전 행만 유지)
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    // 첫 줄 초기화 (max와 min은 처음은 동일)
+    for (int j = 0; j < 3; ++j)
+    {
+        cin >> maxDP[j];
+        minDP[j] = maxDP[j];
+    }
+
+    // 슬라이딩 윈도우 DP : 이전 행 기준으로 현재 행 갱신
+    for (int i = 1; i < n; ++i)
+    {
+        int a[3];
+        for (int j = 0; j < 3; ++j)
+        {
+            cin >> a[j];
+        }
+
+        int newMax[3], newMin[3];
+
+        // col 0 : 이전 행의 col 0, col 1 에서만 올 수 있음
+        newMax[0] = a[0] + max(maxDP[0], maxDP[1]);
+        newMin[0] = a[0] + min(minDP[0], minDP[1]);
+
+        // col 1 : 이전 행의 col 0, col 1, col 2 모두에서 올 수 있음
+        newMax[1] = a[1] + max({ maxDP[0], maxDP[1], maxDP[2] });
+        newMin[1] = a[1] + min({ minDP[0], minDP[1], minDP[2] });
+
+        // col 2 : 이전 행의 col 1, col 2 에서만 올 수 있음
+        newMax[2] = a[2] + max(maxDP[1], maxDP[2]);
+        newMin[2] = a[2] + min(minDP[1], minDP[2]);
+
+        // 갱신
+        for (int j = 0; j < 3; ++j)
+        {
+            maxDP[j] = newMax[j];
+            minDP[j] = newMin[j];
+        }
+    }
+
+    // 마지막 행의 세 열 중 최대/최소 출력
+    cout << *max_element(maxDP, maxDP + 3) << " " << *min_element(minDP, minDP + 3) << "\n";
+
+    return 0;
+}

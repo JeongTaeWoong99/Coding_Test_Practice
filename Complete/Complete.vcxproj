@@ -381,6 +381,8 @@
     <None Include="백준\3_Gold\G5_12865_평범한배낭\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G5_1344_축구\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_1911_흙길보수하기\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G5_1916_최소비용구하기\Answer(일반 큐 + continue 제거).cpp.txt" />
+    <None Include="백준\3_Gold\G5_1916_최소비용구하기\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_15662_톱니바퀴2\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G5_15686_치킨배달\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_16928_뱀과사다리게임\Answer(그리디_틀린접근).cpp.txt" />
@@ -594,6 +596,7 @@
     <None Include="백준\3_Gold\G5_12865_평범한배낭\README.md" />
     <None Include="백준\3_Gold\G5_1344_축구\README.md" />
     <None Include="백준\3_Gold\G5_1911_흙길보수하기\README.md" />
+    <None Include="백준\3_Gold\G5_1916_최소비용구하기\README.md" />
     <None Include="백준\3_Gold\G5_15662_톱니바퀴2\README.md" />
     <None Include="백준\3_Gold\G5_15686_치킨배달\README.md" />
     <None Include="백준\3_Gold\G5_16928_뱀과사다리게임\README.md" />
@@ -627,6 +630,7 @@
     <Content Include="백준\3_Gold\G4_2240_자두나무\img.png" />
     <Content Include="백준\3_Gold\G5_12852_1로만들기2\IMAG.jpg" />
     <Content Include="백준\3_Gold\G5_16928_뱀과사다리게임\시각화.html" />
+    <Content Include="백준\3_Gold\G5_1916_최소비용구하기\시각화.html" />
     <Content Include="연습\메모리\메모리 관련 의문점.md" />
     <Content Include="연습\피보나치 수열\피보나치 수열(DP_메모이제이션_바텁업).txt" />
     <Content Include="연습\피보나치 수열\피보나치 수열(DP_메모이제이션_탑다운_재귀).txt" />

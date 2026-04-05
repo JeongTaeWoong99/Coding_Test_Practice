@@ -1,0 +1,80 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n, m;                        // n : 도시 개수, m  : 버스(간선) 개수
+int startCity, endCity;          // startCity  : 출발 도시,  endCity  : 도착 도시
+int minCost[1001];               // minCost[i] : startCity 에서 i번 도시까지의 최소 비용
+vector<pair<int,int>> adj[1001]; // adj[u] : u에서 출발하는 버스 목록 {비용, 도착 도시}
+
+// 다익스트라 알고리즘
+// — startCity 를 기준으로 모든 도시까지의 최소 비용을 minCost 배열에 저장
+void Dijkstra()
+{
+    // 초기화 세팅
+    fill(minCost, minCost + n + 1, INT_MAX); // 모든 도시의 최소 비용을 무한대로 초기화
+    minCost[startCity] = 0;                  // 출발 도시는 비용 0
+
+    // 우선순위 큐 : {비용, 도시} 쌍을 비용 기준 오름차순으로 관리 (min-heap)
+    // — 항상 현재까지 발견된 최소 비용 경로를 먼저 처리
+    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<>> pq;
+    pq.emplace(0, startCity);
+
+    while (!pq.empty())
+    {
+        int curCost = pq.top().first;   // curCost : 현재 노드까지의 비용
+        int curCity = pq.top().second;  // curCity : 현재 처리 중인 도시 번호
+        pq.pop();
+
+        // 이미 더 짧은 경로로 확정된 도시라면 처리할 필요 없음 → 스킵
+        // (큐에 동일 도시가 여러 번 들어갈 수 있어서 필요한 조건)
+        if (curCost > minCost[curCity])
+        {
+            continue;
+        }
+
+        // curCity 에서 출발하는 모든 버스를 확인하여 인접 도시의 비용 갱신
+        for (int i = 0; i < (int)adj[curCity].size(); ++i)
+        {
+            int edgeCost = adj[curCity][i].first;  // edgeCost  : 이 버스의 요금
+            int nextCity = adj[curCity][i].second; // nextCity  : 이 버스의 도착 도시
+
+            // totalCost : curCity 경유 시 nextCity 까지의 총 비용
+            int totalCost = minCost[curCity] + edgeCost;
+
+            // 기존에 알려진 비용보다 더 저렴하면 갱신하고 큐에 추가
+            if (totalCost < minCost[nextCity])
+            {
+                minCost[nextCity] = totalCost;
+                pq.emplace(totalCost, nextCity);
+            }
+        }
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 도시 수, 버스 수 입력
+    cin >> n >> m;
+
+    // 버스 노선 입력 : 출발 도시, 도착 도시, 비용
+    for (int i = 0; i < m; ++i)
+    {
+        int fromCity, toCity, weight;
+        cin >> fromCity >> toCity >> weight;
+
+        adj[fromCity].emplace_back(weight, toCity);
+    }
+
+    // 구간 입력 : 출발 도시 → 도착 도시
+    cin >> startCity >> endCity;
+
+    // 다익스트라 실행 (startCity 기준 전체 최소 비용 계산)
+    Dijkstra();
+
+    // startCity → endCity 최소 비용 출력
+    cout << minCost[endCity] << \n;
+
+    return 0;
+}

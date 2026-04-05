@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>BOJ 1916 — 다익스트라 단계별 시각화</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0f172a;
+  color: #e2e8f0;
+  font-family: 'Segoe UI', monospace, sans-serif;
+  padding: 20px;
+  min-height: 100vh;
+}
+h1 { color: #60a5fa; font-size: 1.4rem; text-align: center; margin-bottom: 4px; }
+.subtitle { color: #64748b; font-size: 0.85rem; text-align: center; margin-bottom: 20px; }
+
+.layout { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+
+/* ── 그래프 ── */
+canvas {
+  background: #1e293b;
+  border-radius: 14px;
+  border: 1px solid #334155;
+}
+
+/* ── 오른쪽 패널 ── */
+.right { display: flex; flex-direction: column; gap: 14px; min-width: 340px; max-width: 400px; }
+
+.panel {
+  background: #1e293b;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  padding: 14px 16px;
+}
+.panel-title {
+  font-size: 0.8rem;
+  color: #60a5fa;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  letter-spacing: .5px;
+}
+
+/* adj 테이블 */
+.adj-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+.adj-table th { color: #94a3b8; text-align: left; padding: 3px 6px; }
+.adj-table td { padding: 3px 6px; border-top: 1px solid #0f172a; }
+.adj-table tr.highlight td { background: #1d3a5f; color: #93c5fd; }
+.adj-node { color: #fbbf24; font-weight: bold; }
+.adj-entry {
+  display: inline-block;
+  background: #1d4ed8;
+  color: #bfdbfe;
+  border-radius: 5px;
+  padding: 1px 6px;
+  margin: 1px;
+  font-size: 0.72rem;
+}
+
+/* minCost 배열 */
+.cost-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.cost-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #0f172a;
+  border-radius: 8px;
+  padding: 6px 10px;
+  min-width: 48px;
+  border: 2px solid #334155;
+  transition: all 0.4s;
+}
+.cost-cell.active   { border-color: #4ade80; background: #052e16; }
+.cost-cell.updated  { border-color: #fbbf24; background: #2d1a00; }
+.cost-cell.settled  { border-color: #6366f1; background: #1e1b4b; }
+.cost-cell .idx  { font-size: 0.65rem; color: #64748b; }
+.cost-cell .val  { font-size: 0.95rem; font-weight: bold; color: #e2e8f0; }
+.cost-cell.active  .val { color: #4ade80; }
+.cost-cell.updated .val { color: #fbbf24; }
+.cost-cell.settled .val { color: #818cf8; }
+
+/* 큐 상태 */
+.pq-list { list-style: none; font-size: 0.78rem; }
+.pq-list li {
+  display: flex; justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid #0f172a;
+  color: #cbd5e1;
+}
+.pq-list li.top-item { color: #4ade80; font-weight: bold; }
+.pq-badge {
+  background: #1d4ed8;
+  color: #bfdbfe;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-size: 0.72rem;
+}
+.pq-badge.top { background: #166534; color: #bbf7d0; }
+
+/* 로그 */
+.log-box {
+  background: #0f172a;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.75rem;
+  line-height: 1.7;
+  min-height: 60px;
+  color: #94a3b8;
+  white-space: pre-wrap;
+}
+.log-box .green  { color: #4ade80; }
+.log-box .yellow { color: #fbbf24; }
+.log-box .blue   { color: #60a5fa; }
+.log-box .gray   { color: #475569; }
+
+/* 컨트롤 */
+.controls { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+.btn {
+  padding: 7px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: bold;
+  transition: opacity .2s;
+}
+.btn:disabled { opacity: .35; cursor: default; }
+.btn-prev  { background: #334155; color: #94a3b8; }
+.btn-next  { background: #1d4ed8; color: #fff; }
+.btn-reset { background: #7f1d1d; color: #fca5a5; }
+.step-info { font-size: 0.78rem; color: #64748b; align-self: center; }
+
+/* 범례 */
+.legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 0.72rem; color: #94a3b8; margin-top: 6px; }
+.legend-item { display: flex; align-items: center; gap: 4px; }
+.ldot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.lline { width: 20px; height: 3px; display: inline-block; border-radius: 2px; }
+</style>
+</head>
+<body>
+<h1>📊 BOJ 1916 — 다익스트라 단계별 시각화</h1>
+<p class="subtitle">예제 입력 기준 | adj 구성 → minCost 갱신 과정</p>
+
+<div class="layout">
+  <div>
+    <canvas id="graph" width="480" height="420"></canvas>
+    <div class="legend" style="justify-content:center;margin-top:10px;">
+      <div class="legend-item"><span class="ldot" style="background:#b45309;border:2px solid #fbbf24"></span> 출발</div>
+      <div class="legend-item"><span class="ldot" style="background:#065f46;border:2px solid #34d399"></span> 도착</div>
+      <div class="legend-item"><span class="ldot" style="background:#3730a3;border:2px solid #818cf8"></span> 확정</div>
+      <div class="legend-item"><span class="ldot" style="background:#052e16;border:2px solid #4ade80"></span> 처리중</div>
+      <div class="lline" style="background:#4ade80"></div><span>갱신된 간선</span>
+      <div class="lline" style="background:#475569"></div><span>일반 간선</span>
+    </div>
+  </div>
+
+  <div class="right">
+    <!-- adj -->
+    <div class="panel">
+      <div class="panel-title">📋 adj[ ] — 인접 리스트</div>
+      <table class="adj-table">
+        <tr><th>도시</th><th>버스 목록 {비용, 도착도시}</th></tr>
+        <tbody id="adjBody"></tbody>
+      </table>
+    </div>
+
+    <!-- minCost -->
+    <div class="panel">
+      <div class="panel-title">💾 minCost[ ] — 최소 비용 배열</div>
+      <div class="cost-row" id="costRow"></div>
+      <div class="legend" style="margin-top:8px;">
+        <div class="legend-item"><span class="ldot" style="background:#052e16;border:2px solid #4ade80"></span> 처리중</div>
+        <div class="legend-item"><span class="ldot" style="background:#2d1a00;border:2px solid #fbbf24"></span> 방금 갱신</div>
+        <div class="legend-item"><span class="ldot" style="background:#1e1b4b;border:2px solid #818cf8"></span> 확정</div>
+      </div>
+    </div>
+
+    <!-- PQ -->
+    <div class="panel">
+      <div class="panel-title">🔺 우선순위 큐 (min-heap) 상태</div>
+      <ul class="pq-list" id="pqList"></ul>
+    </div>
+
+    <!-- 로그 -->
+    <div class="panel">
+      <div class="panel-title">📝 현재 단계 설명</div>
+      <div class="log-box" id="logBox"></div>
+    </div>
+
+    <!-- 컨트롤 -->
+    <div class="controls">
+      <button class="btn btn-reset" id="btnReset" onclick="reset()">↺ 처음부터</button>
+      <button class="btn btn-prev"  id="btnPrev"  onclick="prevStep()">◀ 이전</button>
+      <button class="btn btn-next"  id="btnNext"  onclick="nextStep()">다음 ▶</button>
+      <span class="step-info" id="stepInfo"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 예제 데이터 ──────────────────────────────────────────────
+const N = 5, SRC = 1, DST = 5;
+const rawEdges = [
+  [1,2,2],[1,3,3],[1,4,1],[1,5,10],
+  [2,4,2],[3,4,1],[3,5,1],[4,5,3]
+];
+
+// adj[u] = [{cost, to}, ...]
+const adj = Array.from({length: N+1}, () => []);
+rawEdges.forEach(([u,v,w]) => adj[u].push({cost:w, to:v}));
+
+// ── 노드 위치 ───────────────────────────────────────────────
+const nodes = {
+  1:{x:90,  y:210},
+  2:{x:220, y:90},
+  3:{x:220, y:330},
+  4:{x:350, y:160},
+  5:{x:420, y:320},
+};
+
+// ── 다익스트라 스텝 사전 계산 ─────────────────────────────────
+function buildSteps() {
+  const INF = 1e9;
+  const dist = Array(N+1).fill(INF);
+  dist[SRC] = 0;
+  const settled = new Set();
+  // min-heap simulation (sorted array)
+  let pq = [{cost:0, city:SRC}];
+  const steps = [];
+
+  // Step 0: 초기 상태
+  steps.push({
+    type:'init',
+    dist:[...dist],
+    pq:[...pq],
+    settled:new Set(settled),
+    curCity:-1, updatedCities:[],
+    highlightAdj:-1, highlightEdges:[],
+    log:`초기화\nadj 인접 리스트 구성 완료\nminCost 배열: 전부 ∞\nminCost[${SRC}] = 0 (출발 도시)\npq에 {비용:0, 도시:${SRC}} 추가`,
+  });
+
+  while (pq.length > 0) {
+    pq.sort((a,b) => a.cost - b.cost);
+    const {cost, city} = pq.shift();
+
+    if (cost > dist[city]) {
+      steps.push({
+        type:'skip',
+        dist:[...dist],
+        pq:[...pq],
+        settled:new Set(settled),
+        curCity:city, updatedCities:[],
+        highlightAdj:city, highlightEdges:[],
+        log:`큐에서 꺼냄: {비용:${cost}, 도시:${city}}\n⚠️  이미 확정된 도시 (minCost[${city}]=${dist[city] < INF ? dist[city] : '∞'} < ${cost})\n→ continue (스킵)`,
+      });
+      continue;
+    }
+
+    settled.add(city);
+
+    const updated = [];
+    const hEdges = [];
+    const pqBefore = [...pq];
+
+    adj[city].forEach(({cost:ec, to:next}) => {
+      const newCost = dist[city] + ec;
+      if (newCost < dist[next]) {
+        dist[next] = newCost;
+        pq.push({cost:newCost, city:next});
+        updated.push(next);
+        hEdges.push({from:city, to:next, cost:ec, total:newCost});
+      }
+    });
+
+    steps.push({
+      type: updated.length ? 'update' : 'noUpdate',
+      dist:[...dist],
+      pq:[...pq],
+      settled:new Set(settled),
+      curCity:city,
+      updatedCities:updated,
+      highlightAdj:city,
+      highlightEdges:hEdges,
+      log: [
+        `큐에서 꺼냄: {비용:${cost}, 도시:${city}} ✅`,
+        `curCity = ${city} 확정`,
+        ``,
+        `adj[${city}] 순회:`,
+        ...adj[city].map(({cost:ec, to:next}) => {
+          const nc = cost + ec;
+          const prev = (nc < dist[next] + (updated.includes(next) ? 0 : 0))
+            ? `∞ 또는 이전값` : '';
+          if (updated.includes(next)) {
+            return `  → 도시${next}: ${cost}+${ec}=${nc} < 이전값 → minCost[${next}]=${nc} 갱신 ✅`;
+          } else {
+            const old = steps.length>0
+              ? (steps[steps.length-1].dist[next] < INF ? steps[steps.length-1].dist[next] : '∞')
+              : '∞';
+            return `  → 도시${next}: ${cost}+${ec}=${nc} ≥ minCost[${next}](${old}) → 갱신 없음 ❌`;
+          }
+        }),
+      ].join('\n'),
+    });
+  }
+
+  steps.push({
+    type:'done',
+    dist:[...dist],
+    pq:[],
+    settled:new Set(settled),
+    curCity:-1, updatedCities:[],
+    highlightAdj:-1, highlightEdges:[],
+    log:`✅ 완료!\n큐가 비어 있음 → 종료\n\nminCost[${DST}] = ${dist[DST]}\n→ 최소 비용: ${dist[DST]}`,
+  });
+
+  return steps;
+}
+
+const steps = buildSteps();
+let stepIdx = 0;
+
+// ── 캔버스 렌더링 ─────────────────────────────────────────────
+const canvas = document.getElementById('graph');
+const ctx = canvas.getContext('2d');
+
+function drawArrow(x1,y1,x2,y2,color,lw,offset,dashed) {
+  const angle = Math.atan2(y2-y1, x2-x1);
+  const R = 26;
+  const sx = x1 + Math.cos(angle)*R, sy = y1 + Math.sin(angle)*R;
+  const ex = x2 - Math.cos(angle)*R, ey = y2 - Math.sin(angle)*R;
+  const mx = (sx+ex)/2 + Math.sin(angle)*offset;
+  const my = (sy+ey)/2 - Math.cos(angle)*offset;
+
+  ctx.beginPath();
+  ctx.moveTo(sx,sy);
+  ctx.quadraticCurveTo(mx,my,ex,ey);
+  ctx.strokeStyle = color; ctx.lineWidth = lw;
+  ctx.setLineDash(dashed ? [5,4] : []);
+  ctx.stroke(); ctx.setLineDash([]);
+
+  const arrowAng = Math.atan2(ey-my, ex-mx);
+  const aL = 11;
+  ctx.beginPath();
+  ctx.moveTo(ex,ey);
+  ctx.lineTo(ex-aL*Math.cos(arrowAng-.45), ey-aL*Math.sin(arrowAng-.45));
+  ctx.lineTo(ex-aL*Math.cos(arrowAng+.45), ey-aL*Math.sin(arrowAng+.45));
+  ctx.closePath(); ctx.fillStyle=color; ctx.fill();
+  return {mx,my};
+}
+
+function drawGraph(step) {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const {curCity, highlightEdges, settled} = step;
+
+  rawEdges.forEach(([u,v,w]) => {
+    const n1=nodes[u], n2=nodes[v];
+    const isHighlight = highlightEdges.some(e=>e.from===u&&e.to===v);
+    const color = isHighlight ? '#4ade80' : '#334155';
+    const lw    = isHighlight ? 2.5 : 1.5;
+    const {mx,my} = drawArrow(n1.x,n1.y,n2.x,n2.y,color,lw,16,false);
+
+    const label = `${w}`;
+    ctx.font = 'bold 12px Segoe UI';
+    const tw = ctx.measureText(label).width;
+    ctx.fillStyle = isHighlight ? 'rgba(5,46,22,.9)' : 'rgba(15,23,42,.85)';
+    ctx.beginPath();
+    ctx.roundRect(mx-tw/2-5,my-10,tw+10,20,5);
+    ctx.fill();
+    ctx.fillStyle = isHighlight ? '#4ade80' : '#64748b';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(label,mx,my);
+  });
+
+  // nodes
+  for (let i=1; i<=N; i++) {
+    const n = nodes[i];
+    const isCur     = i===curCity;
+    const isSettled = settled.has(i);
+    const isStart   = i===SRC, isEnd = i===DST;
+
+    ctx.shadowColor = isCur ? '#4ade8080' : isSettled ? '#6366f180' : 'transparent';
+    ctx.shadowBlur  = (isCur||isSettled) ? 14 : 0;
+
+    let fill='#1e293b', stroke='#475569';
+    if (isStart)    { fill='#92400e'; stroke='#fbbf24'; }
+    if (isEnd)      { fill='#064e3b'; stroke='#34d399'; }
+    if (isSettled && !isStart && !isEnd) { fill='#1e1b4b'; stroke='#818cf8'; }
+    if (isCur)      { fill='#052e16'; stroke='#4ade80'; }
+
+    ctx.beginPath();
+    ctx.arc(n.x,n.y,26,0,Math.PI*2);
+    ctx.fillStyle=fill; ctx.fill();
+    ctx.strokeStyle=stroke; ctx.lineWidth=isCur?3:2; ctx.stroke();
+    ctx.shadowBlur=0;
+
+    ctx.fillStyle='#f1f5f9'; ctx.font='bold 16px Segoe UI';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(i,n.x,n.y);
+
+    if (isStart) { ctx.fillStyle='#fbbf24'; ctx.font='10px Segoe UI'; ctx.fillText('출발',n.x,n.y+38); }
+    if (isEnd)   { ctx.fillStyle='#34d399'; ctx.font='10px Segoe UI'; ctx.fillText('도착',n.x,n.y+38); }
+  }
+}
+
+// ── adj 테이블 렌더링 ─────────────────────────────────────────
+function renderAdj(step) {
+  const tbody = document.getElementById('adjBody');
+  tbody.innerHTML = '';
+  for (let i=1; i<=N; i++) {
+    const tr = document.createElement('tr');
+    if (i===step.highlightAdj) tr.className='highlight';
+    tr.innerHTML = `
+      <td><span class="adj-node">${i}</span></td>
+      <td>${adj[i].map(({cost:c,to:t})=>`<span class="adj-entry">{${c}, ${t}}</span>`).join('')||'<span style="color:#475569">—</span>'}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+
+// ── minCost 배열 렌더링 ─────────────────────────────────────
+function renderCost(step) {
+  const row = document.getElementById('costRow');
+  row.innerHTML = '';
+  const INF = 1e9;
+  step.dist.forEach((v,i) => {
+    if (i===0) return;
+    const cell = document.createElement('div');
+    cell.className = 'cost-cell'
+      + (i===step.curCity ? ' active' : '')
+      + (step.updatedCities.includes(i) ? ' updated' : '')
+      + (step.settled.has(i) && i!==step.curCity ? ' settled' : '');
+    cell.innerHTML = `<span class="idx">[${i}]</span><span class="val">${v>=INF ? '∞' : v}</span>`;
+    row.appendChild(cell);
+  });
+}
+
+// ── PQ 렌더링 ────────────────────────────────────────────────
+function renderPQ(step) {
+  const ul = document.getElementById('pqList');
+  ul.innerHTML = '';
+  const sorted = [...step.pq].sort((a,b)=>a.cost-b.cost);
+  if (sorted.length===0) {
+    ul.innerHTML = '<li style="color:#475569">큐가 비어 있음</li>';
+    return;
+  }
+  sorted.forEach((item,idx) => {
+    const li = document.createElement('li');
+    li.className = idx===0 ? 'top-item' : '';
+    li.innerHTML = `
+      <span>{비용: ${item.cost}, 도시: ${item.city}}</span>
+      <span class="pq-badge ${idx===0?'top':''}">${idx===0?'▲ top':''}</span>
+    `;
+    ul.appendChild(li);
+  });
+}
+
+// ── 로그 렌더링 ───────────────────────────────────────────────
+function renderLog(step) {
+  const box = document.getElementById('logBox');
+  // 색상 처리
+  let html = step.log
+    .replace(/✅[^\n]*/g, m=>`<span class="green">${m}</span>`)
+    .replace(/⚠️[^\n]*/g, m=>`<span class="yellow">${m}</span>`)
+    .replace(/→ continue[^\n]*/g, m=>`<span class="gray">${m}</span>`)
+    .replace(/갱신 없음[^\n]*/g, m=>`<span class="gray">${m}</span>`)
+    .replace(/adj\[\d\]/g, m=>`<span class="blue">${m}</span>`);
+  box.innerHTML = html;
+}
+
+// ── 전체 렌더링 ───────────────────────────────────────────────
+function render() {
+  const step = steps[stepIdx];
+  drawGraph(step);
+  renderAdj(step);
+  renderCost(step);
+  renderPQ(step);
+  renderLog(step);
+  document.getElementById('stepInfo').textContent = `Step ${stepIdx} / ${steps.length-1}`;
+  document.getElementById('btnPrev').disabled = stepIdx===0;
+  document.getElementById('btnNext').disabled = stepIdx===steps.length-1;
+}
+
+function nextStep()  { if (stepIdx < steps.length-1) { stepIdx++; render(); } }
+function prevStep()  { if (stepIdx > 0) { stepIdx--; render(); } }
+function reset()     { stepIdx = 0; render(); }
+
+render();
+</script>
+</body>
+</html>

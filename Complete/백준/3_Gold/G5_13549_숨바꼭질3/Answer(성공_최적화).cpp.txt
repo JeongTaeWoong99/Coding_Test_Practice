@@ -1,0 +1,70 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, k;         // n : 수빈이 위치, k : 동생 위치
+int dist[100001]; // dist[i] : 위치 i까지의 최소 시간
+
+// 0-1 BFS
+// — 가중치 0 (순간이동 2*X) 은 덱 앞에, 가중치 1 (걷기 X±1) 은 덱 뒤에 삽입
+// — 항상 현재까지 발견된 최소 시간 경로를 먼저 처리
+void BFS()
+{
+    // 초기화 세팅
+    fill_n(dist, 100001, INT_MAX); // 모든 위치의 최소 시간을 무한대로 초기화
+    dist[n] = 0;                   // 시작 위치는 시간 0
+
+    deque<int> bfsQ;
+    bfsQ.push_back(n);
+
+    while (!bfsQ.empty())
+    {
+        int cur = bfsQ.front(); // cur : 현재 처리 중인 위치
+        bfsQ.pop_front();       // 사용 제거
+
+        // 순간이동 (비용 0) : 덱 앞에 삽입
+        int teleport = cur * 2;
+        // teleport <= 100000         : 배열 범위 초과 방지 (위치 최대 100,000)
+        // dist[cur] < dist[teleport] : 현재 경로가 기존보다 빠를 때만 갱신 (중복 처리 방지)
+        if (teleport <= 100000 && dist[cur] < dist[teleport])
+        {
+            dist[teleport] = dist[cur];     // 비용 0이므로 그대로 복사
+            bfsQ.push_front(teleport);      // 비용 0 → 덱 앞에 삽입 (다음 반복에서 바로 처리)
+        }
+
+        // 앞으로 이동 (비용 1) : 덱 뒤에 삽입
+        int forward = cur + 1;
+        // forward <= 100000             : 배열 범위 초과 방지
+        // dist[cur] + 1 < dist[forward] : 현재 경로 + 1초가 기존보다 빠를 때만 갱신
+        if (forward <= 100000 && dist[cur] + 1 < dist[forward])
+        {
+            dist[forward] = dist[cur] + 1;  // 1초 추가
+            bfsQ.push_back(forward);        // 비용 1 → 덱 뒤에 삽입
+        }
+
+        // 뒤로 이동 (비용 1) : 덱 뒤에 삽입
+        int backward = cur - 1;
+        // backward >= 0                  : 음수 위치 방지 (위치 최소 0)
+        // dist[cur] + 1 < dist[backward] : 현재 경로 + 1초가 기존보다 빠를 때만 갱신
+        if (backward >= 0 && dist[cur] + 1 < dist[backward])
+        {
+            dist[backward] = dist[cur] + 1; // 1초 추가
+            bfsQ.push_back(backward);       // 비용 1 → 덱 뒤에 삽입
+        }
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 수빈이 위치, 동생 위치 입력
+    cin >> n >> k;
+
+    // 0-1 BFS 실행 후 최소 시간 출력
+    BFS();
+
+    // 최종 출력
+    cout << dist[k] << "\n";
+
+    return 0;
+}

@@ -380,6 +380,7 @@
     <None Include="백준\3_Gold\G5_12852_1로만들기2\Answer(정답_탑다운).cpp.txt" />
     <None Include="백준\3_Gold\G5_12865_평범한배낭\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G5_1344_축구\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G5_13549_숨바꼭질3\Answer(성공_최적화).cpp.txt" />
     <None Include="백준\3_Gold\G5_1911_흙길보수하기\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_1916_최소비용구하기\Answer(일반 큐 + continue 제거).cpp.txt" />
     <None Include="백준\3_Gold\G5_1916_최소비용구하기\Answer(정답).cpp.txt" />
@@ -595,6 +596,7 @@
     <None Include="백준\3_Gold\G5_12852_1로만들기2\README.md" />
     <None Include="백준\3_Gold\G5_12865_평범한배낭\README.md" />
     <None Include="백준\3_Gold\G5_1344_축구\README.md" />
+    <None Include="백준\3_Gold\G5_13549_숨바꼭질3\README.md" />
     <None Include="백준\3_Gold\G5_1911_흙길보수하기\README.md" />
     <None Include="백준\3_Gold\G5_1916_최소비용구하기\README.md" />
     <None Include="백준\3_Gold\G5_15662_톱니바퀴2\README.md" />

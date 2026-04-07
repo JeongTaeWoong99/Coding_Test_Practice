@@ -1,0 +1,121 @@
+﻿// 핵심 아이디어 : Union-Find
+// 같은 파티에 참석한 사람들을 하나의 그룹으로 묶고,
+// 진실을 아는 사람과 같은 그룹에 속한 파티는 거짓말 불가
+#include <bits/stdc++.h>
+using namespace std;
+
+int                 n, m, k;    // n : 사람 수, m : 파티 수, k : 진실 아는 사람 수
+int                 lieCnt;     // 거짓말 가능한 파티 수
+int                 parent[51]; // Union-Find 부모 배열 (parent[x] = x의 부모)
+set<int>            truthSet;   // 초기 진실을 아는 사람 번호
+set<int>            truthRoots; // 진실 그룹의 루트 노드 집합
+vector<vector<int>> groups;     // 각 파티 참석자 목록
+
+// x가 속한 그룹의 루트 반환
+// 경로 압축 : 재귀 호출 과정에서 parent를 루트로 직접 연결해 이후 탐색 단축
+int Find(int x)
+{
+    // 자기 자신이 루트면 x 반환
+    if (parent[x] == x)
+        return x;
+
+    // 루트까지 거슬러 올라가며 부모를 루트로 갱신
+    return parent[x] = Find(parent[x]);
+}
+
+// a와 b를 같은 그룹으로 합치기
+// 각각의 루트를 구한 뒤, a의 루트가 b의 루트를 가리키도록 연결
+void Unite(int a, int b)
+{
+    // 각자의 루트 확인
+    a = Find(a);
+    b = Find(b);
+
+    // 이미 같은 그룹이면 생략
+    if (a != b)
+        parent[a] = b; // a 그룹 전체가 b 그룹으로 흡수됨
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 사람 수, 파티 수, 진실 아는 사람 수 입력
+    cin >> n >> m >> k;
+
+    // 초기화 : 모두 자기 자신이 루트 (1번 ~ N번 각자 독립 그룹)
+    for (int i = 1; i <= n; i++)
+    {
+        parent[i] = i;
+    }
+
+    // 진실을 아는 사람 번호를 집합에 저장
+    for (int i = 0; i < k; i++)
+    {
+        int x;
+        cin >> x;
+
+        truthSet.insert(x);
+    }
+
+    // 파티 입력
+    // → 참석자를 저장하고, 같은 파티 사람들끼리 그룹으로 묶기
+    // → 나중에 "이 파티에 진실 아는 사람이 속한 그룹이 있는지" 확인할 때 재사용
+    groups.resize(m);
+    for (int i = 0; i < m; i++)
+    {
+        int siz;
+        cin >> siz;
+
+        groups[i].resize(siz);
+
+        // 파티 참석자 번호 저장
+        for (int j = 0; j < siz; j++)
+        {
+            cin >> groups[i][j];
+        }
+
+        // 첫 번째 사람 기준으로 나머지를 순서대로 Unite
+        // → 결과적으로 이 파티의 모든 참석자가 하나의 그룹이 됨
+        for (int j = 1; j < siz; j++)
+        {
+            Unite(groups[i][0], groups[i][j]);
+        }
+    }
+
+    // 모든 Unite 완료 후, 진실 아는 사람들의 현재 루트를 truthRoots에 저장
+    // → Unite 이후 Find를 호출해야 파티를 통해 전파된 그룹 정보가 반영됨
+    //   (예 : 사람1이 진실을 알고, 파티에서 사람4와 Unite됐다면 Find(4) = Find(1) = 1)
+    for (int t : truthSet)
+    {
+        truthRoots.insert(Find(t));
+    }
+
+    // 파티별 거짓말 가능 여부 판정
+    for (int i = 0; i < m; i++)
+    {
+        // 거짓말 가능 여부 (진실 그룹 참석자가 한 명이라도 있으면 false로 변경)
+        bool canLie = true;
+
+        for (int person : groups[i])
+        {
+            // 이 사람의 루트가 truthRoots에 있다 = 진실 아는 사람과 같은 그룹
+            // = 직접 진실을 알거나, 같은 파티를 통해 진실 그룹과 연결된 경우
+            if (truthRoots.count(Find(person)))
+            {
+                canLie = false;
+                break; // 한 명만 해당돼도 이 파티는 거짓말 불가
+            }
+        }
+
+        // 진실 그룹 참석자가 없으면 거짓말 가능
+        if (canLie)
+        {
+            lieCnt++;
+        }
+    }
+
+    cout << lieCnt << "\n";
+
+    return 0;
+}

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Union-Find 시각화 — 백준 1043 거짓말 예제 4</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --border: #30363d;
+  --border-bright: #484f58;
+  --text: #c9d1d9;
+  --muted: #6e7681;
+  --truth-red: #f85149;
+  --truth-bg: #2d1217;
+  --truth-border: #6e2428;
+  --ok-green: #3fb950;
+  --ok-bg: #0d2119;
+  --ok-border: #1f6331;
+  --changed-yellow: #e3b341;
+  --changed-bg: #2d2208;
+  --accent-blue: #58a6ff;
+  --purple: #bc8cff;
+  --purple-bg: #1d1230;
+}
+
+body {
+  font-family: -apple-system, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 32px 20px 60px;
+}
+
+/* ─── 헤더 ─── */
+.header {
+  max-width: 840px;
+  margin: 0 auto 36px;
+  text-align: center;
+}
+.header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.header .sub { color: var(--muted); font-size: 0.88rem; }
+.badge {
+  display: inline-block;
+  background: var(--truth-bg);
+  border: 1px solid var(--truth-border);
+  color: var(--truth-red);
+  border-radius: 20px;
+  padding: 2px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+/* ─── 입력 카드 ─── */
+.input-card {
+  max-width: 840px;
+  margin: 0 auto 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.card-header {
+  background: #1c2128;
+  padding: 10px 18px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border);
+}
+.input-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.input-table td { padding: 8px 18px; border-bottom: 1px solid var(--border); }
+.input-table tr:last-child td { border-bottom: none; }
+.input-table .label { color: var(--muted); width: 110px; font-size: 0.78rem; }
+.input-table code { font-family: monospace; color: var(--accent-blue); font-size: 0.88rem; }
+.input-table .note { color: var(--muted); font-size: 0.78rem; padding-left: 12px; }
+
+/* ─── 스텝 레이아웃 ─── */
+.steps { max-width: 840px; margin: 0 auto; }
+
+.step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.step:hover { border-color: var(--border-bright); }
+
+.step-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: #1c2128;
+}
+.step-num {
+  min-width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 700;
+  background: var(--accent-blue);
+  color: #0d1117;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.step-title { font-size: 0.95rem; font-weight: 600; color: #fff; margin-bottom: 3px; }
+.step-desc  { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+.step-body { padding: 18px 20px; }
+
+/* ─── parent 배열 ─── */
+.section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.parent-array {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.cell-idx { font-size: 0.68rem; color: var(--muted); font-family: monospace; }
+.cell-val {
+  width: 48px; height: 48px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  background: #1c2128;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 700;
+  font-family: monospace;
+  transition: all 0.3s;
+  color: var(--text);
+}
+.cell-val.is-truth    { border-color: var(--truth-red);    background: var(--truth-bg);   color: var(--truth-red); }
+.cell-val.is-changed  { border-color: var(--changed-yellow); background: var(--changed-bg); color: var(--changed-yellow); }
+.cell-val.is-self     { border-color: var(--ok-green);     background: var(--ok-bg);     color: var(--ok-green); }
+
+/* ─── 셋 표시 ─── */
+.sets-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.set-card {
+  background: #1c2128;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  min-width: 150px;
+}
+.set-card h4 { font-size: 0.7rem; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.07em; }
+.set-items { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.tag {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: monospace;
+}
+.tag-truth  { background: var(--truth-bg);  color: var(--truth-red);    border: 1px solid var(--truth-border); }
+.tag-root   { background: var(--purple-bg); color: var(--purple);       border: 1px solid #6e40c9; }
+.tag-empty  { color: var(--muted); font-size: 0.78rem; font-style: italic; }
+
+/* ─── 파티 그리드 ─── */
+.parties-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 16px; }
+.party {
+  background: #1c2128;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  transition: all 0.2s;
+}
+.party-label { font-size: 0.7rem; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
+.party-persons { display: flex; justify-content: center; gap: 4px; flex-wrap: wrap; }
+.person {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; font-family: monospace;
+  border: 2px solid;
+}
+.p-truth  { background: var(--truth-bg);  border-color: var(--truth-red);   color: var(--truth-red); }
+.p-linked { background: var(--purple-bg); border-color: var(--purple);      color: var(--purple); }
+.p-normal { background: #1c2128;          border-color: var(--border-bright); color: var(--text); }
+
+/* ─── Unite 연산 ─── */
+.unite-op {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #1c2128;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  font-size: 0.83rem;
+}
+.unite-op.highlight {
+  border-color: var(--changed-yellow);
+  background: var(--changed-bg);
+}
+.op-label { color: var(--muted); font-size: 0.75rem; font-weight: 600; min-width: 50px; }
+.op-skip  { color: var(--muted); font-style: italic; font-size: 0.78rem; }
+.op-arrow { color: var(--changed-yellow); font-size: 1rem; }
+.op-result { color: var(--changed-yellow); font-size: 0.83rem; }
+
+/* ─── 내부 계산 박스 ─── */
+.calc-box {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: monospace;
+  font-size: 0.82rem;
+  line-height: 2;
+  margin: 10px 0;
+}
+.calc-box .step-line { color: var(--text); }
+.calc-box .highlight { color: var(--changed-yellow); font-weight: 700; }
+.calc-box .result-line { color: var(--ok-green); font-weight: 600; }
+
+/* ─── 그룹 시각화 ─── */
+.groups-viz { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+.group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+.group.has-truth { border-color: var(--truth-red); background: var(--truth-bg); }
+.group-name { font-size: 0.7rem; color: var(--muted); }
+
+/* ─── 판정 테이블 ─── */
+.verdict-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+  margin-top: 8px;
+}
+.verdict-table th {
+  background: #1c2128;
+  color: var(--muted);
+  padding: 8px 14px;
+  text-align: left;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border);
+}
+.verdict-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid #1c2128;
+  font-family: monospace;
+}
+.verdict-table tr:hover td { background: #1c2128; }
+.verdict-table tr.highlight-row td { background: #2d2208; }
+.ok-text  { color: var(--ok-green);    font-weight: 700; font-family: sans-serif; }
+.ng-text  { color: var(--truth-red);   font-weight: 700; font-family: sans-serif; }
+.find-val { color: var(--changed-yellow); }
+.in-set   { color: var(--ok-green); }
+.not-set  { color: var(--muted); }
+
+/* ─── 구분선 ─── */
+.divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+
+/* ─── 노트 ─── */
+.note {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #1c2128;
+  border-left: 3px solid var(--accent-blue);
+  border-radius: 0 6px 6px 0;
+}
+.note strong { color: var(--changed-yellow); }
+code { font-family: monospace; font-size: 0.85em; color: var(--accent-blue); background: #1c2128; padding: 1px 5px; border-radius: 4px; }
+
+/* ─── 범례 ─── */
+.legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  font-size: 0.78rem;
+}
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 2px solid;
+}
+.dot-truth   { background: var(--truth-bg);  border-color: var(--truth-red); }
+.dot-changed { background: var(--changed-bg); border-color: var(--changed-yellow); }
+.dot-self    { background: var(--ok-bg);     border-color: var(--ok-green); }
+
+/* ─── 최종 결과 ─── */
+.result-card {
+  background: var(--ok-bg);
+  border: 2px solid var(--ok-border);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  margin-top: 8px;
+}
+.result-num { font-size: 3.5rem; font-weight: 800; color: var(--ok-green); line-height: 1; }
+.result-label { color: var(--ok-green); font-size: 0.88rem; margin-top: 6px; opacity: 0.8; }
+.result-parties { margin-top: 12px; font-size: 0.85rem; color: var(--muted); }
+.result-parties strong { color: var(--text); }
+
+.compare-box {
+  background: #1c2128;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-top: 16px;
+  font-size: 0.82rem;
+  line-height: 1.9;
+}
+.compare-box .old { color: var(--truth-red); }
+.compare-box .new { color: var(--ok-green); }
+.compare-box .label { color: var(--muted); font-size: 0.75rem; }
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<div class="header">
+  <h1>Union-Find 시각화</h1>
+  <div class="sub">백준 1043번 — 거짓말</div>
+  <div class="badge">예제 4 단계별 추적</div>
+</div>
+
+<!-- 입력 카드 -->
+<div class="input-card">
+  <div class="card-header">📥 입력 데이터</div>
+  <table class="input-table">
+    <tr><td class="label">N=4, M=5</td><td><code>4 5</code></td><td class="note">사람 4명, 파티 5개</td></tr>
+    <tr><td class="label">진실 아는 사람</td><td><code>1 1</code></td><td class="note">1명 → 사람 1</td></tr>
+    <tr><td class="label">파티 1</td><td><code>1 1</code></td><td class="note">참석자: 사람 1</td></tr>
+    <tr><td class="label">파티 2</td><td><code>1 2</code></td><td class="note">참석자: 사람 2</td></tr>
+    <tr><td class="label">파티 3</td><td><code>1 3</code></td><td class="note">참석자: 사람 3</td></tr>
+    <tr><td class="label">파티 4</td><td><code>1 4</code></td><td class="note">참석자: 사람 4</td></tr>
+    <tr><td class="label">파티 5</td><td><code>2 4 1</code></td><td class="note">참석자: 사람 4, 사람 1</td></tr>
+  </table>
+</div>
+
+<div class="steps">
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Union-Find 초기화</div>
+        <div class="step-desc"><code>parent[i] = i</code> — 모든 사람이 자기 자신을 부모로 가짐 (각자 독립 그룹)</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot dot-self"></div><span>parent[i] = i (자기자신이 루트)</span></div>
+      </div>
+      <div class="section-label">parent[ ] 배열</div>
+      <div class="parent-array">
+        <div class="cell"><div class="cell-idx">parent[1]</div><div class="cell-val is-self">1</div></div>
+        <div class="cell"><div class="cell-idx">parent[2]</div><div class="cell-val is-self">2</div></div>
+        <div class="cell"><div class="cell-idx">parent[3]</div><div class="cell-val is-self">3</div></div>
+        <div class="cell"><div class="cell-idx">parent[4]</div><div class="cell-val is-self">4</div></div>
+      </div>
+      <div class="groups-viz">
+        <div class="group"><div class="person p-normal">1</div><div class="group-name">독립</div></div>
+        <div class="group"><div class="person p-normal">2</div><div class="group-name">독립</div></div>
+        <div class="group"><div class="person p-normal">3</div><div class="group-name">독립</div></div>
+        <div class="group"><div class="person p-normal">4</div><div class="group-name">독립</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">truthSet 구성</div>
+        <div class="step-desc">진실을 아는 사람 번호를 집합에 저장 (parent 변화 없음)</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot dot-truth"></div><span>진실을 아는 사람</span></div>
+      </div>
+      <div class="section-label">parent[ ] 배열 — 변화 없음</div>
+      <div class="parent-array">
+        <div class="cell"><div class="cell-idx">parent[1]</div><div class="cell-val is-truth">1</div></div>
+        <div class="cell"><div class="cell-idx">parent[2]</div><div class="cell-val is-self">2</div></div>
+        <div class="cell"><div class="cell-idx">parent[3]</div><div class="cell-val is-self">3</div></div>
+        <div class="cell"><div class="cell-idx">parent[4]</div><div class="cell-val is-self">4</div></div>
+      </div>
+      <div class="sets-row">
+        <div class="set-card">
+          <h4>truthSet</h4>
+          <div class="set-items"><span class="tag tag-truth">1</span></div>
+        </div>
+        <div class="set-card">
+          <h4>truthRoots (미구성)</h4>
+          <div class="set-items"><span class="tag-empty">— 아직 비어있음 —</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">파티 입력 + Unite 수행</div>
+        <div class="step-desc">같은 파티 참석자들을 Unite로 하나의 그룹으로 묶음 — 파티5에서 핵심 변화 발생</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot dot-changed"></div><span>이번 단계에서 변경됨</span></div>
+      </div>
+
+      <div class="unite-op">
+        <span class="op-label">파티 1</span>
+        <div class="person p-truth">1</div>
+        <span class="op-skip">참석자 1명 → Unite 없음</span>
+      </div>
+      <div class="unite-op">
+        <span class="op-label">파티 2</span>
+        <div class="person p-normal">2</div>
+        <span class="op-skip">참석자 1명 → Unite 없음</span>
+      </div>
+      <div class="unite-op">
+        <span class="op-label">파티 3</span>
+        <div class="person p-normal">3</div>
+        <span class="op-skip">참석자 1명 → Unite 없음</span>
+      </div>
+      <div class="unite-op">
+        <span class="op-label">파티 4</span>
+        <div class="person p-normal">4</div>
+        <span class="op-skip">참석자 1명 → Unite 없음</span>
+      </div>
+
+      <hr class="divider">
+
+      <div class="unite-op highlight">
+        <span class="op-label" style="color:var(--changed-yellow);">파티 5 ★</span>
+        <div class="person p-linked">4</div>
+        <div class="person p-truth">1</div>
+        <span class="op-arrow">→</span>
+        <span class="op-result">Unite(4, 1) 실행!</span>
+      </div>
+
+      <div class="calc-box">
+        <div class="step-line">① Find(4) = <span class="highlight">4</span>  &nbsp;(parent[4] = 4, 자기자신)</div>
+        <div class="step-line">② Find(1) = <span class="highlight">1</span>  &nbsp;(parent[1] = 1, 자기자신)</div>
+        <div class="step-line">③ 4 ≠ 1 이므로</div>
+        <div class="result-line">   → parent[4] = 1  &nbsp;← 사람 4의 루트가 1로 변경!</div>
+      </div>
+
+      <div class="section-label">Unite 후 parent[ ] 배열</div>
+      <div class="parent-array">
+        <div class="cell"><div class="cell-idx">parent[1]</div><div class="cell-val is-truth">1</div></div>
+        <div class="cell"><div class="cell-idx">parent[2]</div><div class="cell-val is-self">2</div></div>
+        <div class="cell"><div class="cell-idx">parent[3]</div><div class="cell-val is-self">3</div></div>
+        <div class="cell"><div class="cell-idx">parent[4]</div><div class="cell-val is-changed">1</div></div>
+      </div>
+
+      <div class="groups-viz">
+        <div class="group has-truth">
+          <div class="person p-truth">1</div>
+          <div class="person p-linked">4</div>
+          <div class="group-name">같은 그룹 (루트 = 1)</div>
+        </div>
+        <div class="group"><div class="person p-normal">2</div><div class="group-name">루트 = 2</div></div>
+        <div class="group"><div class="person p-normal">3</div><div class="group-name">루트 = 3</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">truthRoots 구성</div>
+        <div class="step-desc">모든 Unite 완료 후 truthSet의 각 사람에 Find()를 호출해 루트를 저장</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="calc-box">
+        <div class="step-line">truthSet = { 1 }</div>
+        <div class="step-line" style="margin-top:6px;">→ Find(1) = <span class="highlight">1</span>  &nbsp;(parent[1] = 1)</div>
+        <div class="result-line">→ truthRoots에 1 추가</div>
+      </div>
+
+      <div class="sets-row">
+        <div class="set-card">
+          <h4>truthSet</h4>
+          <div class="set-items"><span class="tag tag-truth">1</span></div>
+        </div>
+        <div class="set-card" style="border-color: #6e40c9;">
+          <h4>truthRoots ✓ 완성</h4>
+          <div class="set-items"><span class="tag tag-root">루트: 1</span></div>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>핵심</strong> — parent[4] = 1 이므로 <code>Find(4) = 1</code><br>
+        사람 4는 truthSet에 직접 없지만, Find(4)가 1을 반환해 truthRoots에 해당됨<br>
+        → <strong>파티5에서 사람 1과 Unite됐기 때문에 "진실 그룹"으로 전파된 것</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">5</div>
+      <div>
+        <div class="step-title">파티별 거짓말 가능 여부 판정</div>
+        <div class="step-desc">각 파티 참석자의 <code>Find()</code> 결과가 truthRoots에 있으면 거짓말 불가</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <table class="verdict-table">
+        <thead>
+          <tr>
+            <th>파티</th>
+            <th>참석자</th>
+            <th>Find(참석자)</th>
+            <th>truthRoots ∋?</th>
+            <th>판정</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>파티 1</td>
+            <td><span class="person p-truth" style="display:inline-flex;width:24px;height:24px;font-size:0.75rem;">1</span></td>
+            <td>Find(1) = <span class="find-val">1</span></td>
+            <td><span class="in-set">1 ∈ {1} ✓</span></td>
+            <td class="ng-text">❌ 거짓말 불가</td>
+          </tr>
+          <tr>
+            <td>파티 2</td>
+            <td><span class="person p-normal" style="display:inline-flex;width:24px;height:24px;font-size:0.75rem;">2</span></td>
+            <td>Find(2) = <span class="find-val">2</span></td>
+            <td><span class="not-set">2 ∉ {1}</span></td>
+            <td class="ok-text">✅ 거짓말 가능</td>
+          </tr>
+          <tr>
+            <td>파티 3</td>
+            <td><span class="person p-normal" style="display:inline-flex;width:24px;height:24px;font-size:0.75rem;">3</span></td>
+            <td>Find(3) = <span class="find-val">3</span></td>
+            <td><span class="not-set">3 ∉ {1}</span></td>
+            <td class="ok-text">✅ 거짓말 가능</td>
+          </tr>
+          <tr class="highlight-row">
+            <td>파티 4 ⚠️</td>
+            <td><span class="person p-linked" style="display:inline-flex;width:24px;height:24px;font-size:0.75rem;">4</span></td>
+            <td>Find(4) = <span class="find-val" style="color:var(--changed-yellow);font-weight:700;">1</span> ← parent[4]=1</td>
+            <td><span class="in-set">1 ∈ {1} ✓</span></td>
+            <td class="ng-text">❌ 거짓말 불가</td>
+          </tr>
+          <tr>
+            <td>파티 5</td>
+            <td><span class="person p-linked" style="display:inline-flex;width:24px;height:24px;font-size:0.75rem;">4</span>
+                <span class="person p-truth"  style="display:inline-flex;width:24px;height:24px;font-size:0.75rem;margin-left:4px;">1</span></td>
+            <td>Find(4) = <span class="find-val">1</span></td>
+            <td><span class="in-set">1 ∈ {1} ✓</span></td>
+            <td class="ng-text">❌ 거짓말 불가</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note" style="margin-top:12px;">
+        ⚠️ <strong>파티 4가 핵심</strong> — 사람 4만 참석하지만, 파티 5에서 Unite(4,1)으로 묶여<br>
+        Find(4) = 1이 되어 truthRoots에 해당 → 거짓말 불가<br>
+        <strong>기존 코드</strong>는 이 부분을 놓쳐 파티 4를 거짓말 가능으로 잘못 카운트 → 결과 3 (오답)
+      </div>
+
+      <div class="result-card">
+        <div class="result-num">2</div>
+        <div class="result-label">거짓말 가능한 파티 수</div>
+        <div class="result-parties">가능: <strong>파티 2</strong> (사람 2) &nbsp;·&nbsp; <strong>파티 3</strong> (사람 3)</div>
+      </div>
+
+      <div class="compare-box">
+        <div class="label">기존 코드 vs 정답 코드</div>
+        <div class="old">❌ 기존: truthSet에 직접 있는지만 확인 → 파티 4도 카운트 → 출력: 3</div>
+        <div class="new">✅ 정답: Find()로 루트 비교 → 파티 4는 진실 그룹 → 출력: 2</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p style="text-align:center;color:var(--muted);font-size:0.72rem;margin-top:40px;">
+  BOJ 1043 거짓말 · Gold 4 · Union-Find (분리 집합) · 2026-04-07
+</p>
+
+</body>
+</html>

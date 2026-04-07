@@ -340,6 +340,8 @@
     <None Include="백준\3_Gold\G3_16235_나무재테크\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G3_16637_괄호추가하기\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G2_17822_원판돌리기\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G4_1043_거짓말\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G4_1043_거짓말\시각화.html" />
     <None Include="백준\3_Gold\G4_10942_팰린드롬\Answer(정답_DP).cpp.txt" />
     <None Include="백준\3_Gold\G4_10942_팰린드롬\Answer(실패_투포인터).cpp.txt" />
     <None Include="백준\3_Gold\G4_12851_숨바꼭질2\Answer(정답).cpp.txt" />
@@ -565,6 +567,7 @@
     <None Include="백준\3_Gold\G3_16235_나무재테크\README.md" />
     <None Include="백준\3_Gold\G3_16637_괄호추가하기\README.md" />
     <None Include="백준\3_Gold\G2_17822_원판돌리기\README.md" />
+    <None Include="백준\3_Gold\G4_1043_거짓말\README.md" />
     <None Include="백준\3_Gold\G4_10942_팰린드롬\README.md" />
     <None Include="백준\3_Gold\G4_12851_숨바꼭질2\README.md" />
     <None Include="백준\3_Gold\G4_12869_뮤탈리스크\README.md" />

@@ -46,3 +46,4 @@ analyze_vcxproj.py
 
 # C# Test 연습장 (Git 추적 제외)
 TestCS/
+any-buddy/

@@ -14,25 +14,64 @@ description: C++ 코드 작성 및 스타일 확인 시 참고. 코딩 스타일
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll; // 사용 이유 주석 (예 : '2^63 - 1' 까지 필요하므로 ll 사용)
+typedef long long      ll;  // INF 합산 등 오버플로우 방지 시 사용
+typedef pair<int, int> pii; // {가중치, 정점} 등 반복 쌍 자료형 alias
 
 // 전역 변수는 상단에 선언하고 타입/의미별로 정렬
 // 주석은 선언 위 별도 줄이 아닌, 같은 줄 오른쪽 인라인으로 작성
 // 주석 시작 위치(// )는 컬럼 정렬로 맞춤
-int    n, m;                 // n : 원소 수, m : 쿼리 수  ← 한 줄에 여러 변수 → 이름 명시
-int    arr[54];              // 입력 배열
-ll     dp[54][21];           // dp[idx][sum] = 경우의 수 (값이 커지므로 ll)
-bool   flag = false;         // 상태 플래그 (int보다 bool 권장)
-vector<pair<int,int>> uni;   // 유니온 파인드용 벡터
+int         n, m;       // n : 원소 수, m : 쿼리 수  ← 한 줄에 여러 변수 → 이름 명시
+int         arr[54];    // 입력 배열
+ll          dp[54][21]; // dp[idx][sum] = 경우의 수 (값이 커지므로 ll)
+bool        flag;       // 상태 플래그 (int보다 bool 권장)
+vector<pii> graph[54];  // graph[u] = {가중치, 목적지}
 ```
 
 **정렬 규칙 :**
 - 타입 정렬 : 동일한 타입끼리 그룹화
-- 컬럼 정렬 : 타입 / 변수명 / `//` 주석 시작 위치 정렬
 - 인라인 주석 : 변수 주석은 선언 위 별도 줄이 아닌 **같은 줄 오른쪽**에 작성
 - typedef 주석 : `typedef` 선언에도 인라인 주석으로 사용 이유 명시
 - 의미별 그룹 : 관련 변수들끼리 묶어서 선언
 - bool 권장 : 사용 여부 체크는 int보다 bool 타입 권장
+
+**⚠️ 전역변수 vs 지역변수 — 컬럼 정렬 방식이 다름 :**
+
+```cpp
+// ✅ 전역변수 : 타입과 변수명 사이를 패딩 → 변수명/주석 시작 위치를 수직 정렬
+int         n, e;       // n : 정점 수, e : 간선 수
+int         v1, v2;     // 반드시 거쳐야 하는 두 정점
+vector<pii> graph[801]; // graph[u] = {가중치, 목적지}
+
+// ✅ 지역변수 : 선언은 컴팩트하게, 세미콜론 이후를 패딩 → 주석 시작 위치만 정렬
+vector<int> dist(n + 1, INF);                       // 모든 거리 INF로 초기화
+priority_queue<pii, vector<pii>, greater<pii>> pq;  // 최솟값 우선 (min-heap)
+
+// ❌ 지역변수에 전역변수 방식 적용 금지 — 타입과 변수명 사이 패딩 하지 말 것
+vector<int>                            dist(n + 1, INF); // ← 타입 사이 패딩은 금지
+```
+
+---
+
+## 🔗 typedef 규칙
+
+`pair<int,int>` 처럼 반복되거나 길어지는 자료형은 반드시 `typedef`로 alias 선언 후 사용.
+
+```cpp
+// ✅ typedef로 선언 후 사용
+typedef pair<int, int> pii;
+
+vector<pii>                            graph[801]; // graph[u] = {가중치, 목적지}
+priority_queue<pii, vector<pii>, greater<pii>> pq; // 한 줄로 깔끔하게
+
+// ❌ typedef 없이 직접 사용 — 길어지고 반복 발생
+vector<pair<int, int>>                                      graph[801];
+priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+```
+
+**적용 기준 :**
+- `pair<int,int>` 가 2회 이상 등장하면 반드시 `pii` typedef 선언
+- `ll` 은 오버플로우 가능성만 있어도 미리 선언 (INF 합산, 큰 곱셈 등)
+- typedef는 헤더 바로 아래, 전역 변수 선언 전에 위치
 
 ### 🔤 인라인 주석 형식 규칙
 
@@ -57,6 +96,35 @@ set<int>            truthRoots; // truthRoots : 진실 그룹의 루트 노드 �
 **적용 기준 :**
 - 단일 변수 : `// 설명` (이름 생략)
 - 다중 변수 : `// a : 설명, b : 설명` (이름 명시, `:` 앞뒤 공백)
+
+---
+
+## 📌 STL 삽입 함수 규칙
+
+STL 컨테이너에 삽입 시 `push` / `push_back` 대신 **`emplace` / `emplace_back`** 사용.
+
+```cpp
+// ✅ emplace 계열 사용
+pq.emplace(0, src);              // priority_queue
+pq.emplace(dist[next], next);
+graph[a].emplace_back(c, b);     // vector
+graph[b].emplace_back(c, a);
+
+// ❌ push 계열 금지
+pq.push({0, src});
+graph[a].push_back({c, b});
+```
+
+**priority_queue top/pop 분리 규칙 :**
+
+```cpp
+// ✅ top()과 pop()은 반드시 두 줄로 분리
+auto [d, u] = pq.top();
+pq.pop();
+
+// ❌ 한 줄 압축 금지
+auto [d, u] = pq.top(); pq.pop();
+```
 
 ---
 
@@ -95,11 +163,56 @@ bool Check(char x, char y, char op) { }
 
 **주석 규칙 :**
 - 변수 설명 : 전역 변수 선언 후 각각의 역할 설명
-- 함수 설명 : 매개변수와 동작 방식 설명
+- 함수 설명 : 함수 위에 한 줄로 동작 설명 (매개변수/반환값 포함)
 - 콜론 공백 : 매개변수 설명 시 `: 앞뒤로 공백` (예 : `x : 설명`)
 - 라인 정렬 : 같은 블록 내 주석들의 시작 위치 통일
 - 명확성 : 알고리즘 로직을 이해하기 쉽게 설명
 - 단계 주석 : 함수 내부도 역할별로 `// 단계 설명` 주석 추가
+
+**함수 내부 주석 기준 — 과하지 않게, 핵심만 꼼꼼히 :**
+
+```cpp
+// src를 시작점으로 다익스트라 실행, 각 정점까지의 최단 거리 반환
+vector<int> Dijkstra(int src)
+{
+    vector<int>                            dist(n + 1, INF); // INF로 초기화
+    priority_queue<pii, vector<pii>, greater<pii>> pq;       // 최솟값 우선 (min-heap)
+
+    dist[src] = 0;
+    pq.emplace(0, src); // {거리, 정점}
+
+    while (!pq.empty())
+    {
+        auto [d, u] = pq.top();
+        pq.pop();
+
+        if (d > dist[u]) // 이미 처리된 정점 스킵
+        {
+            continue;
+        }
+
+        for (auto [w, next] : graph[u]) // 인접 정점 탐색
+        {
+            if (dist[u] + w < dist[next])
+            {
+                dist[next] = dist[u] + w;
+                pq.emplace(dist[next], next);
+            }
+        }
+    }
+
+    return dist;
+}
+```
+
+**주석 달아야 할 위치 (기준) :**
+- 자료구조 선언부 : 역할/정렬 방향 등 (`// 최솟값 우선 (min-heap)`)
+- 초기 삽입 : 형식 설명 (`// {거리, 정점}`)
+- 핵심 조건 : 조건의 의미 (`// 이미 처리된 정점 스킵`)
+- 반복문 : 무엇을 순회하는지 (`// 인접 정점 탐색`)
+- 양방향 간선 : 명시 (`// 양방향 간선`)
+- 분기 결과 : 의미 (`// 경로 없음`)
+- 경우 계산 : 경로 방향 명시 (`// 1 → v1 → v2 → N`)
 
 **함수명 규칙 :**
 - BFS, DFS, LCS 등 알고리즘 약어 → **대문자 그대로** (`bfsAll` ❌ → `BFS` ✅)
@@ -138,10 +251,12 @@ for (int i = 0; i < k; i++)
 
 ---
 
-## 🔲 중괄호 규칙
+## 🔲 중괄호 규칙 (Allman 스타일 완전 준수)
+
+중괄호는 **항상** 다음 줄에, 내용도 **항상** 별도 줄에. 인라인 압축 금지.
 
 ```cpp
-// ✅ for/if 단일 문장이라도 항상 중괄호 사용
+// ✅ 단일 문장도 항상 Allman 스타일로 완전히 풀어쓰기
 for (int i = 0; i < n; ++i)
 {
     for (int j = 0; j < n; ++j)
@@ -155,10 +270,25 @@ if (arr[i][j] == 'G')
     arr[i][j] = 'R';
 }
 
-// ❌ 중괄호 생략 금지
+if (d > dist[u]) // continue/break 같은 단문도 반드시 풀어쓰기
+{
+    continue;
+}
+
+if (ans >= INF) // if-else도 항상 풀어쓰기
+{
+    cout << -1 << "\n";
+}
+else
+{
+    cout << ans << "\n";
+}
+
+// ❌ 인라인 압축 금지 — 단일 문장이라도 절대 한 줄에 쓰지 않음
+if (d > dist[u]) { continue; }
+if (ans >= INF) { cout << -1 << "\n"; } else { cout << ans << "\n"; }
 for (int i = 0; i < n; ++i)
-    for (int j = 0; j < n; ++j)
-        cin >> arr[i][j];
+    cin >> arr[i]; // 중괄호 생략 금지
 ```
 
 ## ⚡ main 함수 구조
@@ -201,7 +331,14 @@ int main()
 - [ ] 주석이 정렬되어 있는가?
 - [ ] 단일 변수 줄의 인라인 주석에서 변수명을 중복 작성하지 않았는가?
 - [ ] 다중 변수 줄의 인라인 주석에서 `이름 : 설명` 형식으로 각각 구분했는가?
-- [ ] 중괄호 스타일이 일관된가? (단일 문장도 항상 중괄호 사용)
+- [ ] `pair<int,int>` 등 반복 자료형을 typedef(pii 등)로 선언했는가?
+- [ ] `ll` typedef를 선언했는가? (오버플로우 가능성 있으면 선언)
+- [ ] `push_back` / `push` 대신 `emplace_back` / `emplace` 를 사용했는가?
+- [ ] `pq.top()` 과 `pq.pop()` 을 두 줄로 분리했는가?
+- [ ] 모든 if/for/while 이 Allman 스타일로 완전히 풀어 써졌는가? (인라인 압축 없음)
+- [ ] 함수 위에 동작 설명 주석이 있는가?
+- [ ] 자료구조 선언부, 핵심 조건, 반복문, 분기 결과에 핵심 인라인 주석이 있는가?
+- [ ] 중괄호 스타일이 일관된가? (단일 문장도 항상 중괄호, 항상 다음 줄)
 - [ ] ios_base 최적화가 포함되었는가?
 - [ ] PDF 교안의 패턴을 따르고 있는가?
 - [ ] 함수명이 BFS/DFS 등 약어를 대문자로 유지하는가?

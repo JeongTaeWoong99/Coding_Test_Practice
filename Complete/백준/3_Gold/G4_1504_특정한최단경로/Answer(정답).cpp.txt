@@ -1,0 +1,97 @@
+\xEF\xBB\xBF#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long      ll;  // INF 3개 합산 시 int 오버플로우 방지
+typedef pair<int, int> pii; // {가중치, 정점} 쌍
+
+const int INF = 1e9; // 최대 비용 = 1000 * 200000 = 2*10^8 < 1e9
+
+int         n, e;       // n : 정점 수, e : 간선 수
+int         v1, v2;     // 반드시 거쳐야 하는 두 정점
+vector<pii> graph[801]; // graph[u] = {가중치, 목적지}
+
+// src를 시작점으로 다익스트라 실행, 각 정점까지의 최단 거리 반환
+vector<int> Dijkstra(int src)
+{
+    vector<int> dist(n + 1, INF);                       // 모든 거리 INF로 초기화
+    priority_queue<pii, vector<pii>, greater<pii>> pq;  // 최솟값 우선 (min-heap)
+
+    dist[src] = 0;         // 출발지 거리 0
+    pq.emplace(0, src);    // {거리, 정점}
+
+    while (!pq.empty())
+    {
+        int curDist = pq.top().first;  // 현재까지의 최단 거리
+        int curNode = pq.top().second; // 현재 정점 번호
+        pq.pop();
+
+        if (curDist > dist[curNode]) // 이미 더 짧은 경로로 갱신된 정점 → 스킵
+        {
+            continue;
+        }
+
+        for (pii edge : graph[curNode]) // curNode의 인접 간선 탐색
+        {
+            int edgeWeight = edge.first;  // 간선 가중치
+            int nextNode   = edge.second; // 연결된 다음 정점
+
+            if (dist[curNode] + edgeWeight < dist[nextNode]) // 더 짧은 경로 발견
+            {
+                dist[nextNode] = dist[curNode] + edgeWeight;
+                pq.emplace(dist[nextNode], nextNode); // 갱신된 거리로 큐에 삽입
+            }
+        }
+    }
+
+    return dist;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n >> e;
+
+    for (int i = 0; i < e; i++)
+    {
+        int a, b, c;
+        cin >> a >> b >> c;
+
+        graph[a].emplace_back(c, b); // 양방향 간선
+        graph[b].emplace_back(c, a); // 양방향 간선
+    }
+
+    cin >> v1 >> v2;
+
+    // 1, v1, v2 각각을 출발점으로 다익스트라 → 구간별 최단 거리 확보
+    vector<int> distFrom1  = Dijkstra(1);
+    vector<int> distFromV1 = Dijkstra(v1);
+    vector<int> distFromV2 = Dijkstra(v2);
+
+    // 필수 경유 순서는 두 가지 : v1 먼저 or v2 먼저
+    //
+    // [경우 1] 1 → v1 → v2 → N
+    //   distFrom1[v1]  : 1에서 v1까지
+    //   distFromV1[v2] : v1에서 v2까지  ← v1 출발 다익스트라 필요
+    //   distFromV2[n]  : v2에서 N까지   ← v2 출발 다익스트라 필요
+    ll path1 = (ll)distFrom1[v1] + distFromV1[v2] + distFromV2[n];
+
+    // [경우 2] 1 → v2 → v1 → N (경유 순서 반대)
+    //   distFrom1[v2]  : 1에서 v2까지
+    //   distFromV2[v1] : v2에서 v1까지  ← v2 출발 다익스트라 필요
+    //   distFromV1[n]  : v1에서 N까지   ← v1 출발 다익스트라 필요
+    ll path2 = (ll)distFrom1[v2] + distFromV2[v1] + distFromV1[n];
+
+    ll ans = min(path1, path2);
+
+    if (ans >= INF) // 경로 없음
+    {
+        cout << -1 << "\n";
+    }
+    else
+    {
+        cout << ans << "\n";
+    }
+
+    return 0;
+}

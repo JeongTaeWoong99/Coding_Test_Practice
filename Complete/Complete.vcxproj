@@ -354,6 +354,7 @@
     <None Include="백준\3_Gold\G4_14497_주난의난\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G4_14497_주난의난\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_14500_테트로미노\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G4_1504_특정한최단경로\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_16234_인구이동\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G4_17406_배열돌리기4\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_17144_미세먼지안녕\Answer(정답).cpp.txt" />
@@ -576,6 +577,8 @@
     <None Include="백준\3_Gold\G4_14002_가장긴증가하는부분수열4\README.md" />
     <None Include="백준\3_Gold\G4_14497_주난의난\README.md" />
     <None Include="백준\3_Gold\G4_14500_테트로미노\README.md" />
+    <None Include="백준\3_Gold\G4_1504_특정한최단경로\README.md" />
+    <None Include="백준\3_Gold\G4_1504_특정한최단경로\시각화.html" />
     <None Include="백준\3_Gold\G4_16234_인구이동\README.md" />
     <None Include="백준\3_Gold\G4_17144_미세먼지안녕\README.md" />
     <None Include="백준\3_Gold\G4_17298_오큰수\README.md" />

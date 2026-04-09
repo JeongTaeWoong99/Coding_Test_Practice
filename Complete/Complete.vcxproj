@@ -366,6 +366,8 @@
     <None Include="백준\3_Gold\G4_3190_뱀\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G4_4179_불\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G4_4781_사탕가게\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G4_5639_이진검색트리\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G4_5639_이진검색트리\시각화.html" />
     <None Include="백준\3_Gold\G4_7662_이중우선순위큐\Answer(다른_최적화).cpp.txt" />
     <None Include="백준\3_Gold\G4_7662_이중우선순위큐\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G4_9019_DSLR\Answer(정답).cpp.txt" />
@@ -593,6 +595,7 @@
     <None Include="백준\3_Gold\G4_3190_뱀\README.md" />
     <None Include="백준\3_Gold\G4_4179_불\README.md" />
     <None Include="백준\3_Gold\G4_4781_사탕가게\README.md" />
+    <None Include="백준\3_Gold\G4_5639_이진검색트리\README.md" />
     <None Include="백준\3_Gold\G4_7662_이중우선순위큐\README.md" />
     <None Include="백준\3_Gold\G4_9019_DSLR\README.md" />
     <None Include="백준\3_Gold\G4_9935_문자열폭발\README.md" />

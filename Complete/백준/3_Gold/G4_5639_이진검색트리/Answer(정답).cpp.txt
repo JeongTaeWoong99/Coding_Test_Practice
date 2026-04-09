@@ -1,0 +1,46 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> preorder; // 전위 순회 입력 배열
+
+// preorder[start..end] 범위를 후위 순회로 출력
+void PostOrder(int start, int end)
+{
+    if (start > end)
+    {
+        return;
+    }
+
+    int root = preorder[start];
+
+    // 오른쪽 서브트리 시작 위치 탐색 (root보다 큰 첫 번째 원소)
+    int rightStart = end + 1;
+    for (int i = start + 1; i <= end; i++)
+    {
+        if (preorder[i] > root)
+        {
+            rightStart = i;
+            break;
+        }
+    }
+
+    PostOrder(start + 1, rightStart - 1); // 왼쪽 서브트리
+    PostOrder(rightStart, end);           // 오른쪽 서브트리
+    cout << root << "\n";                 // 루트 출력 (후위)
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // EOF까지 전위 순회 입력
+    int x;
+    while (cin >> x)
+    {
+        preorder.emplace_back(x);
+    }
+
+    PostOrder(0, (int)preorder.size() - 1);
+
+    return 0;
+}

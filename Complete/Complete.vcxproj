@@ -396,6 +396,8 @@
     <None Include="백준\3_Gold\G5_17070_파이프옮기기1\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_1931_회의실배정\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_2096_내려가기\Answer(정답_최적화).cpp.txt" />
+    <None Include="백준\3_Gold\G5_2166_다각형의면적\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G5_2166_다각형의면적\시각화.html" />
     <None Include="백준\3_Gold\G5_2294_동전2\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_2343_기타레슨\Answer(정답).cpp.txt" />
     <None Include="백준\3_Gold\G5_2565_전깃줄\Answer(정답).cpp.txt" />
@@ -614,6 +616,7 @@
     <None Include="백준\3_Gold\G5_17070_파이프옮기기1\README.md" />
     <None Include="백준\3_Gold\G5_1931_회의실배정\README.md" />
     <None Include="백준\3_Gold\G5_2096_내려가기\README.md" />
+    <None Include="백준\3_Gold\G5_2166_다각형의면적\README.md" />
     <None Include="백준\3_Gold\G5_2294_동전2\README.md" />
     <None Include="백준\3_Gold\G5_2343_기타레슨\README.md" />
     <None Include="백준\3_Gold\G5_2565_전깃줄\README.md" />

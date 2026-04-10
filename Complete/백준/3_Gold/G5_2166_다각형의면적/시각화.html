@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>BOJ 2166 - 다각형의 면적 시각화</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #58a6ff;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #8b949e;
+    font-size: 0.9rem;
+    margin-bottom: 28px;
+  }
+
+  .layout {
+    display: flex;
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: flex-start;
+  }
+
+  /* ── 캔버스 ── */
+  .canvas-wrap {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  canvas {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    display: block;
+  }
+
+  /* ── 우측 패널 ── */
+  .panel {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .card h2 {
+    font-size: 0.85rem;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: 12px;
+  }
+
+  /* 공식 카드 */
+  .formula {
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #e6edf3;
+  }
+  .formula .hl { color: #ffa657; font-weight: bold; }
+  .formula .eq { color: #79c0ff; }
+
+  /* 단계 테이블 */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  th {
+    background: #21262d;
+    color: #8b949e;
+    padding: 6px 10px;
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 1px solid #30363d;
+  }
+  td {
+    padding: 7px 10px;
+    text-align: center;
+    border-bottom: 1px solid #21262d;
+    transition: background .25s;
+  }
+  tr.active td { background: #1f2c3d; color: #58a6ff; font-weight: 600; }
+  tr.done   td { color: #3fb950; }
+  td.neg    { color: #f85149; }
+  td.pos    { color: #3fb950; }
+  td.zero   { color: #8b949e; }
+
+  /* 누적 합 */
+  .sum-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-family: 'Courier New', monospace;
+    font-size: 0.92rem;
+  }
+  .sum-chip {
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid #30363d;
+    background: #21262d;
+    color: #8b949e;
+    transition: all .3s;
+  }
+  .sum-chip.active { border-color: #ffa657; color: #ffa657; background: #2d1e0a; }
+
+  /* 결과 카드 */
+  .result-card {
+    background: #0d2818;
+    border: 1px solid #3fb950;
+    border-radius: 10px;
+    padding: 14px 18px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .5s, transform .5s;
+  }
+  .result-card.show { opacity: 1; transform: translateY(0); }
+  .result-card .label { color: #56d364; font-size: 0.85rem; margin-bottom: 4px; }
+  .result-card .value { color: #3fb950; font-size: 2rem; font-weight: 700; }
+
+  /* 컨트롤 */
+  .controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  button {
+    padding: 8px 22px;
+    border-radius: 7px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: opacity .2s, transform .1s;
+  }
+  button:active { transform: scale(.96); }
+  #btnPrev { background: #21262d; color: #e6edf3; border: 1px solid #30363d; }
+  #btnNext { background: #238636; color: #fff; }
+  #btnReset { background: #21262d; color: #8b949e; border: 1px solid #30363d; font-size: 0.8rem; }
+  button:disabled { opacity: .35; cursor: default; }
+
+  /* 단계 인디케이터 */
+  .step-indicator {
+    text-align: center;
+    font-size: 0.82rem;
+    color: #8b949e;
+  }
+</style>
+</head>
+<body>
+
+<h1>📐 BOJ 2166 — 다각형의 면적</h1>
+<p class="subtitle">신발끈 공식 (Shoelace Formula) 단계별 시각화</p>
+
+<div class="layout">
+
+  <!-- 왼쪽: 캔버스 -->
+  <div class="canvas-wrap">
+    <canvas id="cv" width="360" height="360"></canvas>
+    <div class="step-indicator" id="stepLabel">Step 0 / 4</div>
+    <div class="controls">
+      <button id="btnPrev">◀ 이전</button>
+      <button id="btnNext">다음 ▶</button>
+      <button id="btnReset">↺ 처음</button>
+    </div>
+  </div>
+
+  <!-- 오른쪽: 패널 -->
+  <div class="panel">
+
+    <!-- 공식 -->
+    <div class="card">
+      <h2>📐 신발끈 공식</h2>
+      <div class="formula">
+        <span class="eq">cross</span> =
+        <span class="hl">Σ</span> ( x<sub>i</sub>·y<sub>i+1</sub> − x<sub>i+1</sub>·y<sub>i</sub> )<br>
+        <span class="eq">넓이</span>  =
+        <span class="hl">|cross|</span> / 2.0
+      </div>
+    </div>
+
+    <!-- 단계 테이블 -->
+    <div class="card">
+      <h2>🔄 단계별 계산</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>i</th>
+            <th>P<sub>i</sub></th>
+            <th>P<sub>i+1</sub></th>
+            <th>x<sub>i</sub>·y<sub>i+1</sub></th>
+            <th>x<sub>i+1</sub>·y<sub>i</sub></th>
+            <th>기여값</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- 누적 합 -->
+    <div class="card">
+      <h2>➕ 누적 cross 합</h2>
+      <div class="sum-row" id="sumRow"></div>
+    </div>
+
+    <!-- 최종 결과 -->
+    <div class="result-card" id="resultCard">
+      <div class="label">|cross| / 2.0 = |-200| / 2.0</div>
+      <div class="value">넓이 = 100.0</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── 데이터 ──────────────────────────────────────────────────
+const pts = [
+  {x:0,  y:0},
+  {x:0,  y:10},
+  {x:10, y:10},
+  {x:10, y:0},
+];
+const n = pts.length;
+
+// 각 단계 계산
+const steps = pts.map((p, i) => {
+  const q  = pts[(i + 1) % n];
+  const a  = p.x * q.y;
+  const b  = q.x * p.y;
+  const c  = a - b;
+  return { i, p, q, a, b, contrib: c };
+});
+
+let cross = 0;
+const cumulative = steps.map(s => { cross += s.contrib; return cross; });
+
+// ── Canvas 설정 ──────────────────────────────────────────────
+const cv   = document.getElementById('cv');
+const ctx  = cv.getContext('2d');
+const PAD  = 60;
+const W    = cv.width;
+const H    = cv.height;
+const GRID = (W - PAD * 2) / 10;  // 10 단위를 캔버스 범위에 맞춤
+
+function toCanvas(x, y) {
+  // 좌표계: 수학 → 캔버스 (y 반전)
+  return [
+    PAD + x * GRID,
+    H - PAD - y * GRID,
+  ];
+}
+
+const COLORS = ['#58a6ff','#ffa657','#3fb950','#f85149'];
+
+function drawBase(step) {
+  ctx.clearRect(0, 0, W, H);
+
+  // 그리드
+  ctx.strokeStyle = '#21262d';
+  ctx.lineWidth = 1;
+  for (let g = 0; g <= 10; g++) {
+    const [x1, y1] = toCanvas(g, 0);
+    const [x2, y2] = toCanvas(g, 10);
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    const [x3, y3] = toCanvas(0, g);
+    const [x4, y4] = toCanvas(10, g);
+    ctx.beginPath(); ctx.moveTo(x3, y3); ctx.lineTo(x4, y4); ctx.stroke();
+  }
+
+  // 축
+  ctx.strokeStyle = '#30363d';
+  ctx.lineWidth = 1.5;
+  const [ox, oy] = toCanvas(0, 0);
+  const [ex, _e] = toCanvas(11, 0);
+  const [_f, ey] = toCanvas(0, 11);
+  ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ex, oy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox, ey); ctx.stroke();
+
+  // 눈금 레이블
+  ctx.fillStyle = '#484f58';
+  ctx.font = '11px Segoe UI';
+  ctx.textAlign = 'center';
+  [0, 5, 10].forEach(v => {
+    const [cx] = toCanvas(v, 0);
+    const [, cy] = toCanvas(0, v);
+    ctx.fillText(v, cx, oy + 16);
+    if (v > 0) ctx.fillText(v, ox - 18, cy + 4);
+  });
+
+  // 다각형 채우기 (완료 단계면 초록, 아니면 희미)
+  ctx.beginPath();
+  pts.forEach((p, idx) => {
+    const [cx, cy] = toCanvas(p.x, p.y);
+    idx === 0 ? ctx.moveTo(cx, cy) : ctx.lineTo(cx, cy);
+  });
+  ctx.closePath();
+  ctx.fillStyle = step >= n ? 'rgba(63,185,80,.18)' : 'rgba(88,166,255,.07)';
+  ctx.fill();
+
+  // 다각형 외곽선
+  ctx.beginPath();
+  pts.forEach((p, idx) => {
+    const [cx, cy] = toCanvas(p.x, p.y);
+    idx === 0 ? ctx.moveTo(cx, cy) : ctx.lineTo(cx, cy);
+  });
+  ctx.closePath();
+  ctx.strokeStyle = '#30363d';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // 지나간 엣지 강조
+  for (let s = 0; s < Math.min(step, n); s++) {
+    const p = pts[s];
+    const q = pts[(s + 1) % n];
+    const [px, py] = toCanvas(p.x, p.y);
+    const [qx, qy] = toCanvas(q.x, q.y);
+    ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(qx, qy);
+    ctx.strokeStyle = COLORS[s] + '99';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  // 현재 엣지 강조
+  if (step > 0 && step <= n) {
+    const s = step - 1;
+    const p = pts[s];
+    const q = pts[(s + 1) % n];
+    const [px, py] = toCanvas(p.x, p.y);
+    const [qx, qy] = toCanvas(q.x, q.y);
+
+    // 원점과 두 점이 이루는 삼각형 면적 표시
+    ctx.beginPath();
+    ctx.moveTo(ox, oy);
+    ctx.lineTo(px, py);
+    ctx.lineTo(qx, qy);
+    ctx.closePath();
+    const contrib = steps[s].contrib;
+    ctx.fillStyle = contrib < 0
+      ? 'rgba(248,81,73,.25)'
+      : contrib > 0 ? 'rgba(63,185,80,.25)' : 'rgba(255,255,255,.05)';
+    ctx.fill();
+
+    ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(qx, qy);
+    ctx.strokeStyle = COLORS[s];
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // 방향 화살표
+    const mx = (px + qx) / 2, my = (py + qy) / 2;
+    const ang = Math.atan2(qy - py, qx - px);
+    ctx.save();
+    ctx.translate(mx, my);
+    ctx.rotate(ang);
+    ctx.beginPath();
+    ctx.moveTo(-8, -5); ctx.lineTo(0, 0); ctx.lineTo(-8, 5);
+    ctx.strokeStyle = COLORS[s];
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // 꼭짓점
+  pts.forEach((p, idx) => {
+    const [cx, cy] = toCanvas(p.x, p.y);
+    ctx.beginPath();
+    ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+    ctx.fillStyle = step > 0 && idx === (step - 1) % n     ? COLORS[(step-1)%n]
+                  : step > 0 && idx === step % n           ? COLORS[(step-1)%n] + 'aa'
+                  : '#30363d';
+    ctx.fill();
+    ctx.strokeStyle = '#e6edf3';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // 레이블
+    const offset = [[-14,-10],[- 14,16],[10,16],[10,-10]][idx];
+    ctx.fillStyle = '#e6edf3';
+    ctx.font = 'bold 12px Segoe UI';
+    ctx.textAlign = 'left';
+    ctx.fillText(`P${idx}(${p.x},${p.y})`, cx + offset[0], cy + offset[1]);
+  });
+
+  // 원점 O 표시
+  ctx.fillStyle = '#8b949e';
+  ctx.font = '11px Segoe UI';
+  ctx.textAlign = 'center';
+  ctx.fillText('O', ox - 14, oy + 14);
+}
+
+// ── UI 빌드 ──────────────────────────────────────────────────
+const tbody  = document.getElementById('tbody');
+const sumRow = document.getElementById('sumRow');
+
+steps.forEach((s, i) => {
+  const tr = document.createElement('tr');
+  tr.id = `row${i}`;
+  const cls = s.contrib < 0 ? 'neg' : s.contrib > 0 ? 'pos' : 'zero';
+  tr.innerHTML = `
+    <td>${i}</td>
+    <td>(${s.p.x},${s.p.y})</td>
+    <td>(${s.q.x},${s.q.y})</td>
+    <td>${s.a}</td>
+    <td>${s.b}</td>
+    <td class="${cls}">${s.contrib > 0 ? '+' : ''}${s.contrib}</td>
+  `;
+  tbody.appendChild(tr);
+
+  const chip = document.createElement('div');
+  chip.className = 'sum-chip';
+  chip.id = `chip${i}`;
+  chip.textContent = `${cumulative[i] >= 0 ? '+' : ''}${cumulative[i]}`;
+  sumRow.appendChild(chip);
+});
+
+// ── 상태 관리 ────────────────────────────────────────────────
+let currentStep = 0;
+
+function render() {
+  drawBase(currentStep);
+  document.getElementById('stepLabel').textContent =
+    `Step ${currentStep} / ${n}`;
+
+  steps.forEach((_, i) => {
+    const row  = document.getElementById(`row${i}`);
+    const chip = document.getElementById(`chip${i}`);
+    if (i < currentStep) {
+      row.className  = 'done';
+      chip.className = 'sum-chip';
+    } else if (i === currentStep) {
+      row.className  = 'active';
+      chip.className = 'sum-chip active';
+    } else {
+      row.className  = '';
+      chip.className = 'sum-chip';
+    }
+  });
+
+  const rc = document.getElementById('resultCard');
+  if (currentStep >= n) {
+    rc.classList.add('show');
+  } else {
+    rc.classList.remove('show');
+  }
+
+  document.getElementById('btnPrev').disabled = currentStep === 0;
+  document.getElementById('btnNext').disabled = currentStep >= n;
+}
+
+document.getElementById('btnNext').addEventListener('click', () => {
+  if (currentStep < n) { currentStep++; render(); }
+});
+document.getElementById('btnPrev').addEventListener('click', () => {
+  if (currentStep > 0) { currentStep--; render(); }
+});
+document.getElementById('btnReset').addEventListener('click', () => {
+  currentStep = 0; render();
+});
+
+render();
+</script>
+</body>
+</html>

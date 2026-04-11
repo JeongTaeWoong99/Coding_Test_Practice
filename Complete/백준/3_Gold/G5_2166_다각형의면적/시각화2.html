@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>BOJ 2166 - 다각형의 면적 시각화 (5각형)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  h1 { text-align: center; font-size: 1.5rem; color: #58a6ff; margin-bottom: 4px; }
+  .subtitle { text-align: center; color: #8b949e; font-size: 0.88rem; margin-bottom: 24px; }
+
+  .layout {
+    display: flex;
+    gap: 24px;
+    max-width: 1160px;
+    margin: 0 auto;
+    align-items: flex-start;
+  }
+
+  /* ── 왼쪽: 캔버스 ── */
+  .left-col {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  canvas {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    display: block;
+  }
+  .step-indicator { text-align: center; font-size: 0.82rem; color: #8b949e; }
+  .controls { display: flex; gap: 10px; justify-content: center; }
+  button {
+    padding: 8px 22px; border-radius: 7px; border: none;
+    cursor: pointer; font-size: 0.9rem; font-weight: 600;
+    transition: opacity .2s, transform .1s;
+  }
+  button:active { transform: scale(.96); }
+  #btnPrev  { background: #21262d; color: #e6edf3; border: 1px solid #30363d; }
+  #btnNext  { background: #238636; color: #fff; }
+  #btnReset { background: #21262d; color: #8b949e; border: 1px solid #30363d; font-size: 0.8rem; }
+  button:disabled { opacity: .35; cursor: default; }
+
+  /* ── 오른쪽: 패널 ── */
+  .right-col {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+  .card h2 {
+    font-size: 0.82rem; color: #8b949e;
+    text-transform: uppercase; letter-spacing: .05em;
+    margin-bottom: 10px;
+  }
+
+  /* 공식 */
+  .formula {
+    font-family: 'Courier New', monospace;
+    font-size: 0.93rem; line-height: 2;
+  }
+  .hl { color: #ffa657; font-weight: bold; }
+  .eq { color: #79c0ff; }
+
+  /* 단계 테이블 */
+  table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+  th {
+    background: #21262d; color: #8b949e;
+    padding: 6px 8px; text-align: center;
+    font-weight: 600; border-bottom: 1px solid #30363d;
+  }
+  td { padding: 7px 8px; text-align: center; border-bottom: 1px solid #21262d; transition: background .25s; }
+  tr.row-active td { background: #1f2c3d; color: #58a6ff; font-weight: 600; }
+  tr.row-done   td { color: #3fb950; }
+  td.neg  { color: #f85149; font-weight: 700; }
+  td.pos  { color: #3fb950; font-weight: 700; }
+  td.zero { color: #8b949e; }
+
+  /* 누적 합 가로 스크롤 */
+  .sum-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-family: 'Courier New', monospace;
+    font-size: 0.88rem;
+  }
+  .sum-chip {
+    padding: 4px 10px; border-radius: 20px;
+    border: 1px solid #30363d; background: #21262d; color: #8b949e;
+    transition: all .3s;
+  }
+  .sum-chip.chip-active { border-color: #ffa657; color: #ffa657; background: #2d1e0a; }
+  .sum-arrow { color: #484f58; }
+
+  /* 기여값 설명 박스 */
+  .contrib-box {
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    min-height: 70px;
+    transition: background .3s, border-color .3s;
+    border: 1px solid #30363d;
+    background: #21262d;
+  }
+  .contrib-box.neg-box  { border-color: #f85149; background: #1a0f0f; }
+  .contrib-box.pos-box  { border-color: #3fb950; background: #0d2818; }
+  .contrib-box.zero-box { border-color: #8b949e; background: #21262d; }
+
+  /* 결과 */
+  .result-card {
+    background: #0d2818;
+    border: 1px solid #3fb950;
+    border-radius: 10px;
+    padding: 14px 18px;
+    text-align: center;
+    opacity: 0; transform: translateY(10px);
+    transition: opacity .5s, transform .5s;
+  }
+  .result-card.show { opacity: 1; transform: translateY(0); }
+  .result-card .r-label { color: #56d364; font-size: 0.85rem; margin-bottom: 6px; }
+  .result-card .r-formula {
+    font-family: 'Courier New', monospace;
+    font-size: 1rem; color: #8b949e;
+    margin-bottom: 8px;
+  }
+  .result-card .r-value { color: #3fb950; font-size: 2rem; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<h1>📐 BOJ 2166 — 다각형의 면적 (5각형 예제)</h1>
+<p class="subtitle">
+  꼭짓점: P₀(1,1) → P₁(7,1) → P₂(9,5) → P₃(5,9) → P₄(1,6)<br>
+  <span style="color:#f85149">음수 기여값</span>과
+  <span style="color:#3fb950">양수 기여값</span>이 섞인 케이스 — 신발끈 공식의 핵심!
+</p>
+
+<div class="layout">
+
+  <!-- 왼쪽 -->
+  <div class="left-col">
+    <canvas id="cv" width="380" height="380"></canvas>
+    <div class="step-indicator" id="stepLabel">Step 0 / 5</div>
+    <div class="controls">
+      <button id="btnPrev">◀ 이전</button>
+      <button id="btnNext">다음 ▶</button>
+      <button id="btnReset">↺ 처음</button>
+    </div>
+  </div>
+
+  <!-- 오른쪽 -->
+  <div class="right-col">
+
+    <!-- 공식 -->
+    <div class="card">
+      <h2>📐 신발끈 공식</h2>
+      <div class="formula">
+        <span class="eq">cross</span> =
+        <span class="hl">Σ</span>
+        ( x<sub>i</sub>·y<sub>i+1</sub> − x<sub>i+1</sub>·y<sub>i</sub> )<br>
+        <span class="eq">넓이</span> = <span class="hl">|cross|</span> / 2.0
+      </div>
+    </div>
+
+    <!-- 현재 단계 계산 상세 -->
+    <div class="card">
+      <h2>🔎 현재 단계 계산</h2>
+      <div class="contrib-box zero-box" id="contribBox">
+        ← 다음 버튼을 눌러 시작하세요
+      </div>
+    </div>
+
+    <!-- 단계 테이블 -->
+    <div class="card">
+      <h2>🔄 전체 단계 요약</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>i</th>
+            <th>Pᵢ</th>
+            <th>Pᵢ₊₁</th>
+            <th>xᵢ·yᵢ₊₁</th>
+            <th>xᵢ₊₁·yᵢ</th>
+            <th>기여값</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- 누적 합 -->
+    <div class="card">
+      <h2>➕ 누적 합 (cross)</h2>
+      <div class="sum-area" id="sumArea"></div>
+    </div>
+
+    <!-- 결과 -->
+    <div class="result-card" id="resultCard">
+      <div class="r-label">모든 단계 완료!</div>
+      <div class="r-formula">|92| / 2.0 = 46.0</div>
+      <div class="r-value">넓이 = 46.0</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── 데이터 ──────────────────────────────────────────────────────────────
+const pts = [
+  {x:1, y:1},
+  {x:7, y:1},
+  {x:9, y:5},
+  {x:5, y:9},
+  {x:1, y:6},
+];
+const n = pts.length;
+
+const steps = pts.map((p, i) => {
+  const q = pts[(i + 1) % n];
+  const a = p.x * q.y;      // xᵢ · yᵢ₊₁
+  const b = q.x * p.y;      // xᵢ₊₁ · yᵢ
+  return { i, p, q, a, b, contrib: a - b };
+});
+
+let running = 0;
+const cumulative = steps.map(s => { running += s.contrib; return running; });
+
+// ── Canvas ───────────────────────────────────────────────────────────────
+const cv  = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const W   = cv.width, H = cv.height;
+const PAD = 52;
+const MAXV = 10;
+const CELL = (W - PAD * 2) / MAXV;
+
+// 5가지 컬러 (꼭짓점·엣지별)
+const COLORS = ['#58a6ff', '#ffa657', '#bc8cff', '#3fb950', '#f85149'];
+
+function toC(x, y) {
+  return [PAD + x * CELL, H - PAD - y * CELL];
+}
+
+function drawFrame(step) {
+  ctx.clearRect(0, 0, W, H);
+
+  // 그리드
+  ctx.lineWidth = 1;
+  for (let g = 0; g <= MAXV; g++) {
+    ctx.strokeStyle = g % 5 === 0 ? '#2a2f38' : '#1c2128';
+    const [x1,y1] = toC(g, 0), [x2,y2] = toC(g, MAXV);
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    const [x3,y3] = toC(0, g), [x4,y4] = toC(MAXV, g);
+    ctx.beginPath(); ctx.moveTo(x3,y3); ctx.lineTo(x4,y4); ctx.stroke();
+  }
+
+  // 축
+  const [ox, oy] = toC(0, 0);
+  ctx.strokeStyle = '#30363d'; ctx.lineWidth = 1.5;
+  const [ex] = toC(MAXV + 0.5, 0), [, ey] = toC(0, MAXV + 0.5);
+  ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(ex,oy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(ox,ey); ctx.stroke();
+
+  // 눈금
+  ctx.fillStyle = '#484f58'; ctx.font = '11px Segoe UI'; ctx.textAlign = 'center';
+  [1,3,5,7,9].forEach(v => {
+    const [cx] = toC(v, 0), [, cy] = toC(0, v);
+    ctx.fillText(v, cx, oy + 16);
+    ctx.fillText(v, ox - 18, cy + 4);
+  });
+
+  // 다각형 채우기
+  ctx.beginPath();
+  pts.forEach((p, idx) => {
+    const [cx,cy] = toC(p.x, p.y);
+    idx === 0 ? ctx.moveTo(cx,cy) : ctx.lineTo(cx,cy);
+  });
+  ctx.closePath();
+  ctx.fillStyle = step >= n ? 'rgba(63,185,80,.15)' : 'rgba(88,166,255,.06)';
+  ctx.fill();
+
+  // 전체 외곽선
+  ctx.beginPath();
+  pts.forEach((p, idx) => {
+    const [cx,cy] = toC(p.x, p.y);
+    idx === 0 ? ctx.moveTo(cx,cy) : ctx.lineTo(cx,cy);
+  });
+  ctx.closePath();
+  ctx.strokeStyle = '#2a3440'; ctx.lineWidth = 1.5; ctx.stroke();
+
+  // 완료된 엣지
+  for (let s = 0; s < Math.min(step, n); s++) {
+    const p = pts[s], q = pts[(s+1)%n];
+    const [px,py] = toC(p.x, p.y), [qx,qy] = toC(q.x, q.y);
+    ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(qx,qy);
+    ctx.strokeStyle = COLORS[s] + '66'; ctx.lineWidth = 2; ctx.stroke();
+  }
+
+  // 현재 엣지 + 삼각형 시각화
+  if (step > 0 && step <= n) {
+    const s = step - 1;
+    const p = pts[s], q = pts[(s+1)%n];
+    const [px,py] = toC(p.x, p.y), [qx,qy] = toC(q.x, q.y);
+    const contrib = steps[s].contrib;
+
+    // 삼각형 (원점 O, Pᵢ, Pᵢ₊₁)
+    ctx.beginPath();
+    ctx.moveTo(ox, oy);
+    ctx.lineTo(px, py);
+    ctx.lineTo(qx, qy);
+    ctx.closePath();
+    ctx.fillStyle = contrib < 0
+      ? 'rgba(248,81,73,.30)'
+      : contrib > 0 ? 'rgba(63,185,80,.28)' : 'rgba(255,255,255,.05)';
+    ctx.fill();
+    ctx.strokeStyle = contrib < 0 ? '#f85149' : contrib > 0 ? '#3fb950' : '#8b949e';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4,3]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 현재 엣지
+    ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(qx,qy);
+    ctx.strokeStyle = COLORS[s]; ctx.lineWidth = 3; ctx.stroke();
+
+    // 방향 화살표 (엣지 중점)
+    const mx = (px+qx)/2, my = (py+qy)/2;
+    const ang = Math.atan2(qy-py, qx-px);
+    ctx.save();
+    ctx.translate(mx, my); ctx.rotate(ang);
+    ctx.beginPath(); ctx.moveTo(-9,-5); ctx.lineTo(0,0); ctx.lineTo(-9,5);
+    ctx.strokeStyle = COLORS[s]; ctx.lineWidth = 2; ctx.stroke();
+    ctx.restore();
+
+    // 기여값 라벨 (삼각형 무게중심)
+    const gcx = (ox + px + qx) / 3;
+    const gcy = (oy + py + qy) / 3;
+    ctx.font = 'bold 12px Courier New';
+    ctx.fillStyle = contrib < 0 ? '#f85149' : '#3fb950';
+    ctx.textAlign = 'center';
+    ctx.fillText((contrib >= 0 ? '+' : '') + contrib, gcx, gcy);
+  }
+
+  // 꼭짓점
+  pts.forEach((p, idx) => {
+    const [cx,cy] = toC(p.x, p.y);
+    const isActive = step > 0 && (idx === step-1 || idx === step%n);
+    ctx.beginPath();
+    ctx.arc(cx, cy, isActive ? 7 : 5, 0, Math.PI*2);
+    ctx.fillStyle = isActive ? COLORS[(step-1)%n] : '#21262d';
+    ctx.fill();
+    ctx.strokeStyle = isActive ? '#fff' : '#484f58';
+    ctx.lineWidth = isActive ? 2 : 1.5;
+    ctx.stroke();
+
+    // 꼭짓점 레이블
+    const offsets = [
+      [-36, -12], // P0 왼쪽 아래
+      [ 10, -12], // P1 오른쪽 위
+      [ 10,   4], // P2 오른쪽
+      [  8,  14], // P3 위
+      [-42,   4], // P4 왼쪽
+    ];
+    ctx.font = isActive ? 'bold 12px Segoe UI' : '11px Segoe UI';
+    ctx.fillStyle = isActive ? COLORS[(step-1)%n] : '#6e7681';
+    ctx.textAlign = 'left';
+    ctx.fillText(`P${idx}(${p.x},${p.y})`, cx + offsets[idx][0], cy + offsets[idx][1]);
+  });
+
+  // 원점 O
+  ctx.fillStyle = '#484f58'; ctx.font = '11px Segoe UI'; ctx.textAlign = 'center';
+  ctx.fillText('O', ox-14, oy+16);
+}
+
+// ── UI 구성 ──────────────────────────────────────────────────────────────
+const tbody  = document.getElementById('tbody');
+const sumArea = document.getElementById('sumArea');
+
+steps.forEach((s, i) => {
+  // 테이블 행
+  const tr = document.createElement('tr');
+  tr.id = `row${i}`;
+  const cls = s.contrib < 0 ? 'neg' : s.contrib > 0 ? 'pos' : 'zero';
+  tr.innerHTML = `
+    <td>${i}</td>
+    <td style="color:${COLORS[i]}">(${s.p.x},${s.p.y})</td>
+    <td style="color:${COLORS[(i+1)%n]}">(${s.q.x},${s.q.y})</td>
+    <td>${s.a}</td>
+    <td>${s.b}</td>
+    <td class="${cls}">${s.contrib > 0 ? '+' : ''}${s.contrib}</td>
+  `;
+  tbody.appendChild(tr);
+
+  // 누적 합 칩
+  if (i > 0) {
+    const arrow = document.createElement('span');
+    arrow.className = 'sum-arrow'; arrow.textContent = '→';
+    sumArea.appendChild(arrow);
+  }
+  const chip = document.createElement('div');
+  chip.className = 'sum-chip'; chip.id = `chip${i}`;
+  chip.textContent = `${cumulative[i] >= 0 ? '+' : ''}${cumulative[i]}`;
+  sumArea.appendChild(chip);
+});
+
+// ── 상태 ────────────────────────────────────────────────────────────────
+let currentStep = 0;
+
+function render() {
+  drawFrame(currentStep);
+  document.getElementById('stepLabel').textContent = `Step ${currentStep} / ${n}`;
+
+  // 테이블 하이라이트
+  steps.forEach((_, i) => {
+    const row  = document.getElementById(`row${i}`);
+    const chip = document.getElementById(`chip${i}`);
+    if (i < currentStep) {
+      row.className  = 'row-done'; chip.className = 'sum-chip';
+    } else if (i === currentStep) {
+      row.className  = 'row-active'; chip.className = 'sum-chip chip-active';
+    } else {
+      row.className  = ''; chip.className = 'sum-chip';
+    }
+  });
+
+  // 현재 단계 계산 상세 박스
+  const box = document.getElementById('contribBox');
+  if (currentStep === 0) {
+    box.className = 'contrib-box zero-box';
+    box.innerHTML = '← 다음 버튼을 눌러 시작하세요';
+  } else if (currentStep <= n) {
+    const s = steps[currentStep - 1];
+    const c = s.contrib;
+    const cls = c < 0 ? 'neg-box' : c > 0 ? 'pos-box' : 'zero-box';
+    const sign = c < 0 ? '🔴 음수 기여' : c > 0 ? '🟢 양수 기여' : '⚪ 기여 없음';
+    box.className = `contrib-box ${cls}`;
+    box.innerHTML = `
+      <span style="color:#8b949e">i = ${s.i}</span>
+      P<sub>${s.i}</sub>(${s.p.x},${s.p.y}) → P<sub>${(s.i+1)%n}</sub>(${s.q.x},${s.q.y})<br>
+      ${s.p.x} × ${s.q.y} − ${s.q.x} × ${s.p.y}<br>
+      = <b>${s.a}</b> − <b>${s.b}</b>
+      = <b style="font-size:1.1em">${c >= 0 ? '+' : ''}${c}</b>
+      <span style="font-size:0.82em">${sign}</span>
+      ${currentStep > 1 ? `<br><span style="color:#8b949e">누적 : ${cumulative[currentStep-2]} ${c>=0?'+':''}${c} = <b style="color:#ffa657">${cumulative[currentStep-1]}</b></span>` : ''}
+    `;
+  }
+
+  // 결과 카드
+  const rc = document.getElementById('resultCard');
+  currentStep >= n ? rc.classList.add('show') : rc.classList.remove('show');
+
+  document.getElementById('btnPrev').disabled = currentStep === 0;
+  document.getElementById('btnNext').disabled = currentStep >= n;
+}
+
+document.getElementById('btnNext').addEventListener('click', () => {
+  if (currentStep < n) { currentStep++; render(); }
+});
+document.getElementById('btnPrev').addEventListener('click', () => {
+  if (currentStep > 0) { currentStep--; render(); }
+});
+document.getElementById('btnReset').addEventListener('click', () => {
+  currentStep = 0; render();
+});
+
+render();
+</script>
+</body>
+</html>

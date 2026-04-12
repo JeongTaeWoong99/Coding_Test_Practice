@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>BOJ 1967 - 트리의 지름 시각화</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 1.6rem;
+    color: #58a6ff;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #8b949e;
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
+  .layout {
+    display: flex;
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .canvas-wrap {
+    flex: 1 1 660px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  svg {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    display: block;
+    width: 100%;
+    max-width: 680px;
+    height: 420px;
+  }
+  .panel {
+    flex: 0 0 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .card-title {
+    font-size: 0.78rem;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+  .phase-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .phase1 { background: #1f3a5f; color: #58a6ff; }
+  .phase2 { background: #3a1f5f; color: #bc8cff; }
+  .done   { background: #1a3a1f; color: #3fb950; }
+  .step-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #e6edf3;
+    min-height: 80px;
+  }
+  .dist-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+  .dist-table th {
+    color: #8b949e;
+    text-align: left;
+    padding: 3px 6px;
+    border-bottom: 1px solid #30363d;
+  }
+  .dist-table td {
+    padding: 3px 6px;
+    color: #e6edf3;
+  }
+  .dist-table tr.highlight td { color: #f78166; font-weight: 700; }
+  .dist-table tr.current  td { color: #58a6ff; }
+  .controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  button {
+    background: #21262d;
+    color: #e6edf3;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  button:hover { background: #30363d; border-color: #58a6ff; }
+  button:disabled { opacity: 0.35; cursor: not-allowed; }
+  button.primary {
+    background: #1f6feb;
+    border-color: #1f6feb;
+    color: #fff;
+  }
+  button.primary:hover { background: #388bfd; }
+  .step-counter {
+    font-size: 0.82rem;
+    color: #8b949e;
+    min-width: 90px;
+    text-align: center;
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.8rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>BOJ 1967 — 트리의 지름</h1>
+<p class="subtitle">DFS 2회로 지름을 구하는 과정을 단계별로 확인하세요</p>
+
+<div class="layout">
+  <!-- SVG 트리 -->
+  <div class="canvas-wrap">
+    <svg id="tree" viewBox="0 0 680 420"></svg>
+    <div class="controls">
+      <button id="btnFirst" onclick="goTo(0)">⏮ 처음</button>
+      <button id="btnPrev"  onclick="prev()">◀ 이전</button>
+      <span  class="step-counter" id="stepCounter">1 / 1</span>
+      <button id="btnNext"  onclick="next()">다음 ▶</button>
+      <button id="btnLast"  onclick="goTo(steps.length-1)">마지막 ⏭</button>
+      <button class="primary" id="btnAuto" onclick="toggleAuto()">▶ 자동</button>
+    </div>
+  </div>
+
+  <!-- 정보 패널 -->
+  <div class="panel">
+    <div class="card">
+      <div class="card-title">현재 단계</div>
+      <div id="phaseBadge" class="phase-badge phase1">Phase 1</div>
+      <div class="step-desc" id="stepDesc">설명이 여기에 표시됩니다.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">누적 거리 (현재 DFS)</div>
+      <table class="dist-table" id="distTable">
+        <thead><tr><th>노드</th><th>거리</th><th>최대?</th></tr></thead>
+        <tbody id="distBody"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">범례</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#8b949e"></div>미방문</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#58a6ff"></div>현재 탐색</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#3fb950"></div>방문 완료</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f78166"></div>가장 먼 노드(A/B)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#d29922"></div>지름 경로</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── 트리 데이터 ───
+const nodes = {
+  1:  { x: 340, y: 50,  label: '1' },
+  2:  { x: 180, y: 140, label: '2' },
+  3:  { x: 500, y: 140, label: '3' },
+  4:  { x: 100, y: 240, label: '4' },
+  5:  { x: 440, y: 240, label: '5' },
+  6:  { x: 580, y: 240, label: '6' },
+  7:  { x: 50,  y: 340, label: '7' },
+  8:  { x: 155, y: 340, label: '8' },
+  9:  { x: 370, y: 340, label: '9' },
+  10: { x: 510, y: 340, label: '10' },
+  11: { x: 545, y: 340, label: '11' },
+  12: { x: 645, y: 340, label: '12' },
+};
+
+const edges = [
+  { u:1, v:2, w:3  },
+  { u:1, v:3, w:2  },
+  { u:2, v:4, w:5  },
+  { u:3, v:5, w:11 },
+  { u:3, v:6, w:9  },
+  { u:4, v:7, w:1  },
+  { u:4, v:8, w:7  },
+  { u:5, v:9, w:15 },
+  { u:5, v:10, w:4 },
+  { u:6, v:11, w:6 },
+  { u:6, v:12, w:10},
+];
+
+// ─── 단계 정의 ───
+// nodeState: 'idle'|'active'|'done'|'far'|'diam'
+// edgeState: 'idle'|'active'|'done'|'diam'
+// distMap: {nodeId: dist} 기록된 것들
+
+const steps = [
+  // ── Phase 1 시작 ──
+  {
+    phase: 1,
+    desc: '🔵 <b>Phase 1 시작</b><br>1번 노드에서 DFS를 시작합니다.<br>가장 먼 노드 A를 찾는 것이 목표입니다.',
+    active: [1], done: [], far: [], diam: [],
+    activeEdges: [], doneEdges: [], diamEdges: [],
+    distMap: { 1: 0 }, maxNode: null,
+  },
+  // 1→2
+  {
+    phase: 1,
+    desc: '➡️ <b>1 → 2</b> 탐색<br>간선 가중치: 3<br>dist[2] = 0 + 3 = <b>3</b>',
+    active: [2], done: [1], far: [], diam: [],
+    activeEdges: [{u:1,v:2}], doneEdges: [], diamEdges: [],
+    distMap: { 1:0, 2:3 }, maxNode: 2,
+  },
+  // 2→4
+  {
+    phase: 1,
+    desc: '➡️ <b>2 → 4</b> 탐색<br>간선 가중치: 5<br>dist[4] = 3 + 5 = <b>8</b>',
+    active: [4], done: [1,2], far: [], diam: [],
+    activeEdges: [{u:2,v:4}], doneEdges: [{u:1,v:2}], diamEdges: [],
+    distMap: { 1:0, 2:3, 4:8 }, maxNode: 4,
+  },
+  // 4→7
+  {
+    phase: 1,
+    desc: '➡️ <b>4 → 7</b> 탐색<br>간선 가중치: 1<br>dist[7] = 8 + 1 = <b>9</b><br>현재 최대 거리 = 9',
+    active: [7], done: [1,2,4], far: [], diam: [],
+    activeEdges: [{u:4,v:7}], doneEdges: [{u:1,v:2},{u:2,v:4}], diamEdges: [],
+    distMap: { 1:0, 2:3, 4:8, 7:9 }, maxNode: 7,
+  },
+  // 4→8
+  {
+    phase: 1,
+    desc: '➡️ <b>4 → 8</b> 탐색<br>간선 가중치: 7<br>dist[8] = 8 + 7 = <b>15</b><br>현재 최대 거리 = 15',
+    active: [8], done: [1,2,4,7], far: [], diam: [],
+    activeEdges: [{u:4,v:8}], doneEdges: [{u:1,v:2},{u:2,v:4},{u:4,v:7}], diamEdges: [],
+    distMap: { 1:0, 2:3, 4:8, 7:9, 8:15 }, maxNode: 8,
+  },
+  // 1→3
+  {
+    phase: 1,
+    desc: '➡️ <b>1 → 3</b> 탐색<br>간선 가중치: 2<br>dist[3] = 0 + 2 = <b>2</b>',
+    active: [3], done: [1,2,4,7,8], far: [], diam: [],
+    activeEdges: [{u:1,v:3}], doneEdges: [{u:1,v:2},{u:2,v:4},{u:4,v:7},{u:4,v:8}], diamEdges: [],
+    distMap: { 1:0, 2:3, 4:8, 7:9, 8:15, 3:2 }, maxNode: 8,
+  },
+  // 3→5
+  {
+    phase: 1,
+    desc: '➡️ <b>3 → 5</b> 탐색<br>간선 가중치: 11<br>dist[5] = 2 + 11 = <b>13</b>',
+    active: [5], done: [1,2,3,4,7,8], far: [], diam: [],
+    activeEdges: [{u:3,v:5}], doneEdges: [{u:1,v:2},{u:2,v:4},{u:4,v:7},{u:4,v:8},{u:1,v:3}], diamEdges: [],
+    distMap: { 1:0, 2:3, 4:8, 7:9, 8:15, 3:2, 5:13 }, maxNode: 8,
+  },
+  // 5→9
+  {
+    phase: 1,
+    desc: '➡️ <b>5 → 9</b> 탐색<br>간선 가중치: 15<br>dist[9] = 13 + 15 = <b>28</b> 🔴<br>최대 거리 갱신! A = 노드 9',
+    active: [9], done: [1,2,3,4,5,7,8], far: [], diam: [],
+    activeEdges: [{u:5,v:9}], doneEdges: [{u:1,v:2},{u:2,v:4},{u:4,v:7},{u:4,v:8},{u:1,v:3},{u:3,v:5}], diamEdges: [],
+    distMap: { 1:0, 2:3, 4:8, 7:9, 8:15, 3:2, 5:13, 9:28 }, maxNode: 9,
+  },
+  // 5→10
+  {
+    phase: 1,
+    desc: '➡️ <b>5 → 10</b> 탐색<br>간선 가중치: 4<br>dist[10] = 13 + 4 = <b>17</b><br>최대 유지 = 28 (노드 9)',
+    active: [10], done: [1,2,3,4,5,7,8,9], far: [], diam: [],
+    activeEdges: [{u:5,v:10}], doneEdges: [{u:1,v:2},{u:2,v:4},{u:4,v:7},{u:4,v:8},{u:1,v:3},{u:3,v:5},{u:5,v:9}], diamEdges: [],
+    distMap: { 1:0, 2:3, 4:8, 7:9, 8:15, 3:2, 5:13, 9:28, 10:17 }, maxNode: 9,
+  },
+  // 3→6
+  {
+    phase: 1,
+    desc: '➡️ <b>3 → 6</b> 탐색<br>간선 가중치: 9<br>dist[6] = 2 + 9 = <b>11</b>',
+    active: [6], done: [1,2,3,4,5,7,8,9,10], far: [], diam: [],
+    activeEdges: [{u:3,v:6}], doneEdges: [{u:1,v:2},{u:2,v:4},{u:4,v:7},{u:4,v:8},{u:1,v:3},{u:3,v:5},{u:5,v:9},{u:5,v:10}], diamEdges: [],
+    distMap: { 1:0, 2:3, 4:8, 7:9, 8:15, 3:2, 5:13, 9:28, 10:17, 6:11 }, maxNode: 9,
+  },
+  // 6→11
+  {
+    phase: 1,
+    desc: '➡️ <b>6 → 11</b> 탐색<br>간선 가중치: 6<br>dist[11] = 11 + 6 = <b>17</b>',
+    active: [11], done: [1,2,3,4,5,6,7,8,9,10], far: [], diam: [],
+    activeEdges: [{u:6,v:11}], doneEdges: [{u:1,v:2},{u:2,v:4},{u:4,v:7},{u:4,v:8},{u:1,v:3},{u:3,v:5},{u:5,v:9},{u:5,v:10},{u:3,v:6}], diamEdges: [],
+    distMap: { 1:0, 2:3, 4:8, 7:9, 8:15, 3:2, 5:13, 9:28, 10:17, 6:11, 11:17 }, maxNode: 9,
+  },
+  // 6→12
+  {
+    phase: 1,
+    desc: '➡️ <b>6 → 12</b> 탐색<br>간선 가중치: 10<br>dist[12] = 11 + 10 = <b>21</b>',
+    active: [12], done: [1,2,3,4,5,6,7,8,9,10,11], far: [], diam: [],
+    activeEdges: [{u:6,v:12}], doneEdges: [{u:1,v:2},{u:2,v:4},{u:4,v:7},{u:4,v:8},{u:1,v:3},{u:3,v:5},{u:5,v:9},{u:5,v:10},{u:3,v:6},{u:6,v:11}], diamEdges: [],
+    distMap: { 1:0, 2:3, 4:8, 7:9, 8:15, 3:2, 5:13, 9:28, 10:17, 6:11, 11:17, 12:21 }, maxNode: 9,
+  },
+  // Phase 1 완료
+  {
+    phase: 1,
+    desc: '✅ <b>Phase 1 완료!</b><br>1번에서 가장 먼 노드: <b>A = 9번</b> (거리 28)<br><br>⚡ 핵심 정리: 임의 노드에서 가장 먼 노드는<br>반드시 지름의 <b>한쪽 끝점</b>이다!<br><br>다음 단계: 9번에서 DFS 시작 →',
+    active: [], done: [1,2,3,4,5,6,7,8,9,10,11,12], far: [9], diam: [],
+    activeEdges: [], doneEdges: [{u:1,v:2},{u:2,v:4},{u:4,v:7},{u:4,v:8},{u:1,v:3},{u:3,v:5},{u:5,v:9},{u:5,v:10},{u:3,v:6},{u:6,v:11},{u:6,v:12}], diamEdges: [],
+    distMap: { 1:0, 2:3, 4:8, 7:9, 8:15, 3:2, 5:13, 9:28, 10:17, 6:11, 11:17, 12:21 }, maxNode: 9,
+  },
+
+  // ── Phase 2 시작 ──
+  {
+    phase: 2,
+    desc: '🟣 <b>Phase 2 시작</b><br>A(9번)에서 DFS를 시작합니다.<br>가장 먼 노드 B까지의 거리 = 트리의 지름!',
+    active: [9], done: [], far: [9], diam: [],
+    activeEdges: [], doneEdges: [], diamEdges: [],
+    distMap: { 9:0 }, maxNode: 9,
+  },
+  // 9→5
+  {
+    phase: 2,
+    desc: '➡️ <b>9 → 5</b> 탐색<br>간선 가중치: 15<br>dist[5] = 0 + 15 = <b>15</b>',
+    active: [5], done: [9], far: [9], diam: [],
+    activeEdges: [{u:5,v:9}], doneEdges: [], diamEdges: [],
+    distMap: { 9:0, 5:15 }, maxNode: 5,
+  },
+  // 5→3
+  {
+    phase: 2,
+    desc: '➡️ <b>5 → 3</b> 탐색<br>간선 가중치: 11<br>dist[3] = 15 + 11 = <b>26</b>',
+    active: [3], done: [9,5], far: [9], diam: [],
+    activeEdges: [{u:3,v:5}], doneEdges: [{u:5,v:9}], diamEdges: [],
+    distMap: { 9:0, 5:15, 3:26 }, maxNode: 3,
+  },
+  // 3→1
+  {
+    phase: 2,
+    desc: '➡️ <b>3 → 1</b> 탐색<br>간선 가중치: 2<br>dist[1] = 26 + 2 = <b>28</b>',
+    active: [1], done: [9,5,3], far: [9], diam: [],
+    activeEdges: [{u:1,v:3}], doneEdges: [{u:5,v:9},{u:3,v:5}], diamEdges: [],
+    distMap: { 9:0, 5:15, 3:26, 1:28 }, maxNode: 1,
+  },
+  // 1→2
+  {
+    phase: 2,
+    desc: '➡️ <b>1 → 2</b> 탐색<br>간선 가중치: 3<br>dist[2] = 28 + 3 = <b>31</b>',
+    active: [2], done: [9,5,3,1], far: [9], diam: [],
+    activeEdges: [{u:1,v:2}], doneEdges: [{u:5,v:9},{u:3,v:5},{u:1,v:3}], diamEdges: [],
+    distMap: { 9:0, 5:15, 3:26, 1:28, 2:31 }, maxNode: 2,
+  },
+  // 2→4
+  {
+    phase: 2,
+    desc: '➡️ <b>2 → 4</b> 탐색<br>간선 가중치: 5<br>dist[4] = 31 + 5 = <b>36</b>',
+    active: [4], done: [9,5,3,1,2], far: [9], diam: [],
+    activeEdges: [{u:2,v:4}], doneEdges: [{u:5,v:9},{u:3,v:5},{u:1,v:3},{u:1,v:2}], diamEdges: [],
+    distMap: { 9:0, 5:15, 3:26, 1:28, 2:31, 4:36 }, maxNode: 4,
+  },
+  // 4→7
+  {
+    phase: 2,
+    desc: '➡️ <b>4 → 7</b> 탐색<br>간선 가중치: 1<br>dist[7] = 36 + 1 = <b>37</b>',
+    active: [7], done: [9,5,3,1,2,4], far: [9], diam: [],
+    activeEdges: [{u:4,v:7}], doneEdges: [{u:5,v:9},{u:3,v:5},{u:1,v:3},{u:1,v:2},{u:2,v:4}], diamEdges: [],
+    distMap: { 9:0, 5:15, 3:26, 1:28, 2:31, 4:36, 7:37 }, maxNode: 7,
+  },
+  // 4→8
+  {
+    phase: 2,
+    desc: '➡️ <b>4 → 8</b> 탐색<br>간선 가중치: 7<br>dist[8] = 36 + 7 = <b>43</b>',
+    active: [8], done: [9,5,3,1,2,4,7], far: [9], diam: [],
+    activeEdges: [{u:4,v:8}], doneEdges: [{u:5,v:9},{u:3,v:5},{u:1,v:3},{u:1,v:2},{u:2,v:4},{u:4,v:7}], diamEdges: [],
+    distMap: { 9:0, 5:15, 3:26, 1:28, 2:31, 4:36, 7:37, 8:43 }, maxNode: 8,
+  },
+  // 5→10
+  {
+    phase: 2,
+    desc: '➡️ <b>5 → 10</b> 탐색<br>간선 가중치: 4<br>dist[10] = 15 + 4 = <b>19</b>',
+    active: [10], done: [9,5,3,1,2,4,7,8], far: [9], diam: [],
+    activeEdges: [{u:5,v:10}], doneEdges: [{u:5,v:9},{u:3,v:5},{u:1,v:3},{u:1,v:2},{u:2,v:4},{u:4,v:7},{u:4,v:8}], diamEdges: [],
+    distMap: { 9:0, 5:15, 3:26, 1:28, 2:31, 4:36, 7:37, 8:43, 10:19 }, maxNode: 8,
+  },
+  // 3→6
+  {
+    phase: 2,
+    desc: '➡️ <b>3 → 6</b> 탐색<br>간선 가중치: 9<br>dist[6] = 26 + 9 = <b>35</b>',
+    active: [6], done: [9,5,3,1,2,4,7,8,10], far: [9], diam: [],
+    activeEdges: [{u:3,v:6}], doneEdges: [{u:5,v:9},{u:3,v:5},{u:1,v:3},{u:1,v:2},{u:2,v:4},{u:4,v:7},{u:4,v:8},{u:5,v:10}], diamEdges: [],
+    distMap: { 9:0, 5:15, 3:26, 1:28, 2:31, 4:36, 7:37, 8:43, 10:19, 6:35 }, maxNode: 8,
+  },
+  // 6→11
+  {
+    phase: 2,
+    desc: '➡️ <b>6 → 11</b> 탐색<br>간선 가중치: 6<br>dist[11] = 35 + 6 = <b>41</b>',
+    active: [11], done: [9,5,3,1,2,4,7,8,10,6], far: [9], diam: [],
+    activeEdges: [{u:6,v:11}], doneEdges: [{u:5,v:9},{u:3,v:5},{u:1,v:3},{u:1,v:2},{u:2,v:4},{u:4,v:7},{u:4,v:8},{u:5,v:10},{u:3,v:6}], diamEdges: [],
+    distMap: { 9:0, 5:15, 3:26, 1:28, 2:31, 4:36, 7:37, 8:43, 10:19, 6:35, 11:41 }, maxNode: 11,
+  },
+  // 6→12 ← 최대!
+  {
+    phase: 2,
+    desc: '➡️ <b>6 → 12</b> 탐색<br>간선 가중치: 10<br>dist[12] = 35 + 10 = <b>45</b> 🔴<br>최대 거리 갱신! B = 노드 12',
+    active: [12], done: [9,5,3,1,2,4,7,8,10,6,11], far: [9], diam: [],
+    activeEdges: [{u:6,v:12}], doneEdges: [{u:5,v:9},{u:3,v:5},{u:1,v:3},{u:1,v:2},{u:2,v:4},{u:4,v:7},{u:4,v:8},{u:5,v:10},{u:3,v:6},{u:6,v:11}], diamEdges: [],
+    distMap: { 9:0, 5:15, 3:26, 1:28, 2:31, 4:36, 7:37, 8:43, 10:19, 6:35, 11:41, 12:45 }, maxNode: 12,
+  },
+  // 최종
+  {
+    phase: 3,
+    desc: '🎉 <b>완료! 트리의 지름 = 45</b><br><br>지름 경로: <b>9 → 5 → 3 → 6 → 12</b><br>거리: 15 + 11 + 9 + 10 = <b>45</b><br><br>✅ DFS 2번만으로 O(N)에 해결!',
+    active: [], done: [1,2,4,7,8,10], far: [9,12], diam: [9,5,3,6,12],
+    activeEdges: [], doneEdges: [{u:1,v:2},{u:2,v:4},{u:4,v:7},{u:4,v:8},{u:5,v:10},{u:6,v:11}],
+    diamEdges: [{u:5,v:9},{u:3,v:5},{u:1,v:3},{u:3,v:6},{u:6,v:12}],
+    distMap: { 9:0, 5:15, 3:26, 1:28, 2:31, 4:36, 7:37, 8:43, 10:19, 6:35, 11:41, 12:45 }, maxNode: 12,
+  },
+];
+
+// ─── 렌더링 ───
+const svg = document.getElementById('tree');
+const NS  = 'http://www.w3.org/2000/svg';
+
+function edgeKey(u, v) { return `${Math.min(u,v)}-${Math.max(u,v)}`; }
+
+function mkEl(tag, attrs) {
+  const el = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  return el;
+}
+
+// 간선 그리기
+const edgeEls = {};
+for (const e of edges) {
+  const n1 = nodes[e.u], n2 = nodes[e.v];
+  const mx = (n1.x + n2.x) / 2, my = (n1.y + n2.y) / 2;
+
+  const line = mkEl('line', {
+    x1: n1.x, y1: n1.y, x2: n2.x, y2: n2.y,
+    stroke: '#30363d', 'stroke-width': 3, 'stroke-linecap': 'round',
+  });
+  svg.appendChild(line);
+
+  const wtBg = mkEl('rect', { x: mx-12, y: my-10, width:24, height:18, rx:4, fill:'#0d1117' });
+  const wt   = mkEl('text', { x: mx, y: my+4, 'text-anchor':'middle', 'font-size':11, fill:'#8b949e' });
+  wt.textContent = e.w;
+  svg.appendChild(wtBg);
+  svg.appendChild(wt);
+
+  edgeEls[edgeKey(e.u, e.v)] = { line, wt, wtBg };
+}
+
+// 노드 그리기
+const nodeEls = {};
+for (const [id, n] of Object.entries(nodes)) {
+  const g    = mkEl('g', {});
+  const circ = mkEl('circle', { cx: n.x, cy: n.y, r: 20, fill:'#21262d', stroke:'#8b949e', 'stroke-width':2 });
+  const txt  = mkEl('text', { x: n.x, y: n.y+5, 'text-anchor':'middle', 'font-size':13, fill:'#e6edf3', 'font-weight':'600' });
+  txt.textContent = n.label;
+
+  const distTxt = mkEl('text', { x: n.x, y: n.y+36, 'text-anchor':'middle', 'font-size':11, fill:'#8b949e' });
+  distTxt.textContent = '';
+
+  g.appendChild(circ);
+  g.appendChild(txt);
+  g.appendChild(distTxt);
+  svg.appendChild(g);
+  nodeEls[id] = { circ, txt, distTxt };
+}
+
+// ─── 상태 업데이트 ───
+let cur = 0, autoTimer = null;
+
+function render(idx) {
+  const s = steps[idx];
+
+  // 간선 색
+  for (const e of edges) {
+    const key  = edgeKey(e.u, e.v);
+    const el   = edgeEls[key];
+    const isDiam   = s.diamEdges.some(de => edgeKey(de.u,de.v) === key);
+    const isActive = s.activeEdges.some(ae => edgeKey(ae.u,ae.v) === key);
+    const isDone   = s.doneEdges.some(de => edgeKey(de.u,de.v) === key);
+    el.line.setAttribute('stroke',
+      isDiam   ? '#d29922' :
+      isActive ? (s.phase === 1 ? '#58a6ff' : '#bc8cff') :
+      isDone   ? '#3fb950' : '#30363d');
+    el.line.setAttribute('stroke-width', isDiam ? 5 : (isActive ? 4 : 3));
+  }
+
+  // 노드 색
+  for (const id of Object.keys(nodes)) {
+    const nid = parseInt(id);
+    const el  = nodeEls[id];
+    const isDiam   = s.diam.includes(nid);
+    const isFar    = s.far.includes(nid);
+    const isActive = s.active.includes(nid);
+    const isDone   = s.done.includes(nid);
+
+    el.circ.setAttribute('fill',
+      isDiam   ? '#3a2e0a' :
+      isFar    ? '#3a1f1a' :
+      isActive ? (s.phase === 1 ? '#1f3a5f' : '#2a1f5f') :
+      isDone   ? '#1a2d1a' : '#21262d');
+    el.circ.setAttribute('stroke',
+      isDiam   ? '#d29922' :
+      isFar    ? '#f78166' :
+      isActive ? (s.phase === 1 ? '#58a6ff' : '#bc8cff') :
+      isDone   ? '#3fb950' : '#8b949e');
+    el.circ.setAttribute('stroke-width', (isDiam || isFar || isActive) ? 3 : 2);
+
+    // 거리 표시
+    const d = s.distMap[nid];
+    el.distTxt.textContent = d !== undefined ? `d=${d}` : '';
+    el.distTxt.setAttribute('fill',
+      isDiam   ? '#d29922' :
+      isFar    ? '#f78166' :
+      isActive ? (s.phase === 1 ? '#58a6ff' : '#bc8cff') : '#8b949e');
+  }
+
+  // 패널
+  document.getElementById('stepDesc').innerHTML = s.desc;
+  const badge = document.getElementById('phaseBadge');
+  if (s.phase === 1) { badge.className = 'phase-badge phase1'; badge.textContent = 'Phase 1 — 1번에서 A 탐색'; }
+  else if (s.phase === 2) { badge.className = 'phase-badge phase2'; badge.textContent = 'Phase 2 — A에서 B 탐색'; }
+  else { badge.className = 'phase-badge done'; badge.textContent = '완료 — 지름 발견!'; }
+
+  // 거리 테이블
+  const tbody = document.getElementById('distBody');
+  tbody.innerHTML = '';
+  const sorted = Object.entries(s.distMap).sort((a,b) => parseInt(a[0])-parseInt(b[0]));
+  for (const [nid, d] of sorted) {
+    const tr = document.createElement('tr');
+    const isMax = s.maxNode == nid;
+    const isCur = s.active.includes(parseInt(nid));
+    if (isMax) tr.className = 'highlight';
+    else if (isCur) tr.className = 'current';
+    tr.innerHTML = `<td>노드 ${nid}</td><td>${d}</td><td>${isMax ? '🔴 최대' : ''}</td>`;
+    tbody.appendChild(tr);
+  }
+
+  // 버튼
+  document.getElementById('btnFirst').disabled = idx === 0;
+  document.getElementById('btnPrev').disabled  = idx === 0;
+  document.getElementById('btnNext').disabled  = idx === steps.length - 1;
+  document.getElementById('btnLast').disabled  = idx === steps.length - 1;
+  document.getElementById('stepCounter').textContent = `${idx+1} / ${steps.length}`;
+}
+
+function goTo(idx) { cur = idx; render(cur); }
+function next() { if (cur < steps.length-1) { cur++; render(cur); } }
+function prev() { if (cur > 0) { cur--; render(cur); } }
+
+function toggleAuto() {
+  const btn = document.getElementById('btnAuto');
+  if (autoTimer) {
+    clearInterval(autoTimer);
+    autoTimer = null;
+    btn.textContent = '▶ 자동';
+    btn.classList.remove('primary');
+  } else {
+    btn.textContent = '⏸ 정지';
+    btn.classList.add('primary');
+    autoTimer = setInterval(() => {
+      if (cur >= steps.length - 1) {
+        clearInterval(autoTimer); autoTimer = null;
+        btn.textContent = '▶ 자동';
+        btn.classList.remove('primary');
+      } else { next(); }
+    }, 900);
+  }
+}
+
+render(0);
+</script>
+</body>
+</html>

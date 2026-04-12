@@ -1,0 +1,64 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n;       // 노드 수
+int maxDist; // DFS 탐색 중 최대 거리
+int farNode; // 가장 먼 노드 번호
+
+vector<pair<int, int>> graph[10001]; // graph[u] = {가중치, 목적지}
+
+// curNode 노드 DFS 탐색, 가장 먼 노드와 거리 갱신
+// curNode  : 현재 노드
+// parNode  : 부모 노드 (역방향 방문 방지)
+// cumDist : 누적 거리
+void DFS(int curNode, int parNode, int cumDist)
+{
+    // max보다 큰지 확인
+    if (cumDist > maxDist)
+    {
+        maxDist = cumDist;  // 값 변경
+        farNode = curNode;  // 가장 먼 노드 기록
+    }
+
+    for (pair<int, int> edge : graph[curNode])
+    {
+        int nextNode = edge.second; // 다음 노드
+        int weight   = edge.first;  // 간선 가중치
+
+        // 부모 역방향 방지
+        if (nextNode != parNode)
+        {
+            DFS(nextNode, curNode, cumDist + weight);
+        }
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    for (int i = 0; i < n - 1; i++)
+    {
+        int a, b, w;
+        cin >> a >> b >> w;
+
+        // 양방향 간선
+        graph[a].emplace_back(w, b);
+        graph[b].emplace_back(w, a);
+    }
+
+    // 1번 노드에서 가장 먼 노드 A 탐색
+    maxDist = 0;
+    DFS(1, 0, 0);
+
+    // A에서 가장 먼 노드까지의 거리 = 트리의 지름
+    maxDist = 0;
+    DFS(farNode, 0, 0);
+
+    // 결과 출력
+    cout << maxDist;
+
+    return 0;
+}

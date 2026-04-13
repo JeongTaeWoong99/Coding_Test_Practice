@@ -1,0 +1,37 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+string s1, s2;          // 두 입력 문자열
+int    dp[1001][1001];  // dp[i][j] = s1의 앞 i글자, s2의 앞 j글자의 LCS 길이
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> s1 >> s2;
+
+    int len1 = (int)s1.size(); // s1 길이
+    int len2 = (int)s2.size(); // s2 길이
+
+    // dp 채우기 (1-indexed)
+    for (int i = 1; i <= len1; ++i)
+    {
+        for (int j = 1; j <= len2; ++j)
+        {
+            // 글자가 같으면 → 대각선 값 + 1
+            if (s1[i - 1] == s2[j - 1])
+            {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            }
+            // 글자가 다르면 → 위/왼쪽 중 더 큰 값
+            else
+            {
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+
+    cout << dp[len1][len2] << "\n";
+
+    return 0;
+}

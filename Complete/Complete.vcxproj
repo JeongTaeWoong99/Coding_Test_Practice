@@ -371,6 +371,8 @@
     <None Include="백준\3_Gold\G4_7662_이중우선순위큐\Answer(다른_최적화).cpp.txt" />
     <None Include="백준\3_Gold\G4_7662_이중우선순위큐\Answer(성공).cpp.txt" />
     <None Include="백준\3_Gold\G4_9019_DSLR\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G4_9251_LCS\Answer(정답).cpp.txt" />
+    <None Include="백준\3_Gold\G4_9251_LCS\시각화.html" />
     <None Include="백준\3_Gold\G4_9935_문자열폭발\Answer(정답_erase).cpp.txt" />
     <None Include="백준\3_Gold\G4_17298_오큰수\Answer.cpp.txt" />
     <None Include="백준\3_Gold\G4_17404_RGB거리2\Answer(성공_최적화).cpp.txt" />
@@ -603,6 +605,7 @@
     <None Include="백준\3_Gold\G4_5639_이진검색트리\README.md" />
     <None Include="백준\3_Gold\G4_7662_이중우선순위큐\README.md" />
     <None Include="백준\3_Gold\G4_9019_DSLR\README.md" />
+    <None Include="백준\3_Gold\G4_9251_LCS\README.md" />
     <None Include="백준\3_Gold\G4_9935_문자열폭발\README.md" />
     <None Include="백준\3_Gold\G5_10026_적록색약\README.md" />
     <None Include="백준\3_Gold\G5_1068_트리\README.md" />

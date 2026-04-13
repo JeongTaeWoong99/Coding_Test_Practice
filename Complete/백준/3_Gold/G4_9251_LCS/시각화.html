@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>BOJ 9251 LCS - DP 테이블 시각화</title>
+<style>
+:root {
+  --bg:#0d1117; --panel:#161b22; --border:#30363d;
+  --accent:#58a6ff; --green:#3fb950; --red:#f85149;
+  --yellow:#d29922; --orange:#e3b341; --purple:#bc8cff;
+  --text:#c9d1d9; --muted:#8b949e; --dim:#21262d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Consolas','D2Coding',monospace;font-size:13px;padding:16px}
+
+.hdr{text-align:center;margin-bottom:16px}
+.hdr h1{color:var(--accent);font-size:1.4rem;letter-spacing:1px}
+.hdr p{color:var(--muted);font-size:.8rem;margin-top:4px}
+
+.ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;
+      padding:10px 14px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
+.ctrl label{color:var(--muted);font-size:.8rem}
+.ctrl input[type=text]{background:var(--dim);border:1px solid var(--border);color:var(--text);
+  padding:4px 8px;border-radius:5px;font-family:inherit;font-size:.9rem;width:110px;letter-spacing:2px}
+.btn{padding:5px 14px;border-radius:5px;border:none;cursor:pointer;font-family:inherit;
+     font-size:.82rem;transition:opacity .15s}
+.btn-primary{background:var(--accent);color:#0d1117;font-weight:bold}
+.btn-secondary{background:var(--dim);border:1px solid var(--border);color:var(--text)}
+.btn:hover{opacity:.8}
+.btn:disabled{opacity:.35;cursor:default}
+
+.preset-btns{display:flex;gap:6px}
+.preset-btn{padding:3px 10px;border-radius:12px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);font-family:inherit;font-size:.75rem;cursor:pointer;transition:all .15s}
+.preset-btn:hover{border-color:var(--accent);color:var(--text)}
+.preset-btn.on{background:var(--accent);border-color:var(--accent);color:#0d1117;font-weight:bold}
+
+.speed-wrap{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.75rem;margin-left:auto}
+input[type=range]{width:80px;accent-color:var(--accent)}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;margin-bottom:14px}
+@media(max-width:860px){.layout{grid-template-columns:1fr}}
+
+/* DP Table */
+.table-wrap{overflow:auto}
+.dp-table{border-collapse:collapse}
+.dp-table th,.dp-table td{
+  width:40px;height:40px;text-align:center;vertical-align:middle;
+  border:1px solid var(--border);font-size:.85rem;transition:background .15s,color .15s,border-color .15s}
+.dp-table th{background:var(--dim);color:var(--muted);font-weight:normal}
+.dp-table th.char-lbl{color:var(--accent);font-weight:bold;font-size:.95rem}
+.dp-table td{background:var(--panel);color:var(--text)}
+.dp-table td.zero{color:var(--muted)}
+.dp-table td.filled{color:var(--text)}
+.dp-table td.pending{color:transparent}
+
+/* Highlight states */
+.dp-table td.hl-match    {background:#0d3a1a;color:var(--green);font-weight:bold;border-color:var(--green)!important}
+.dp-table td.hl-diag     {background:#0d1f3a;color:#79c0ff;border-color:#58a6ff!important}
+.dp-table td.hl-nomatch  {background:#3a2000;color:var(--orange);font-weight:bold;border-color:var(--orange)!important}
+.dp-table td.hl-cand     {background:#2a1040;color:#d2a8ff;border-color:var(--purple)!important}
+.dp-table td.hl-win      {background:#0d3a1a;color:var(--green);border-color:var(--green)!important}
+
+/* Explain panel */
+.explain-panel{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px;min-width:280px}
+.ep-title{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;
+          margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.ep-body{font-size:.85rem;line-height:1.75}
+.rule-box{margin:10px 0;padding:10px 12px;border-radius:6px;border-left:3px solid}
+.rule-match  {border-color:var(--green);background:#0d3a1a33}
+.rule-nomatch{border-color:var(--orange);background:#3a200033}
+.formula{font-size:.88rem;padding:8px 12px;background:var(--dim);border-radius:4px;margin:8px 0;text-align:center}
+.why-box{color:var(--muted);font-size:.8rem;margin-top:6px;padding:8px 10px;
+         background:var(--dim);border-radius:4px;line-height:1.7}
+.c-green{color:var(--green)} .c-blue{color:#79c0ff} .c-orange{color:var(--orange)}
+.c-purple{color:#d2a8ff}    .c-yellow{color:var(--yellow);font-weight:bold}
+.c-muted{color:var(--muted)}
+
+.step-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.step-cnt{font-size:.75rem;color:var(--muted)}
+.step-val{font-size:1.05rem;color:var(--green);font-weight:bold}
+
+.done-box{margin-top:12px;padding:10px;background:#0d3a1a55;
+          border:1px solid var(--green);border-radius:6px;text-align:center}
+
+/* Legend */
+.legend{display:flex;gap:14px;flex-wrap:wrap;padding:10px 14px;
+        background:var(--panel);border:1px solid var(--border);border-radius:8px}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted)}
+.leg-dot{width:13px;height:13px;border-radius:2px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>BOJ 9251 · LCS DP 테이블 시각화</h1>
+  <p>왜 글자가 <span style="color:var(--green)">같으면 대각선+1</span>이고, <span style="color:var(--orange)">다르면 위/왼쪽 max</span>인지 단계별로 확인</p>
+</div>
+
+<div class="ctrl">
+  <label>S1</label>
+  <input type="text" id="inS1" value="ACAYKP" maxlength="12">
+  <label>S2</label>
+  <input type="text" id="inS2" value="CAPCAK" maxlength="12">
+  <button class="btn btn-primary" onclick="init()">▶ 설정</button>
+
+  <div class="preset-btns">
+    <button class="preset-btn on" onclick="setPreset(0,this)">예제1</button>
+    <button class="preset-btn"   onclick="setPreset(1,this)">예제2</button>
+    <button class="preset-btn"   onclick="setPreset(2,this)">예제3</button>
+  </div>
+
+  <button class="btn btn-secondary" id="btnPrev" onclick="stepBack()"    disabled>◀ 이전</button>
+  <button class="btn btn-secondary" id="btnPlay" onclick="togglePlay()"          >▶ 재생</button>
+  <button class="btn btn-secondary" id="btnNext" onclick="stepForward()" disabled>다음 ▶</button>
+  <button class="btn btn-secondary"              onclick="reset()"               >↺ 처음</button>
+
+  <div class="speed-wrap">
+    <span>속도</span>
+    <input type="range" id="spdRange" min="1" max="5" value="3">
+    <span id="spdLabel">보통</span>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="table-wrap">
+    <table class="dp-table" id="dpTable"></table>
+  </div>
+  <div class="explain-panel">
+    <div class="ep-title">📖 점화식 설명</div>
+    <div class="ep-body" id="epBody"></div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="leg-item">
+    <div class="leg-dot" style="background:#0d3a1a;border:1px solid var(--green)"></div>현재 셀 (일치)
+  </div>
+  <div class="leg-item">
+    <div class="leg-dot" style="background:#0d1f3a;border:1px solid #58a6ff"></div>대각선 ↖ dp[i-1][j-1]
+  </div>
+  <div class="leg-item">
+    <div class="leg-dot" style="background:#3a2000;border:1px solid var(--orange)"></div>현재 셀 (불일치)
+  </div>
+  <div class="leg-item">
+    <div class="leg-dot" style="background:#2a1040;border:1px solid var(--purple)"></div>위↑ / 왼쪽← 후보
+  </div>
+  <div class="leg-item">
+    <div class="leg-dot" style="background:#0d3a1a;border:1px solid var(--green)"></div>선택된 최대값
+  </div>
+</div>
+
+<script>
+const PRESETS = [
+  ['ACAYKP','CAPCAK'],
+  ['ABCDE', 'ACE'],
+  ['ABCB',  'BCAB'],
+];
+const SPEEDS       = [900, 500, 270, 130, 50];
+const SPEED_LABELS = ['매우 느림','느림','보통','빠름','매우 빠름'];
+
+let s1='', s2='', dp=[], steps=[], filledTo=-1, playing=false, timer=null;
+
+/* ── 프리셋 ── */
+function setPreset(idx, btn) {
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('inS1').value = PRESETS[idx][0];
+  document.getElementById('inS2').value = PRESETS[idx][1];
+  init();
+}
+
+/* ── 속도 슬라이더 ── */
+document.getElementById('spdRange').addEventListener('input', function() {
+  document.getElementById('spdLabel').textContent = SPEED_LABELS[this.value - 1];
+  if (playing) { clearInterval(timer); startPlay(); }
+});
+function getSpeed() { return SPEEDS[document.getElementById('spdRange').value - 1]; }
+
+/* ── 초기화 ── */
+function init() {
+  if (playing) { clearInterval(timer); playing = false; }
+  s1 = document.getElementById('inS1').value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,12);
+  s2 = document.getElementById('inS2').value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,12);
+  if (!s1 || !s2) return;
+
+  const n = s1.length, m = s2.length;
+  dp = Array.from({length:n+1}, () => Array(m+1).fill(0));
+  steps = [];
+
+  for (let i = 1; i <= n; i++) {
+    for (let j = 1; j <= m; j++) {
+      const match = s1[i-1] === s2[j-1];
+      const diag  = dp[i-1][j-1];
+      const up    = dp[i-1][j];
+      const left  = dp[i][j-1];
+      dp[i][j] = match ? diag + 1 : Math.max(up, left);
+      steps.push({i, j, match, val:dp[i][j], diag, up, left});
+    }
+  }
+
+  filledTo = -1;
+  renderTable();
+  renderExplain(null);
+  document.getElementById('btnNext').disabled = false;
+  document.getElementById('btnPrev').disabled = true;
+  document.getElementById('btnPlay').textContent = '▶ 재생';
+}
+
+/* ── 테이블 렌더 ── */
+function renderTable() {
+  const n = s1.length, m = s2.length;
+  let html = '';
+
+  // 헤더 행
+  html += '<tr><th></th><th style="color:var(--muted);font-size:.7rem">←s2</th>';
+  for (let j = 0; j < m; j++)
+    html += `<th class="char-lbl">${s2[j]}</th>`;
+  html += '</tr>';
+
+  // 데이터 행
+  for (let i = 0; i <= n; i++) {
+    html += '<tr>';
+    html += (i === 0)
+      ? '<th style="color:var(--muted);font-size:.7rem;writing-mode:vertical-rl">s1↓</th>'
+      : `<th class="char-lbl">${s1[i-1]}</th>`;
+
+    for (let j = 0; j <= m; j++) {
+      if (i === 0 || j === 0) {
+        html += `<td class="zero" id="c${i}_${j}">0</td>`;
+      } else {
+        const sIdx = (i-1)*m + (j-1);
+        const cls  = sIdx < filledTo  ? 'filled'
+                   : sIdx === filledTo ? 'filled'
+                   : 'pending';
+        const val  = sIdx <= filledTo ? dp[i][j] : '';
+        html += `<td class="${cls}" id="c${i}_${j}">${val}</td>`;
+      }
+    }
+    html += '</tr>';
+  }
+  document.getElementById('dpTable').innerHTML = html;
+
+  if (filledTo >= 0) applyHL(steps[filledTo]);
+}
+
+/* ── 하이라이트 ── */
+function applyHL(step) {
+  document.querySelectorAll('.dp-table td').forEach(td =>
+    td.classList.remove('hl-match','hl-diag','hl-nomatch','hl-cand','hl-win'));
+
+  const {i, j, match, up, left} = step;
+  if (match) {
+    cell(i,   j  ).classList.add('hl-match');
+    cell(i-1, j-1).classList.add('hl-diag');
+  } else {
+    cell(i, j).classList.add('hl-nomatch');
+    if (up >= left) {
+      cell(i-1, j  ).classList.add('hl-win');
+      cell(i,   j-1).classList.add('hl-cand');
+    } else {
+      cell(i-1, j  ).classList.add('hl-cand');
+      cell(i,   j-1).classList.add('hl-win');
+    }
+  }
+}
+function cell(i, j) { return document.getElementById(`c${i}_${j}`); }
+
+/* ── 설명 렌더 ── */
+function renderExplain(step) {
+  const body = document.getElementById('epBody');
+  if (!step) {
+    body.innerHTML = `
+      <p class="c-muted">▶ 재생 또는 '다음'을 눌러 시작하세요.</p>
+      <div class="rule-box rule-match" style="margin-top:12px">
+        <b class="c-green">✅ 같을 때 → 대각선 + 1</b><br>
+        <span class="c-muted" style="font-size:.8rem">이 글자를 LCS에 추가 가능<br>
+        "두 글자 제외 상태" = 대각선(↖)</span>
+      </div>
+      <div class="rule-box rule-nomatch" style="margin-top:8px">
+        <b class="c-orange">❌ 다를 때 → max(위, 왼쪽)</b><br>
+        <span class="c-muted" style="font-size:.8rem">둘 중 하나를 포기해야 함<br>
+        더 긴 LCS를 만드는 쪽 선택</span>
+      </div>`;
+    return;
+  }
+
+  const {i, j, match, val, diag, up, left} = step;
+  const total = steps.length;
+  const cur   = filledTo + 1;
+
+  if (match) {
+    body.innerHTML = `
+      <div class="step-hdr">
+        <span class="step-cnt">STEP ${cur} / ${total}</span>
+        <span class="step-val">dp[${i}][${j}] = ${val}</span>
+      </div>
+      <div class="rule-box rule-match">
+        <b class="c-green">✅ 글자 일치!</b><br>
+        s1[${i}] = '<b class="c-green">${s1[i-1]}</b>'
+        &nbsp;==&nbsp;
+        s2[${j}] = '<b class="c-green">${s2[j-1]}</b>'<br>
+        <span class="c-muted" style="font-size:.8rem;display:block;margin-top:4px">→ 이 글자를 LCS에 추가할 수 있어요!</span>
+      </div>
+      <div class="formula">
+        dp[${i}][${j}]
+        &nbsp;=&nbsp; <span class="c-blue">dp[${i-1}][${j-1}]</span> + 1
+        &nbsp;=&nbsp; <span class="c-blue">${diag}</span> + 1
+        &nbsp;=&nbsp; <span class="c-yellow">${val}</span>
+      </div>
+      <div class="why-box">
+        <b>💡 왜 대각선(↖)인가?</b><br><br>
+        '<span class="c-green">${s1[i-1]}</span>'를 LCS에 쓰려면,<br>
+        이 글자를 <b>제외한 상태</b>가 필요해요:<br><br>
+        &nbsp;&nbsp;s1의 앞 <b>${i-1}</b>글자 ↔ s2의 앞 <b>${j-1}</b>글자<br>
+        &nbsp;&nbsp;= <span class="c-blue">dp[${i-1}][${j-1}] = ${diag}</span><br><br>
+        그게 바로 ↖ 대각선 위치!
+      </div>`;
+  } else {
+    const upWins = up >= left;
+    body.innerHTML = `
+      <div class="step-hdr">
+        <span class="step-cnt">STEP ${cur} / ${total}</span>
+        <span class="step-val">dp[${i}][${j}] = ${val}</span>
+      </div>
+      <div class="rule-box rule-nomatch">
+        <b class="c-orange">❌ 글자 불일치</b><br>
+        s1[${i}] = '<b class="c-orange">${s1[i-1]}</b>'
+        &nbsp;!=&nbsp;
+        s2[${j}] = '<b class="c-orange">${s2[j-1]}</b>'<br>
+        <span class="c-muted" style="font-size:.8rem;display:block;margin-top:4px">→ 둘 중 하나를 포기해야 해요.</span>
+      </div>
+      <div class="formula">
+        dp[${i}][${j}]
+        &nbsp;=&nbsp; max(<span class="${upWins?'c-green c-yellow':'c-purple'}">${up}</span>,
+                         <span class="${!upWins?'c-green c-yellow':'c-purple'}">${left}</span>)
+        &nbsp;=&nbsp; <span class="c-yellow">${val}</span>
+      </div>
+      <div class="why-box">
+        <b>💡 왜 위/왼쪽인가?</b><br><br>
+        ↑ <b>위</b> = '<span class="c-orange">${s1[i-1]}</span>'를 포기
+        &nbsp;→ dp[${i-1}][${j}] = <span class="${upWins?'c-yellow':'c-purple'}">${up}</span><br>
+        ← <b>왼쪽</b> = '<span class="c-orange">${s2[j-1]}</span>'를 포기
+        &nbsp;→ dp[${i}][${j-1}] = <span class="${!upWins?'c-yellow':'c-purple'}">${left}</span><br><br>
+        둘 중 더 큰 쪽 = <span class="c-yellow">${val}</span>
+        &nbsp;(<span class="c-yellow">${upWins?'위↑':'왼쪽←'}</span> 선택)
+      </div>`;
+  }
+}
+
+/* ── 스텝 제어 ── */
+function stepForward() {
+  if (filledTo + 1 >= steps.length) return;
+  filledTo++;
+  const s = steps[filledTo];
+  const c = cell(s.i, s.j);
+  if (c) { c.textContent = s.val; c.className = 'filled'; }
+  applyHL(s);
+  renderExplain(s);
+  document.getElementById('btnPrev').disabled = false;
+  if (filledTo + 1 >= steps.length) {
+    clearInterval(timer); playing = false;
+    document.getElementById('btnPlay').textContent = '▶ 재생';
+    document.getElementById('btnNext').disabled = true;
+    // 완료 박스
+    document.getElementById('epBody').innerHTML +=
+      `<div class="done-box">
+        🎉 <b class="c-green">완료!</b><br>
+        LCS 길이 = <span class="c-yellow" style="font-size:1.2rem">${dp[s1.length][s2.length]}</span>
+      </div>`;
+  }
+}
+
+function stepBack() {
+  if (filledTo < 0) return;
+  filledTo--;
+  renderTable();
+  renderExplain(filledTo >= 0 ? steps[filledTo] : null);
+  document.getElementById('btnNext').disabled = false;
+  document.getElementById('btnPrev').disabled = filledTo < 0;
+}
+
+function reset() {
+  if (playing) { clearInterval(timer); playing = false; }
+  filledTo = -1;
+  renderTable();
+  renderExplain(null);
+  document.getElementById('btnNext').disabled = false;
+  document.getElementById('btnPrev').disabled = true;
+  document.getElementById('btnPlay').textContent = '▶ 재생';
+}
+
+function togglePlay() {
+  if (playing) {
+    clearInterval(timer); playing = false;
+    document.getElementById('btnPlay').textContent = '▶ 재생';
+  } else {
+    if (filledTo + 1 >= steps.length) { filledTo = -1; renderTable(); renderExplain(null); }
+    playing = true;
+    document.getElementById('btnPlay').textContent = '⏸ 일시정지';
+    startPlay();
+  }
+}
+function startPlay() {
+  timer = setInterval(() => {
+    if (filledTo + 1 >= steps.length) { clearInterval(timer); playing = false; document.getElementById('btnPlay').textContent = '▶ 재생'; }
+    else stepForward();
+  }, getSpeed());
+}
+
+window.onload = () => init();
+</script>
+</body>
+</html>

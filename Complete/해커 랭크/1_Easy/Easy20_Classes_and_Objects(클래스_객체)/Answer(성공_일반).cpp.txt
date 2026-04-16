@@ -1,0 +1,59 @@
+﻿  #include <bits/stdc++.h>
+  using namespace std;                                                                                             
+                                                                                                                 
+  int n;              // 학생 수
+  int higherCnt;      // Kristen보다 높은 학생 수
+  int scores[1001][5]; // scores[i][j] = i번 학생의 j번 시험 점수
+
+  // i번 학생의 시험 점수 5개 입력
+  void Input(int i)
+  {
+      for (int j = 0; j < 5; j++)
+      {
+          cin >> scores[i][j];
+      }
+  }
+
+  // i번 학생의 시험 점수 5개 합산 반환
+  int CalculateTotalScore(int i)
+  {
+      int total = 0;
+
+      for (int j = 0; j < 5; j++)
+      {
+          total += scores[i][j];
+      }
+
+      return total;
+  }
+
+  int main()
+  {
+      ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+      cin >> n;
+
+      // 모든 학생 점수 입력
+      for (int i = 0; i < n; i++)
+      {
+          Input(i);
+      }
+
+      // 첫 번째 학생이 Kristen (카린 점수 합 구하기)
+      int kristenScore = CalculateTotalScore(0);
+
+      // Kristen을 제외한 나머지 학생과 비교
+      for (int i = 1; i < n; i++)
+      {
+          // 카린의 점수 합 보다 크다면, 카운트
+          if (CalculateTotalScore(i) > kristenScore)
+          {
+              higherCnt++;
+          }
+      }
+
+      // 출력
+      cout << higherCnt << "\n";
+
+      return 0;
+  }

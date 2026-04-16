@@ -291,6 +291,90 @@ for (int i = 0; i < n; ++i)
     cin >> arr[i]; // 중괄호 생략 금지
 ```
 
+## 🏗️ 클래스 스타일
+
+문제에서 클래스가 명시적으로 요구될 때만 사용. 그 외에는 전역 변수 + 전역 함수로 구현.
+
+```cpp
+// ✅ 올바른 클래스 스타일
+class Student
+{
+    public:                     // public: 은 4칸 들여쓰기
+        int scores[5] = {};     // 멤버 변수는 public: 아래 8칸 들여쓰기, = {}로 0 초기화
+
+    // 멤버 함수 위 동작 설명 주석
+    void Input()                // 멤버 함수는 4칸 들여쓰기 (public: 와 같은 수준)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            cin >> scores[i];
+        }
+    }
+
+    // 멤버 함수명도 PascalCase
+    int CalculateTotalScore()
+    {
+        int total = 0;
+
+        for (int i = 0; i < 5; i++)
+        {
+            total += scores[i];
+        }
+
+        return total;
+    }
+};
+
+// ❌ 잘못된 클래스 스타일
+class Student
+{
+private:              // private: 지양 — CP에서 불필요한 캡슐화
+    int scores[5];    // 초기화 없음 → 경고 발생
+
+public:               // public: 들여쓰기 없음 — 잘못된 형식
+    void input() { }  // camelCase 함수명 금지
+};
+```
+
+**클래스 규칙 :**
+- `public:` 레이블은 클래스 본문에서 **4칸 들여쓰기**
+- `public:` 아래 멤버 변수는 **8칸 들여쓰기** (추가 4칸)
+- 멤버 함수는 **4칸 들여쓰기** (public: 와 같은 수준)
+- `private:` 지양 — CP에서 불필요한 캡슐화, `public:` 만 사용
+- 멤버 변수는 **`= {}`** 로 0 초기화 (미초기화 경고 방지)
+- 멤버 함수명도 **PascalCase** (`input` ❌ → `Input` ✅)
+- 동적 할당(`new`/`delete`) 대신 **`vector<ClassName>`** 사용
+
+---
+
+## 📝 복잡한 줄 주석 위치
+
+단순 값 설명은 인라인, 긴 설명 또는 메서드 호출 결과 설명은 위 줄에 단독으로 작성.
+
+```cpp
+// ✅ 메서드 호출 결과 — 위 줄에 단독 주석
+// 첫 번째 학생이 Kristen (카린 점수 합 구하기)
+int kristenScore = students[0].CalculateTotalScore();
+
+// ✅ 조건문 의미 — if 위 줄에 단독 주석
+// 카린의 점수 합 보다 크다면, 카운트
+if (students[i].CalculateTotalScore() > kristenScore)
+{
+    higherCnt++;
+}
+
+// ✅ 단순 변수 — 인라인 주석으로 충분
+vector<Student> students(n); // n명의 학생
+int scores[5] = {};          // 시험 점수 5개 (0으로 초기화)
+```
+
+**적용 기준 :**
+- 단순 선언/값 : 인라인 `// 짧은 설명`
+- 메서드 호출 결과 / 긴 설명 : 위 줄에 `// 설명` 단독 작성
+- 조건문 의미 설명 : if/for 위 줄에 `// 설명` 단독 작성
+
+---
+
 ## ⚡ main 함수 구조
 
 ```cpp
@@ -346,3 +430,11 @@ int main()
 - [ ] 입력 변수 선언/cin 과 이후 메서드 호출 사이에 빈 줄이 있는가?
 - [ ] 중요 상태 변경 뒤 빈 줄이 있는가?
 - [ ] return 0 직전에 빈 줄이 있는가?
+- [ ] 클래스 사용 시 `public:` 이 4칸 들여쓰기 되어 있는가?
+- [ ] 클래스 멤버 변수가 `public:` 아래 8칸 들여쓰기 되어 있는가?
+- [ ] 클래스 멤버 함수가 4칸 들여쓰기 (public: 와 같은 수준) 되어 있는가?
+- [ ] `private:` 을 사용하지 않았는가? (CP에서 불필요)
+- [ ] 멤버 변수가 `= {}` 로 0 초기화 되어 있는가?
+- [ ] 멤버 함수명도 PascalCase 인가? (`input` ❌ → `Input` ✅)
+- [ ] 동적 할당(`new`/`delete`) 대신 `vector<ClassName>` 을 사용했는가?
+- [ ] 메서드 호출 결과 / 긴 설명 주석이 위 줄에 단독으로 작성되었는가?

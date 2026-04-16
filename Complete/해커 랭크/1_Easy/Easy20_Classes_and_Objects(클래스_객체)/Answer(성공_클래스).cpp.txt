@@ -1,0 +1,67 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int n;          // 학생 수
+int higherCnt;  // Kristen보다 높은 학생 수
+
+// 학생 한 명의 시험 성적 5개를 저장하고 총점을 계산하는 클래스
+class Student
+{
+    public: 
+        int scores[5] = {}; // 시험 점수 5개 (0으로 초기화)
+
+    // 표준 입력에서 시험 점수 5개 읽기
+    void Input()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            cin >> scores[i];
+        }
+    }
+
+    // 시험 점수 5개의 합 반환
+    int CalculateTotalScore()
+    {
+        int total = 0;
+
+        for (int i = 0; i < 5; i++)
+        {
+            total += scores[i];
+        }
+
+        return total;
+    }
+};
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    vector<Student> students(n); // n명의 학생
+
+    // 모든 학생 점수 입력
+    for (int i = 0; i < n; i++)
+    {
+        students[i].Input();
+    }
+
+    // 첫 번째 학생이 Kristen(카린 점수 합 구하기)
+    int kristenScore = students[0].CalculateTotalScore();
+
+    // Kristen을 제외한 나머지 학생과 비교
+    for (int i = 1; i < n; i++)
+    {
+        // 카린의 점수 합 보다 크다면, 카운트
+        if (students[i].CalculateTotalScore() > kristenScore)
+        {
+            higherCnt++;
+        }
+    }
+
+    // 출력
+    cout << higherCnt << "\n";
+
+    return 0;
+}

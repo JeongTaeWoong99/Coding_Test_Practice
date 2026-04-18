@@ -1,0 +1,63 @@
+// HackerRank - C++ Class Tutorial
+// https://www.hackerrank.com/challenges/c-tutorial-class/problem?isFullScreen=true
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int    age, standard;
+string firstName, lastName;
+
+class Student
+{
+    // [멤버 변수] 학생 정보
+    public:
+        int    age       = {}; // 나이
+        string firstName = {}; // 이름
+        string lastName  = {}; // 성
+        int    standard  = {}; // 학년
+
+    // [설정 메서드] 멤버 변수에 값을 설정 (const string& — 복사 없이 참조, 수정 불가)
+    void SetAge      (int a)            { age       = a;  }
+    void SetFirstName(const string& fn) { firstName = fn; }
+    void SetLastName (const string& ln) { lastName  = ln; }
+    void SetStandard (int s)            { standard  = s;  }
+
+    // [조회 메서드] 멤버 변수 값을 반환 (const string& — 복사 없이 참조, 수정 불가)
+    int           GetAge()       { return age;       }
+    const string& GetFirstName() { return firstName; }
+    const string& GetLastName()  { return lastName;  }
+    int           GetStandard()  { return standard;  }
+
+    // "age,firstName,lastName,standard" 형식 문자열 반환(<<를 통해 스트림에 붙여넣기)
+    string ToString()
+    {
+        stringstream ss;
+        ss << age << "," << firstName << "," << lastName << "," << standard;
+
+        return ss.str();
+    }
+};
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> age >> firstName >> lastName >> standard;
+
+    // 문제 스타일에 맞춰서 값 세팅
+    Student st;
+    st.SetAge(age);
+    st.SetFirstName(firstName);
+    st.SetLastName(lastName);
+    st.SetStandard(standard);
+
+    // 문제 스타일에 맞춰서 값 출력
+    cout << st.GetAge() << "\n";
+    cout << st.GetLastName() << ", " << st.GetFirstName() << "\n";
+    cout << st.GetStandard() << "\n";
+
+    // 모든 값 출력(-> 한칸 더 띄워야 함)
+    cout << "\n" << st.ToString() << "\n";
+
+    return 0;
+}

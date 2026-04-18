@@ -8,14 +8,69 @@ description: Complete 정리 작업 프로세스. "컴플리트에 작업한 내
 ## 🎯 Complete 정리 9단계
 
 1. **Test.cpp 확인** : 작성된 코드 읽기
-2. **문제 정보 확인** : solved.ac API로 난이도 + WebSearch로 상세 정보
+2. **문제 정보 확인** : 플랫폼별 방법으로 난이도/점수/제목 확인 (아래 플랫폼별 정보 확인 섹션 참고)
 3. **기존 형식 참고** : 최소 3개 README.md 읽기 (폴더명/작성 형식/코드 스타일)
-4. **폴더/파일 생성** : `Complete/백준/{티어}_{번호}_{제목}/` + Answer.cpp.txt + README.md
+4. **폴더/파일 생성** : 플랫폼별 경로로 생성 + Answer.cpp.txt + README.md
 5. **Answer.cpp.txt** : Test.cpp 복사 → UTF-8 BOM → 스타일 정리 (⚠️ `.cpp.txt` 확장자!)
 6. **README.md** : 기존 형식과 동일하게 (작성일/링크/시각화링크/접근법/풀이/시간복잡도)
 7. **vcxproj 업데이트** : `<None>` 섹션에 .cpp.txt와 .md 추가, 알파벳순 정렬
 8. **파일명 확인** : `.cpp.txt` 확장자 검증
 9. **검증** : 위치/형식/vcxproj 업데이트 확인 (아래 체크리스트 필수 수행)
+
+---
+
+## 🌐 플랫폼별 문제 정보 확인
+
+### 📌 백준 (Baekjoon)
+
+solved.ac API로 난이도 + 제목 확인:
+
+```
+https://solved.ac/api/v3/problem/show?problemId={번호}
+```
+
+- 티어 : `level` 값 → 1~5=Bronze, 6~10=Silver, 11~15=Gold, 16~20=Platinum
+- 제목 : `titleKo` 값
+- 폴더명 형식 : `{티어}{레벨}_{번호}_{제목}/` (예: `G5_1916_최단경로`)
+
+### 📌 해커랭크 (HackerRank)
+
+**⚠️ 주의**: HackerRank는 점수/제목이 JavaScript 동적 렌더링 또는 로그인 후에만 표시됨.
+`WebFetch`로 문제 URL을 가져와도 **점수(Max Score)와 정확한 제목이 누락**될 수 있음.
+
+#### ✅ 찾을 수 있는 경우 — WebFetch 시도
+
+```
+WebFetch(문제 URL) → 응답에서 점수/제목 확인
+```
+
+응답에 `Max Score`, `Easy`, `Medium`, `Hard` 등이 포함되어 있으면 해당 정보 사용.
+
+#### ❌ 찾을 수 없는 경우 — 사용자에게 직접 요청
+
+WebFetch 결과에 점수나 정확한 제목이 없으면 **반드시 작업 전에 사용자에게 확인 요청**:
+
+```
+❓ HackerRank 문제의 다음 정보를 알려주세요:
+   1. 문제 제목 (영문 그대로)
+   2. 난이도 (Easy / Medium / Hard)
+   3. Max Score (점수)
+```
+
+확인 없이 임의의 숫자(40 등)를 붙이거나 추측으로 폴더명을 짓지 말 것.
+
+#### 📁 해커랭크 폴더명 형식
+
+```
+Complete/해커 랭크/{난이도_번호}/Easy{점수}_{제목(한글)}/ 
+```
+
+예시:
+- `Easy10_Class(클래스)` — 10점, 제목 "Class"
+- `Easy20_Classes_and_Objects(클래스_객체)` — 20점, 제목 "Classes and Objects"
+- `Medium35_Attribute_Parser(속성_파서)` — 35점, 제목 "Attribute Parser"
+
+> **📝 참고**: 같은 점수의 문제가 여러 개 존재할 수 있음 (예: Easy10이 2개). 폴더명이 겹치지 않도록 제목으로 구분.
 
 ---
 

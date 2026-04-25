@@ -1,0 +1,41 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int         n, m; // n : 원소 수, m : 쿼리 수
+vector<int> v;    // 정렬된 입력 배열
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    v.resize(n);
+    for (int i = 0; i < n; i++)
+    {
+        cin >> v[i];
+    }
+
+    cin >> m;
+
+    while (m--)
+    {
+        int findNum;
+        cin >> findNum;
+
+        // findNum 이상인 첫 번째 원소의 이터레이터
+        auto it = lower_bound(v.begin(), v.end(), findNum);
+        int idx = (int)(it - v.begin()) + 1; // 1-based 인덱스
+
+        if (*it == findNum) // 배열에 findNum이 존재하면
+        {
+            cout << "Yes " << idx << "\n";
+        }
+        else // 존재하지 않으면, 다음으로 큰 수의 인덱스 출력
+        {
+            cout << "No " << idx << "\n";
+        }
+    }
+
+    return 0;
+}

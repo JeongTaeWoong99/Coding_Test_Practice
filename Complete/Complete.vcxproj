@@ -424,6 +424,7 @@
     <None Include="해커 랭크\1_Easy\Easy15_Lower_Bound-STL(하한_STL)\Answer(정답).cpp.txt" />
     <None Include="해커 랭크\1_Easy\Easy20_Classes_and_Objects(클래스_객체)\Answer(성공_일반).cpp.txt" />
     <None Include="해커 랭크\1_Easy\Easy20_Classes_and_Objects(클래스_객체)\Answer(성공_클래스).cpp.txt" />
+    <None Include="해커 랭크\1_Easy\Easy20_Inheritance_Introduction(상속_소개)\Answer(성공).cpp.txt" />
     <None Include="해커 랭크\1_Easy\Easy30_Variable_Sized_Arrays(가변_크기_배열)\Answer(성공).cpp.txt" />
     <None Include="해커 랭크\1_Easy\Easy10_Class(클래스)\Answer(성공_최적화).cpp.txt" />
     <None Include="해커 랭크\2_Medium\Medium35_Attribute_Parser(속성_파서)\Answer(정답).cpp.txt" />
@@ -649,6 +650,7 @@
     <None Include="해커 랭크\1_Easy\Easy10_Vector_Sort(벡터_정렬)\README.md" />
     <None Include="해커 랭크\1_Easy\Easy15_Lower_Bound-STL(하한_STL)\README.md" />
     <None Include="해커 랭크\1_Easy\Easy20_Classes_and_Objects(클래스_객체)\README.md" />
+    <None Include="해커 랭크\1_Easy\Easy20_Inheritance_Introduction(상속_소개)\README.md" />
     <None Include="해커 랭크\1_Easy\Easy30_Variable_Sized_Arrays(가변_크기_배열)\README.md" />
     <None Include="해커 랭크\1_Easy\Easy10_Class(클래스)\README.md" />
     <None Include="해커 랭크\2_Medium\Medium35_Attribute_Parser(속성_파서)\README.md" />

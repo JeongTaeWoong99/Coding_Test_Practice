@@ -1,0 +1,41 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int      q;       // 쿼리 수
+set<int> s;       // 원소 저장 set
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> q;
+
+    while (q--)
+    {
+        int t, x;
+        cin >> t >> x;
+
+        if (t == 1)
+        {
+            s.insert(x);
+        }
+        else if (t == 2)
+        {
+            s.erase(x); // 없으면 아무것도 안 함
+        }
+        else
+        {
+            // x가 set에 있는지 확인
+            if (s.find(x) != s.end())
+            {
+                cout << "Yes\n";
+            }
+            else
+            {
+                cout << "No\n";
+            }
+        }
+    }
+
+    return 0;
+}

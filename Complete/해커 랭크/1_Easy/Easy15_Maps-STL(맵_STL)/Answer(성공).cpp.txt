@@ -1,0 +1,56 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int              n;     // 쿼리 수
+map<string, int> marks; // 학생 이름 → 누적 점수
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    while (n--)
+    {
+        int type;
+        cin >> type;
+
+        // 점수 추가
+        if (type == 1)
+        {
+            string name;
+            int score;
+            cin >> name >> score;
+
+            marks[name] += score;
+        }
+        // 점수 삭제
+        else if (type == 2)
+        {
+            string name;
+            cin >> name;
+
+            marks.erase(name);
+        }
+        // 점수 조회
+        else
+        {
+            string name;
+            cin >> name;
+
+            auto itr = marks.find(name);
+
+            // 등록된 학생이 아니면 0 출력
+            if (itr == marks.end())
+            {
+                cout << 0 << "\n";
+            }
+            else
+            {
+                cout << itr->second << "\n";
+            }
+        }
+    }
+
+    return 0;
+}

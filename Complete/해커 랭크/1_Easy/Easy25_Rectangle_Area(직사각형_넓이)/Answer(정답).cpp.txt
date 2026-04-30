@@ -1,0 +1,45 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Rectangle
+{
+    public:
+        int width  = {};  // 가로 길이
+        int height = {};  // 세로 길이
+
+    // width, height 공백으로 구분하여 출력
+    void display()
+    {
+        cout << width << " " << height << "\n";
+    }
+};
+
+// Rectangle을 상속받아 입력 처리 및 넓이 출력
+class RectangleArea : public Rectangle
+{
+    // width, height 입력
+    public:
+        void read_input()
+        {
+            cin >> width >> height;
+        }
+
+    // 넓이(width × height) 출력
+    void display()
+    {
+        cout << width * height << "\n";
+    }
+};
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    RectangleArea r_area;
+    r_area.read_input();
+
+    r_area.Rectangle::display(); // 기반 클래스 display() 명시적 호출 → "width height"
+    r_area.display();            // 파생 클래스 display()           → "width * height"
+
+    return 0;
+}

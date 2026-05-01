@@ -1,0 +1,42 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Triangle
+{
+    public:
+        void triangle()
+        {
+            cout << "I am a triangle\n";
+        }
+};
+
+class Isosceles : public Triangle
+{
+    public:
+        void isosceles()
+        {
+            cout << "I am an isosceles triangle\n";
+        }
+};
+
+// Isosceles를 상속 → Triangle, Isosceles의 멤버 함수 모두 접근 가능
+class Equilateral : public Isosceles
+{
+    public:
+        void equilateral()
+        {
+            cout << "I am an equilateral triangle\n";
+        }
+};
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    Equilateral eql;
+    eql.equilateral(); // Equilateral 클래스 메서드
+    eql.isosceles();   // Isosceles 클래스 메서드 (1단계 상속)
+    eql.triangle();    // Triangle 클래스 메서드 (2단계 상속)
+
+    return 0;
+}

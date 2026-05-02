@@ -1,0 +1,83 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 일반 타입 : 두 원소의 합 반환
+template <class T>
+class AddElements
+{
+    public:
+        T element = {}; // 저장할 원소
+
+    // arg를 원소로 저장하는 생성자
+    AddElements(T arg)
+    {
+        element = arg;
+    }
+
+    // other를 더한 결과 반환
+    T add(T other)
+    {
+        return element + other;
+    }
+};
+
+// string 특수화 : 두 문자열 이어 붙이기
+template <>
+class AddElements<string>
+{
+    public:
+        string element = {}; // 저장할 문자열
+
+    // arg를 문자열로 저장하는 생성자
+    AddElements(string arg)
+    {
+        element = arg;
+    }
+
+    // other를 이어 붙인 결과 반환
+    string concatenate(string other)
+    {
+        return element + other;
+    }
+};
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    int n;
+    cin >> n;
+
+    for (int i = 0; i < n; i++)
+    {
+        string type;
+        cin >> type;
+
+        if (type == "string")
+        {
+            string a, b;
+            cin >> a >> b;
+
+            AddElements<string> temp(a);
+            cout << temp.concatenate(b) << "\n";
+        }
+        else if (type == "int")
+        {
+            int a, b;
+            cin >> a >> b;
+
+            AddElements<int> temp(a);
+            cout << temp.add(b) << "\n";
+        }
+        else if (type == "float")
+        {
+            double a, b;
+            cin >> a >> b;
+
+            AddElements<double> temp(a);
+            cout << temp.add(b) << "\n";
+        }
+    }
+
+    return 0;
+}

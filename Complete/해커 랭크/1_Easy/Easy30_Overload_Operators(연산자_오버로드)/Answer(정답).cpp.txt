@@ -1,0 +1,74 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+class Complex
+{
+    public:
+        int a = {}, b = {}; // a : 실수부, b : 허수부
+
+    // 3+i4 형식 문자열을 파싱해서 a, b에 저장
+    void Input(string s)
+    {
+        int v1 = 0;
+        int i  = 0;
+
+        while (s[i] != '+')
+        {
+            v1 = v1 * 10 + s[i] - '0';
+            i++;
+        }
+
+        while (s[i] == '+' || s[i] == 'i')
+        {
+            i++;
+        }
+
+        int v2 = 0;
+
+        while (i < (int)s.length())
+        {
+            v2 = v2 * 10 + s[i] - '0';
+            i++;
+        }
+
+        a = v1;
+        b = v2;
+    }
+};
+
+// (a+ib) + (c+id) = (a+c) + i(b+d)
+Complex operator+(Complex x, Complex y)
+{
+    Complex result;
+
+    result.a = x.a + y.a;
+    result.b = x.b + y.b;
+
+    return result;
+}
+
+// a+ib 형식으로 스트림에 삽입
+ostream& operator<<(ostream& out, Complex x)
+{
+    out << x.a << "+i" << x.b;
+
+    return out;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    Complex x, y, z;
+    string s1, s2;
+    cin >> s1 >> s2;
+
+    x.Input(s1);
+    y.Input(s2);
+
+    z = x + y;
+
+    cout << z << '\n';
+
+    return 0;
+}

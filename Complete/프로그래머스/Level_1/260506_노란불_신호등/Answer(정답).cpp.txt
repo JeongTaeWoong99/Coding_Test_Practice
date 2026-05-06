@@ -1,0 +1,62 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 모든 신호등이 동시에 노란불이 되는 가장 빠른 시각 반환, 없으면 -1
+// signals[i] = {G, Y, R} : 초록 / 노란 / 빨간 지속 시간
+int solution(vector<vector<int>> signals)
+{
+    // 모든 주기의 LCM 계산 → LCM 이후는 패턴이 반복되므로 탐색 상한
+    int periodLCM = 1;
+    
+    for (auto& s : signals)
+    {
+        int totalTime = s[0] + s[1] + s[2]; // 한 주기 길이 G+Y+R
+        
+        periodLCM = periodLCM / gcd(periodLCM, totalTime) * totalTime;
+    }
+
+    // t=1부터 LCM까지 브루트포스 탐색
+    for (int t = 1; t <= periodLCM; t++)
+    {
+        bool allYellow = true;
+
+        for (auto& s : signals)
+        {
+            int green     = s[0];
+            int yellow    = s[1];
+            int red       = s[2];
+            int totalTime = green + yellow + red; // 한 주기 길이 G+Y+R
+            int pos       = (t - 1) % totalTime;  // 주기 내 0-indexed 위치 (t=1 → pos=0, 초록 시작)
+
+            // 노란불 구간: [G, G+Y-1] — 범위 밖이면 이 신호등은 노란불 아님
+            if (pos < green || pos >= green + yellow)
+            {
+                allYellow = false;
+                
+                break;
+            }
+        }
+
+        // 모두 노란색이 되는 시간 발견
+        if (allYellow)
+        {
+            return t;
+        }
+    }
+
+    // LCM 내에 없으면 영원히 불가능
+    return -1;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 테스트 케이스
+    cout << solution({{2, 1, 2}, {5, 1, 1}}) << "\n";                              // 13
+    cout << solution({{2, 3, 2}, {3, 1, 3}, {2, 1, 1}}) << "\n";                // 11
+    cout << solution({{3, 3, 3}, {5, 4, 2}, {2, 1, 2}}) << "\n";                // 193
+    cout << solution({{1, 1, 4}, {2, 1, 3}, {3, 1, 2}, {4, 1, 1}}) << "\n";  // -1
+
+    return 0;
+}

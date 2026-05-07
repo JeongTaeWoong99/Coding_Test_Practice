@@ -1,0 +1,59 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int solution(string message, vector<vector<int>> spoiler)
+{
+    // 스포일러 구간의 비공백 문자를 '*'로 치환 — 위치 정보를 문자에 암묵적으로 인코딩
+    string blinds = message;
+
+    for (auto& interval : spoiler)
+    {
+        for (int i = interval[0]; i <= interval[1]; i++)
+        {
+            if (blinds[i] != ' ') // 공백은 유지 (단어 구분자 보존)
+            {
+                blinds[i] = '*';
+            }
+        }
+    }
+
+    // blinded 문자열에서 단어 추출 — 스포일러 단어는 '*' 포함 형태로 wordSet에 저장됨
+    set<string> wordSet;
+    stringstream ss(blinds);
+    string word;
+
+    while (ss >> word)
+    {
+        wordSet.emplace(word);
+    }
+
+    // 원본 메시지 순회 — wordSet에 없으면 처음 등장하는 스포일러 단어
+    int answer = 0;
+
+    ss.clear();
+    ss.str(message);
+
+    while (ss >> word)
+    {
+        if (!wordSet.count(word)) // '*' 치환된 버전과 달라서 못 찾으면 → 중요한 단어
+        {
+            answer++;
+            wordSet.emplace(word); // 이후 중복 방지
+        }
+    }
+
+    return answer;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 예시 1 — 정답: 1
+    cout << solution("here is muzi here is a secret message", {{0, 3}, {23, 28}}) << "\n";
+
+    // 예시 2 — 정답: 4
+    cout << solution("my phone number is 01012345678 and may i have your phone number", {{5, 5}, {25, 28}, {34, 40}, {53, 59}}) << "\n";
+
+    return 0;
+}

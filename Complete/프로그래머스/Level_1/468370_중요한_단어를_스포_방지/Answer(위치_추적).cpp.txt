@@ -1,0 +1,98 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// wordStart ~ wordEnd 범위의 단어가 스포일러 구간과 하나라도 겹치는지 확인
+// wordStart : 단어 시작 인덱스
+// wordEnd   : 단어 끝 인덱스
+bool IsSpoiler(int wordStart, int wordEnd, vector<vector<int>>& spoiler)
+{
+    for (auto& interval : spoiler)
+    {
+        if (wordEnd >= interval[0] && wordStart <= interval[1]) // 단어와 구간이 겹치는 조건
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+int solution(string message, vector<vector<int>> spoiler)
+{
+    // 단어 파싱 — 단어 문자열과 {시작, 끝} 인덱스를 함께 저장
+    vector<pair<string, pair<int, int>>> words; // {단어, {시작 인덱스, 끝 인덱스}}
+    int messageLenth = (int)message.size();     // 메시지 길이
+    int cursor       = 0;                       // 파싱 커서
+
+    while (cursor < messageLenth)
+    {
+        // 공백은 건너뜀
+        if (message[cursor] == ' ')
+        {
+            cursor++;
+            continue;
+        }
+
+        // 단어 시작 위치 저장
+        int wordStart = cursor;
+
+        // 공백 전까지 단어 끝 탐색
+        while (cursor < messageLenth && message[cursor] != ' ')
+        {
+            cursor++;
+        }
+
+        words.emplace_back(message.substr(wordStart, cursor - wordStart), make_pair(wordStart, cursor - 1));
+    }
+    
+    // 비스포일러 단어를 seenWords에 추가 — 이미 공개된 단어 집합
+    unordered_set<string> seenWords;
+    
+    for (auto& wordEntry : words)
+    {
+        string&         word    = wordEntry.first;  // 단어 문자열
+        pair<int, int>& wordPos = wordEntry.second; // {시작 인덱스, 끝 인덱스}
+
+        // 스포일러 구간 밖의 단어
+        if (!IsSpoiler(wordPos.first, wordPos.second, spoiler))
+        {
+            seenWords.insert(word);
+        }
+    }
+
+    // 스포일러 구간을 왼쪽부터 순서대로 처리
+    int answer = 0; // 중요한 단어 수
+
+    for (auto& interval : spoiler)
+    {
+        // 단어는 이미 왼쪽→오른쪽 순서
+        for (auto& wordEntry : words)
+        {
+            string&         word    = wordEntry.first;  // 단어 문자열
+            pair<int, int>& wordPos = wordEntry.second; // {시작 인덱스, 끝 인덱스}
+
+            // 현재 구간과 겹치는 단어
+            if (wordPos.second >= interval[0] && wordPos.first <= interval[1])
+            {
+                if (!seenWords.count(word)) // seenWords에 없으면 → 중요한 단어
+                {
+                    answer++;
+                }
+
+                seenWords.insert(word); // 이후 중복 방지를 위해 등록
+            }
+        }
+    }
+
+    return answer;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    
+    cout << solution("here is muzi here is a secret message",                           {{0, 3}, {23, 28}}) << "\n";
+    cout << solution("my phone number is 01012345678 and may i have your phone number", {{5, 5}, {25, 28}, {34, 40}, {53, 59}}) << "\n";
+    
+    return 0;
+}

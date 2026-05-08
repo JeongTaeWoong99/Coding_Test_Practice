@@ -1,0 +1,75 @@
+﻿// 맨 처음 내 풀이 방식
+// 접근 : 2D 배열에 뱀 패턴으로 채운 뒤, num 위에 있는 박스 수 카운트
+#include <bits/stdc++.h>
+using namespace std;
+
+int solution(int n, int w, int num)
+{
+    bool grid[100][100] = {};              // false로 초기화 (박스 없음)
+    int  answer         = 0;
+    int  totalRows      = (n + w - 1) / w; // 올림 나눗셈 → 전체 행 수
+
+    // 채우면서 num의 위치도 함께 기록 (탐색 루프 따로 필요 없음)
+    int boxNum = 1;  // 현재 채울 박스 번호 (1부터 시작)
+    int numRow = 0;  // num의 행 위치
+    int numCol = 0;  // num의 열 위치
+
+    for (int curRow = 0; curRow < totalRows; curRow++)
+    {
+        // 짝수 행: 왼→오  (boxNum <= n : n번까지만 채움)
+        if (curRow % 2 == 0)
+        {
+            for (int curCol = 0; curCol < w && boxNum <= n; curCol++)
+            {
+                grid[curRow][curCol] = true;
+
+                // num 위치 발견 → 기록
+                if (boxNum == num)
+                {
+                    numRow = curRow;
+                    numCol = curCol;
+                }
+
+                boxNum++;
+            }
+        }
+        // 홀수 행: 오→왼
+        else
+        {
+            for (int curCol = w - 1; curCol >= 0 && boxNum <= n; curCol--)
+            {
+                grid[curRow][curCol] = true;
+
+                // num 위치 발견 → 기록
+                if (boxNum == num)
+                {
+                    numRow = curRow;
+                    numCol = curCol;
+                }
+
+                boxNum++;
+            }
+        }
+    }
+
+    // numRow부터 맨 위까지, 같은 열(numCol)에 박스가 있으면 카운트
+    for (int r = numRow; r < totalRows; r++)
+    {
+        if (grid[r][numCol]) // true = 박스 있음
+        {
+            answer++;
+        }
+    }
+
+    return answer;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cout << solution(12, 4, 3) << "\n"; // 3
+    cout << solution(11, 4, 9) << "\n"; // 1
+
+    return 0;
+}

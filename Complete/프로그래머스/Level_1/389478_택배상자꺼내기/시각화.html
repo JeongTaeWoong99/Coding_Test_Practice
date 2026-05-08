@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>389478 택배 상자 꺼내기 - 시각화</title>
+<style>
+:root {
+  --bg:#0d1117; --panel:#161b22; --border:#30363d;
+  --accent:#58a6ff; --green:#3fb950; --red:#f85149;
+  --yellow:#d29922; --orange:#e3b341; --purple:#bc8cff;
+  --text:#c9d1d9; --muted:#8b949e; --dim:#21262d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Consolas','D2Coding',monospace;font-size:13px;padding:20px}
+
+.hdr{text-align:center;margin-bottom:20px}
+.hdr h1{color:var(--accent);font-size:1.4rem;letter-spacing:1px}
+.hdr p{color:var(--muted);font-size:.8rem;margin-top:6px}
+
+/* TC 탭 */
+.tabs{display:flex;gap:8px;margin-bottom:16px;justify-content:center}
+.tab{padding:6px 20px;border-radius:6px;border:1px solid var(--border);
+     background:var(--dim);color:var(--muted);cursor:pointer;font-family:inherit;font-size:.85rem;transition:all .15s}
+.tab.on{background:var(--accent);border-color:var(--accent);color:#0d1117;font-weight:bold}
+
+/* 메인 레이아웃 */
+.layout{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+@media(max-width:760px){.layout{grid-template-columns:1fr}}
+
+/* 그리드 */
+.grid-wrap{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px}
+.grid-title{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
+.col-labels{display:flex;gap:4px;margin-bottom:4px;margin-left:46px}
+.col-lbl{width:52px;text-align:center;color:var(--muted);font-size:.75rem}
+.row-wrap{display:flex;flex-direction:column;gap:4px}
+.grid-row{display:flex;gap:4px;align-items:center}
+.row-lbl{width:42px;font-size:.72rem;color:var(--muted);text-align:right;padding-right:8px;flex-shrink:0}
+.cell{width:52px;height:44px;border:1px solid var(--border);border-radius:5px;
+      display:flex;align-items:center;justify-content:center;font-size:.82rem;
+      background:var(--panel);transition:all .35s;position:relative;font-weight:bold}
+.cell.empty{color:var(--muted);font-weight:normal;background:var(--bg)}
+.cell.normal{color:var(--text)}
+.cell.target{background:#0d2d3a;border-color:var(--accent)!important;color:var(--accent)}
+.cell.above{background:#2d1a00;border-color:var(--orange)!important;color:var(--orange)}
+.cell.counted{background:#0d3a1a;border-color:var(--green)!important;color:var(--green)}
+.cell.checking{background:#2a1040;border-color:var(--purple)!important;color:var(--purple)}
+.dir-arrow{font-size:.7rem;color:var(--muted);margin-left:6px;width:28px;text-align:left;flex-shrink:0}
+
+/* 설명 패널 */
+.explain{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px}
+.ep-title{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;
+          margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.step-wrap{display:flex;flex-direction:column;gap:8px}
+.step{padding:10px 12px;border-radius:6px;border-left:3px solid var(--border);
+      background:var(--dim);opacity:.45;transition:all .35s}
+.step.active{opacity:1;border-left-color:var(--accent)}
+.step.done{opacity:.75;border-left-color:var(--green)}
+.step-num{font-size:.7rem;color:var(--muted);margin-bottom:4px}
+.step-body{font-size:.85rem;line-height:1.75}
+.formula{background:#0d1117;border-radius:4px;padding:6px 10px;margin:6px 0;font-size:.82rem}
+.c-accent{color:var(--accent)} .c-green{color:var(--green)} .c-orange{color:var(--orange)}
+.c-purple{color:#d2a8ff)} .c-yellow{color:var(--yellow)} .c-muted{color:var(--muted)}
+
+/* 컨트롤 */
+.ctrl{display:flex;gap:10px;align-items:center;margin:16px 0;flex-wrap:wrap}
+.btn{padding:6px 18px;border-radius:5px;border:none;cursor:pointer;font-family:inherit;
+     font-size:.82rem;transition:opacity .15s}
+.btn-primary{background:var(--accent);color:#0d1117;font-weight:bold}
+.btn-secondary{background:var(--dim);border:1px solid var(--border);color:var(--text)}
+.btn:hover{opacity:.8}
+.btn:disabled{opacity:.35;cursor:default}
+.step-counter{color:var(--muted);font-size:.8rem;margin-left:auto}
+
+/* 결과 배너 */
+.result-banner{display:none;text-align:center;padding:14px;border-radius:8px;margin-top:16px;
+               background:#0d3a1a;border:1px solid var(--green);color:var(--green);font-size:1.1rem}
+.result-banner.show{display:block}
+
+/* 범례 */
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted)}
+.leg-dot{width:14px;height:14px;border-radius:3px;border:1px solid}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>📦 389478 택배 상자 꺼내기</h1>
+  <p>뱀 패턴 그리드에서 num 박스 위에 있는 박스들을 단계별로 탐색</p>
+</div>
+
+<!-- TC 선택 탭 -->
+<div class="tabs">
+  <button class="tab on" onclick="selectTC(0)">케이스 1 — n=12, w=4, num=3</button>
+  <button class="tab"    onclick="selectTC(1)">케이스 2 — n=11, w=4, num=9</button>
+</div>
+
+<div class="ctrl">
+  <button class="btn btn-primary"   id="btnPlay"  onclick="nextStep()">▶ 다음 단계</button>
+  <button class="btn btn-secondary" id="btnReset" onclick="reset()">↺ 처음으로</button>
+  <span class="step-counter" id="stepCounter">단계 0 / 0</span>
+</div>
+
+<div class="layout">
+  <!-- 그리드 -->
+  <div class="grid-wrap">
+    <div class="grid-title">📦 창고 그리드</div>
+    <div class="col-labels" id="colLabels"></div>
+    <div class="row-wrap" id="gridRows"></div>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#0d2d3a;border-color:var(--accent)"></div>목표 박스 (num)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#2a1040;border-color:var(--purple)"></div>현재 탐색 중</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#0d3a1a;border-color:var(--green)"></div>카운트된 박스</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--panel);border-color:var(--border)"></div>일반 박스</div>
+    </div>
+  </div>
+
+  <!-- 설명 패널 -->
+  <div class="explain">
+    <div class="ep-title">📋 단계별 계산 과정</div>
+    <div class="step-wrap" id="stepList"></div>
+    <div class="result-banner" id="resultBanner"></div>
+  </div>
+</div>
+
+<script>
+const TCS = [
+  { n:12, w:4, num:3 },
+  { n:11, w:4, num:9 }
+];
+
+let tcIdx = 0;
+let stepIdx = 0;
+let steps = [];
+
+function buildSteps(n, w, num) {
+  const row      = Math.floor((num - 1) / w);
+  const posInRow = (num - 1) % w;
+  const col      = (row % 2 === 0) ? posInRow : (w - 1 - posInRow);
+  const totalRows = Math.ceil(n / w);
+  const aboveBoxes = [];
+
+  for (let r = row + 1; r < totalRows; r++) {
+    const boxNum = (r % 2 === 0) ? (r * w + col + 1) : (r * w + (w - col));
+    aboveBoxes.push({ r, boxNum, valid: boxNum <= n });
+  }
+
+  const answer = 1 + aboveBoxes.filter(b => b.valid).length;
+
+  const list = [
+    {
+      label: '1단계 — 행(row) 계산',
+      html: `<div class="formula">row = (num-1) / w = (<span class="c-accent">${num}</span>-1) / <span class="c-accent">${w}</span> = <span class="c-green">${row}</span></div>
+             <div style="color:var(--muted);font-size:.8rem">num=1 → row=0 이 되도록 (num-1)로 0-indexed 변환</div>`,
+      gridState: { phase: 'row', row, col, num, aboveBoxes:[] }
+    },
+    {
+      label: '2단계 — 행 내 위치(posInRow) 계산',
+      html: `<div class="formula">posInRow = (num-1) % w = (<span class="c-accent">${num}</span>-1) % <span class="c-accent">${w}</span> = <span class="c-green">${posInRow}</span></div>
+             <div style="color:var(--muted);font-size:.8rem">나머지 = 이 행의 시작부터 몇 번째? (항상 왼쪽부터 0-indexed)</div>`,
+      gridState: { phase: 'pos', row, col, num, aboveBoxes:[] }
+    },
+    {
+      label: '3단계 — 실제 열(col) 계산',
+      html: row % 2 === 0
+        ? `<div class="formula">row ${row} = 짝수 행 (L→R)<br>col = posInRow = <span class="c-green">${col}</span></div>
+           <div style="color:var(--muted);font-size:.8rem">짝수 행은 왼쪽부터 채우므로 posInRow = col 그대로</div>`
+        : `<div class="formula">row ${row} = 홀수 행 (R→L)<br>col = w - 1 - posInRow = ${w}-1-${posInRow} = <span class="c-green">${col}</span></div>
+           <div style="color:var(--muted);font-size:.8rem">홀수 행은 오른쪽부터 채우므로 좌우 반전 필요</div>`,
+      gridState: { phase: 'col', row, col, num, aboveBoxes:[] }
+    },
+    {
+      label: '4단계 — 전체 행 수(totalRows) 계산',
+      html: `<div class="formula">totalRows = ⌈n/w⌉ = (n+w-1)/w = (${n}+${w}-1)/${w} = <span class="c-green">${totalRows}</span></div>
+             <div style="color:var(--muted);font-size:.8rem">올림 나눗셈. row ${row}부터 row ${totalRows-1}까지 존재</div>`,
+      gridState: { phase: 'col', row, col, num, aboveBoxes:[] }
+    },
+  ];
+
+  // 위쪽 행 탐색 단계
+  if (aboveBoxes.length === 0) {
+    list.push({
+      label: '5단계 — 위쪽 행 탐색',
+      html: `<div class="formula">row ${row}이 마지막 행 → 위에 박스 없음</div>
+             <div style="color:var(--muted);font-size:.8rem">answer = 1 (num 자신만)</div>`,
+      gridState: { phase: 'done', row, col, num, aboveBoxes:[], counted:[] }
+    });
+  } else {
+    aboveBoxes.forEach((b, i) => {
+      const rowType = b.r % 2 === 0 ? '짝수(L→R)' : '홀수(R→L)';
+      const formula = b.r % 2 === 0
+        ? `${b.r}×${w} + ${col} + 1 = ${b.boxNum}`
+        : `${b.r}×${w} + (${w} - ${col}) = ${b.boxNum}`;
+      const valid = b.valid;
+      const counted = aboveBoxes.slice(0, i+1).filter(x => x.valid).map(x => x.boxNum);
+      list.push({
+        label: `${4+i+1}단계 — row ${b.r} 탐색 (${rowType})`,
+        html: `<div class="formula">boxNum = ${formula}</div>
+               <div style="${valid ? 'color:var(--green)' : 'color:var(--red)'}">
+                 ${b.boxNum} ${valid ? '≤' : '>'} ${n} → ${valid ? '✅ 카운트!' : '❌ 존재하지 않는 박스'}
+               </div>
+               <div style="color:var(--muted);font-size:.8rem;margin-top:4px">현재 answer = ${1 + counted.length}</div>`,
+        gridState: { phase: 'search', row, col, num, aboveBoxes, checkRow: b.r, counted, valid }
+      });
+    });
+  }
+
+  // 완료 단계
+  list.push({
+    label: '완료',
+    html: `<div style="color:var(--green);font-size:1rem;font-weight:bold">answer = ${answer}</div>
+           <div style="color:var(--muted);font-size:.8rem;margin-top:6px">
+             num=${num} 자신 + 위 박스 ${aboveBoxes.filter(b=>b.valid).length}개
+           </div>`,
+    gridState: { phase: 'done', row, col, num, aboveBoxes, counted: aboveBoxes.filter(b=>b.valid).map(b=>b.boxNum) },
+    final: answer
+  });
+
+  return { steps: list, row, col, totalRows, answer };
+}
+
+function buildGrid(n, w) {
+  const rows = Math.ceil(n / w);
+  const grid = [];
+  let num = 1;
+  for (let r = 0; r < rows; r++) {
+    const cells = [];
+    if (r % 2 === 0) {
+      for (let c = 0; c < w; c++) cells.push(num <= n ? num++ : null);
+    } else {
+      const rowNums = [];
+      for (let c = 0; c < w; c++) rowNums.push(num <= n ? num++ : null);
+      for (let c = 0; c < w; c++) cells.push(rowNums[w - 1 - c]);
+    }
+    grid.push({ r, cells, dir: r % 2 === 0 ? 'L→R' : 'R→L' });
+  }
+  return grid.reverse(); // 위가 먼저 표시
+}
+
+function renderGrid(n, w, state) {
+  const { phase, row, col, num, aboveBoxes, checkRow, counted, valid } = state;
+  const grid = buildGrid(n, w);
+  const rows = Math.ceil(n / w);
+
+  // col labels
+  const colEl = document.getElementById('colLabels');
+  colEl.innerHTML = '';
+  for (let c = 0; c < w; c++) {
+    const d = document.createElement('div');
+    d.className = 'col-lbl';
+    d.textContent = `col ${c}`;
+    colEl.appendChild(d);
+  }
+
+  const rowWrap = document.getElementById('gridRows');
+  rowWrap.innerHTML = '';
+
+  grid.forEach(({ r, cells, dir }) => {
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'grid-row';
+
+    const lbl = document.createElement('div');
+    lbl.className = 'row-lbl';
+    lbl.textContent = `row ${r}`;
+    rowDiv.appendChild(lbl);
+
+    cells.forEach((boxNum, c) => {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+
+      if (boxNum === null) {
+        cell.classList.add('empty');
+        cell.textContent = '_';
+      } else {
+        cell.textContent = boxNum;
+        if (boxNum === num) {
+          cell.classList.add('target');
+        } else if (phase === 'search' && r === checkRow && c === col) {
+          cell.classList.add('checking');
+        } else if (counted && counted.includes(boxNum)) {
+          cell.classList.add('counted');
+        } else {
+          cell.classList.add('normal');
+        }
+      }
+      rowDiv.appendChild(cell);
+    });
+
+    const arrow = document.createElement('div');
+    arrow.className = 'dir-arrow';
+    arrow.textContent = dir;
+    rowDiv.appendChild(arrow);
+
+    rowWrap.appendChild(rowDiv);
+  });
+}
+
+function renderSteps(steps, currentIdx) {
+  const el = document.getElementById('stepList');
+  el.innerHTML = '';
+  steps.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'step' + (i === currentIdx ? ' active' : i < currentIdx ? ' done' : '');
+    div.innerHTML = `<div class="step-num">STEP ${i + 1}</div>
+                     <div style="font-weight:bold;margin-bottom:6px">${s.label}</div>
+                     <div class="step-body">${i <= currentIdx ? s.html : ''}</div>`;
+    el.appendChild(div);
+  });
+}
+
+function selectTC(idx) {
+  tcIdx = idx;
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('on', i === idx));
+  reset();
+}
+
+function reset() {
+  stepIdx = 0;
+  const { n, w, num } = TCS[tcIdx];
+  const built = buildSteps(n, w, num);
+  steps = built.steps;
+
+  renderGrid(n, w, { phase: 'init', row: built.row, col: built.col, num, aboveBoxes: [] });
+  renderSteps(steps, -1);
+  document.getElementById('resultBanner').classList.remove('show');
+  document.getElementById('btnPlay').disabled = false;
+  updateCounter();
+}
+
+function nextStep() {
+  if (stepIdx >= steps.length) return;
+  const { n, w, num } = TCS[tcIdx];
+  const s = steps[stepIdx];
+
+  renderGrid(n, w, s.gridState);
+  renderSteps(steps, stepIdx);
+
+  if (s.final !== undefined) {
+    const banner = document.getElementById('resultBanner');
+    banner.textContent = `🎉 최종 답: ${s.final}개 (num=${num} 자신 + 위 박스 ${s.final - 1}개)`;
+    banner.classList.add('show');
+    document.getElementById('btnPlay').disabled = true;
+  }
+
+  stepIdx++;
+  updateCounter();
+}
+
+function updateCounter() {
+  document.getElementById('stepCounter').textContent = `단계 ${Math.min(stepIdx, steps.length)} / ${steps.length}`;
+}
+
+// 초기 렌더
+reset();
+</script>
+</body>
+</html>

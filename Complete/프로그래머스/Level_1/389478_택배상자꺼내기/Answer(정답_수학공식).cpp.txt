@@ -1,0 +1,74 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// [핵심 개념] 박스들은 뱀 패턴으로 쌓임
+// 짝수 행(0,2,4...): 왼쪽 → 오른쪽
+// 홀수 행(1,3,5...): 오른쪽 → 왼쪽
+//
+// 예시 (w=4, n=12):
+//           col:  0    1    2    3
+//  row 2 (L→R): [ 9] [10] [11] [12]   ← 맨 위 (나중에 쌓임)
+//  row 1 (R→L): [ 8] [ 7] [ 6] [ 5]
+//  row 0 (L→R): [ 1] [ 2] [ 3] [ 4]   ← 맨 아래 (먼저 쌓임)
+//
+// num 박스를 꺼내려면 같은 열(col)에서 위에 있는 박스들을 모두 꺼내야 함
+// 결과 = num 자신 + 위에 있는 박스 수
+
+int solution(int n, int w, int num)
+{
+    int answer = 1; // num 박스 자신 포함
+
+    // ─── 1. num이 몇 번째 행(row)에 있는지 ───
+    // (num-1): 1-indexed → 0-indexed 변환
+    //   num=1 → row=0,  num=w → row=0 (둘 다 첫 번째 행)
+    //   num=w+1 → row=1 (두 번째 행 시작)
+    int row = (num - 1) / w;
+
+    // ─── 2. 해당 행에서 왼쪽부터 몇 번째인지(posInRow) ───
+    // 행의 방향에 상관없이 "이 행의 첫 번째 박스부터 몇 번째?"
+    //   num=1(row 0의 1번째) → 0,  num=5(row 1의 1번째) → 0
+    int posInRow = (num - 1) % w;
+
+    // ─── 3. 실제 열(col) 위치 계산 ───
+    // posInRow는 항상 "왼쪽부터" 세지만,
+    // 홀수 행은 오른쪽→왼쪽으로 채워지므로 좌우 대칭 변환 필요
+    //
+    // 예시 row 1 (R→L), w=4:  박스 5,6,7,8
+    //   box5: posInRow=(5-1)%4=0 → col=4-1-0=3  (col 3에 위치)
+    //   box6: posInRow=(6-1)%4=1 → col=4-1-1=2
+    //   box7: posInRow=(7-1)%4=2 → col=4-1-2=1
+    //   box8: posInRow=(8-1)%4=3 → col=4-1-3=0  (col 0에 위치)
+    int col = (row % 2 == 0) ? posInRow             // 짝수 행 (L→R): posInRow=0 → col=0 (왼쪽부터 그대로)
+                             : (w - 1 - posInRow);  // 홀수 행 (R→L): posInRow=0 → col=w-1 (오른쪽이 시작점 → 뒤집기)
+
+    // ─── 4. 전체 행 수 계산 (올림 나눗셈) ───
+    // n개를 w개씩 쌓으면 몇 행? → ⌈n/w⌉ = (n + w - 1) / w
+    int totalRows = (n + w - 1) / w;
+
+    // ─── 5. num 위의 행들에서 같은 열(col)에 박스가 있는지 탐색 ───
+    for (int r = row + 1; r < totalRows; r++)
+    {
+        // r행의 col 위치에 있는 박스 번호:
+        int boxNum = (r % 2 == 0) ? (r * w + col + 1)     //  짝수 행(L→R): 행 시작(r*w+1)에서 col칸 오른쪽 → r*w + col + 1
+                                  : (r * w + (w - col));  //  홀수 행(R→L): col=0이 끝(r*w+w)이므로 → r*w + (w - col)
+
+        // 실제로 존재하는 박스여야 카운트
+        if (boxNum <= n)
+            answer++;
+    }
+
+    return answer;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+    // n=12, w=4, num=3 → col=2 위에 박스 6, 11 존재 → 3
+    cout << solution(12, 4, 3) << "\n";
+
+    // n=11, w=4, num=9 → row=2가 마지막 행, 위에 아무것도 없음 → 1
+    cout << solution(11, 4, 9) << "\n";
+
+    return 0;
+}

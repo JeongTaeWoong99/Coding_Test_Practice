@@ -419,6 +419,7 @@
     <None Include="백준\4_Platinum\P5_14003_가장긴증가하는부분수열5\Answer(정답).cpp.txt" />
     <None Include="백준\4_Platinum\P5_17071_숨바꼭질5\Answer(정답).cpp.txt" />
     <None Include="백준\4_Platinum\P5_3197_백조의호수\Answer(정답).cpp.txt" />
+    <None Include="프로그래머스\Level_1\340213_동영상_재생기\Answer(정답).cpp.txt" />
     <None Include="프로그래머스\Level_1\388351_유연근무제\Answer(성공).cpp.txt" />
     <None Include="프로그래머스\Level_1\389478_택배상자꺼내기\Answer(2D배열).cpp.txt" />
     <None Include="해커 랭크\1_Easy\Easy10_Vector_Erase(벡터_삭제)\Answer(정답).cpp.txt" />
@@ -658,6 +659,7 @@
     <None Include="백준\4_Platinum\P5_3197_백조의호수\README.md" />
     <None Include="프로그래머스\Level_1\260506_노란불_신호등\Answer(정답).cpp.txt" />
     <None Include="프로그래머스\Level_1\260506_노란불_신호등\README.md" />
+    <None Include="프로그래머스\Level_1\340213_동영상_재생기\README.md" />
     <None Include="프로그래머스\Level_1\388351_유연근무제\README.md" />
     <None Include="프로그래머스\Level_1\389478_택배상자꺼내기\Answer(정답_수학공식).cpp.txt" />
     <None Include="프로그래머스\Level_1\389478_택배상자꺼내기\README.md" />
@@ -687,6 +689,7 @@
     <Folder Include="연습\메모리\" />
     <Folder Include="프로그래머스\Level_0\" />
     <Folder Include="프로그래머스\Level_1\260506_노란불_신호등\" />
+    <Folder Include="프로그래머스\Level_1\340213_동영상_재생기\" />
     <Folder Include="프로그래머스\Level_1\468370_중요한_단어를_스포_방지\" />
     <Folder Include="프로그래머스\Level_2\" />
     <Folder Include="프로그래머스\Level_3\" />

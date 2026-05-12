@@ -1,0 +1,89 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// friends 목록과 선물 기록을 받아 다음 달 가장 많이 받을 선물 수 반환
+int solution(vector<string> friends, vector<string> gifts)
+{
+    int n = friends.size();
+
+    // 이름 → 인덱스 매핑
+    map<string, int> nameIdx;
+    for (int i = 0; i < n; i++)
+    {
+        nameIdx[friends[i]] = i;
+    }
+
+    vector<vector<int>> give(n, vector<int>(n, 0)); // give[i][j] = i가 j에게 준 선물 수
+
+    // 선물 기록 파싱
+    for (auto& g : gifts)
+    {
+        stringstream ss(g);
+        string a, b;
+        ss >> a >> b;
+
+        give[nameIdx[a]][nameIdx[b]]++;
+    }
+
+    // 선물 지수 = 준 선물 합 - 받은 선물 합
+    vector<int> giftIdx(n, 0);
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            giftIdx[i] += give[i][j] - give[j][i];
+        }
+    }
+
+    // 다음 달 각 사람이 받을 선물 수 계산
+    vector<int> nextGifts(n, 0);
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i + 1; j < n; j++)
+        {
+            if (give[i][j] > give[j][i]) // i가 j에게 더 많이 줌
+            {
+                nextGifts[i]++;
+            }
+            else if (give[i][j] < give[j][i]) // j가 i에게 더 많이 줌
+            {
+                nextGifts[j]++;
+            }
+            else // 동률 → 선물 지수 비교
+            {
+                if (giftIdx[i] > giftIdx[j])
+                {
+                    nextGifts[i]++;
+                }
+                else if (giftIdx[i] < giftIdx[j])
+                {
+                    nextGifts[j]++;
+                }
+            }
+        }
+    }
+
+    return *max_element(nextGifts.begin(), nextGifts.end());
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 테스트 케이스 1: 2 기대
+    vector<string> friends1 = {"muzi", "ryan", "frodo", "neo"};
+    vector<string> gifts1 = {"muzi frodo", "muzi frodo", "ryan muzi", "ryan muzi", "ryan muzi", "frodo muzi", "frodo ryan", "neo muzi"};
+    cout << solution(friends1, gifts1) << "\n";
+
+    // 테스트 케이스 2: 4 기대
+    vector<string> friends2 = {"joy", "brad", "alessandro", "conan", "david"};
+    vector<string> gifts2 = {"alessandro brad", "alessandro joy", "alessandro conan", "david alessandro", "alessandro david"};
+    cout << solution(friends2, gifts2) << "\n";
+
+    // 테스트 케이스 3: 0 기대
+    vector<string> friends3 = {"a", "b", "c"};
+    vector<string> gifts3 = {"a b", "b a", "c a", "a c", "a c", "c a"};
+    cout << solution(friends3, gifts3) << "\n";
+
+    return 0;
+}

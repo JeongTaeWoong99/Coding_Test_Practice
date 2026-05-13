@@ -1,0 +1,53 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 붕대 감기 시뮬레이션, bandage : {시전시간, 초당회복, 완전시전 추가회복}
+int solution(vector<int> bandage, int health, vector<vector<int>> attacks)
+{
+    int needTime  = bandage[0]; // 시전 시간
+    int perHeal   = bandage[1]; // 초당 회복량
+    int bonusHeal = bandage[2]; // 완전 시전 시 추가 회복량
+    int curHealth = health;     // 현재 체력
+    int prevAtk   = 0;          // 직전 공격 시간
+
+    for (auto& atk : attacks)
+    {
+        int atkTime = atk[0]; // 현재 공격 시간
+        int damage  = atk[1]; // 공격 데미지
+
+        // 직전 공격 이후 ~ 현재 공격 직전까지 회복
+        int healSec = atkTime - prevAtk - 1;
+
+        if (healSec > 0)
+        {
+            curHealth += healSec * perHeal;               // 초당 회복
+            curHealth += (healSec / needTime) * bonusHeal; // 완전 시전 횟수만큼 추가 회복
+            curHealth = min(curHealth, health);            // 최대 체력 초과 불가
+        }
+
+        // 몬스터 공격 적용
+        curHealth -= damage;
+
+        if (curHealth <= 0) // 사망 판정
+        {
+            return -1;
+        }
+
+        prevAtk = atkTime;
+    }
+
+    return curHealth;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 테스트 케이스 1 : 예상 출력 5
+    cout << solution({5, 1, 5}, 30, {{2, 10}, {9, 15}, {10, 5}, {11, 5}}) << "\n";
+
+    // 테스트 케이스 2 : 예상 출력 -1
+    cout << solution({3, 2, 7}, 20, {{1, 15}, {5, 16}, {8, 6}}) << "\n";
+
+    return 0;
+}

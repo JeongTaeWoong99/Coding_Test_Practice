@@ -157,7 +157,8 @@
       "Bash(\"C:/Users/ASUS/Desktop/Code/CoTe/Coding-Test-Practice/Complete/백준/3_Gold/G4_7662_이중우선순위큐/Answer.cpp.txt\":*)",
       "Bash(xargs grep:*)",
       "PowerShell(New-Item *)",
-      "WebFetch(domain:school.programmers.co.kr)"
+      "WebFetch(domain:school.programmers.co.kr)",
+      "Skill(complete-process)"
     ]
   },
   "outputStyle": "korean-terminal"

@@ -4,12 +4,12 @@ using namespace std;
 // 이웃한 칸 — board[r][c]와 같은 색인 상하좌우 이웃 칸 수 반환
 int solution(vector<vector<string>> board, int r, int c)
 {
-    int n        = board.size();
-    string color = board[r][c];
-    int answer   = 0;
+    int    answer = 0;
+    int    n      = board.size();
+    string color  = board[r][c];
 
-    int dr[] = {-1, 1, 0, 0};
-    int dc[] = {0, 0, -1, 1};
+    int dr[] = {-1, 1,  0, 0};
+    int dc[] = { 0, 0, -1, 1};
 
     for (int i = 0; i < 4; i++)
     {
@@ -17,6 +17,7 @@ int solution(vector<vector<string>> board, int r, int c)
         int nc = c + dc[i];
 
         if (nr < 0 || nr >= n || nc < 0 || nc >= n) continue;
+        
         if (board[nr][nc] == color) answer++;
     }
 

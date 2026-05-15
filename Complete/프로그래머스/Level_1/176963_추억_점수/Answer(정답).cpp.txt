@@ -1,0 +1,34 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> solution(vector<string> name, vector<int> yearning, vector<vector<string>> photo)
+{
+    map<string, int> score;
+    for (int i = 0; i < (int)name.size(); i++)
+        score[name[i]] = yearning[i];
+
+    vector<int> answer;
+    for (auto& p : photo)
+    {
+        int sum = 0;
+        for (auto& s : p)
+            sum += score[s];
+        answer.push_back(sum);
+    }
+    return answer;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 테스트케이스: [19, 15, 9] 기대
+    vector<string> name1 = {"may", "kein", "kain", "radi"};
+    vector<int> yearning1 = {5, 10, 1, 3};
+    vector<vector<string>> photo1 = {{"may", "kein", "kain", "radi"}, {"may", "kein"}, {"kain", "radi", "may"}};
+    auto ans = solution(name1, yearning1, photo1);
+    for (int v : ans) cout << v << " ";
+    cout << "\n";
+
+    return 0;
+}

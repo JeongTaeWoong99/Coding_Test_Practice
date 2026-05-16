@@ -1,0 +1,70 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+map<string, int> check = {{"code", 0}, {"date", 1}, {"maximum", 2}, {"remain", 3}}; // 스트링에 해당하는 번호 미리 맵핑
+
+vector<vector<int>> solution(vector<vector<int>> data, string ext, int val_ext, string sort_by)
+{
+    vector<vector<int>> answer;
+
+    // 각 데이터에서 조건 만족하는 data 추출
+    for (auto& row : data)
+    {
+        // 맵 check에 ext 스트링을 넣어서, 해당하는 번호의 int를 찾고
+        // int값이 조건 val_ext값 보다 작은지 확인
+        if (row[check[ext]] < val_ext)
+        {
+            answer.push_back(row);
+        }
+    }
+
+    int sortIdx = check[sort_by]; // 정렬 기준 컬럼 인덱스
+
+    // sortIdx 번째 값을 기준으로 오름차순 정렬 (버블 정렬)
+    for (int i = 0; i < (int)answer.size() - 1; i++)
+    {
+        for (int j = 0; j < (int)answer.size() - 1 - i; j++)
+        {
+            // 앞 행의 sortIdx 값이 뒤 행보다 크면 두 행을 교환
+            if (answer[j][sortIdx] > answer[j + 1][sortIdx])
+            {
+                swap(answer[j], answer[j + 1]);
+            }
+        }
+    }
+
+    // [STL sort 사용 시 아래처럼 작성 가능]
+    // sort 함수는 세 번째 인자로 '두 원소를 비교하는 함수'를 받는다.
+    // [sortIdx] : 람다가 외부 변수 sortIdx를 가져다 쓰겠다는 의미 (캡처)
+    // (const vector<int>& a, ...) : 비교할 두 행
+    // return a[sortIdx] < b[sortIdx] : true면 a를 앞에, false면 b를 앞에 배치
+    //
+    // sort(answer.begin(), answer.end(), [sortIdx](const vector<int>& a, const vector<int>& b)
+    // {
+    //     return a[sortIdx] < b[sortIdx];
+    // });
+
+    return answer;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 테스트케이스: [[3, 20300401, 10, 8], [1, 20300104, 100, 80]] 기대
+    vector<vector<int>> data = {{1, 20300104, 100, 80}, {2, 20300804, 847, 37}, {3, 20300401, 10,8}};
+
+    auto ans = solution(data, "date", 20300501, "remain");
+
+    for (auto& row : ans)
+    {
+        for (int v : row)
+        {
+            cout << v << " ";
+        }
+
+        cout << "\n";
+    }
+
+    return 0;
+}

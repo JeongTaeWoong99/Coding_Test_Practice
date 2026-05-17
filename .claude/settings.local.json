@@ -158,7 +158,8 @@
       "Bash(xargs grep:*)",
       "PowerShell(New-Item *)",
       "WebFetch(domain:school.programmers.co.kr)",
-      "Skill(complete-process)"
+      "Skill(complete-process)",
+      "Skill(coding-style)"
     ]
   },
   "outputStyle": "korean-terminal"

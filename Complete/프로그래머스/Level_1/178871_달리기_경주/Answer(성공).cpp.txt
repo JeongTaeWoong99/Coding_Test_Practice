@@ -1,0 +1,47 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// callings에서 불린 선수를 unordered_map으로 O(1) 조회, 바로 앞 선수와 교체
+vector<string> solution(vector<string> players, vector<string> callings)
+{
+    unordered_map<string, int> posMap; // 이름 → 현재 순위 인덱스
+
+    // 초기 순위 맵 구성
+    for (int i = 0; i < (int)players.size(); i++)
+    {
+        posMap[players[i]] = i;
+    }
+
+    // 호출된 선수 순서대로 처리
+    for (const string& callName : callings)
+    {
+        int    currentIdx = posMap[callName];        // 현재 인덱스
+        string frontName  = players[currentIdx - 1]; // 바로 앞 선수
+
+        // 원본 이름 배열 위치 스왑
+        swap(players[currentIdx], players[currentIdx - 1]);
+
+        // 맵 인덱스 교체
+        posMap[callName]  = currentIdx - 1;
+        posMap[frontName] = currentIdx;
+    }
+
+    return players;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    vector<string> players  = {"mumu", "soe", "poe", "kai", "mine"};
+    vector<string> callings = {"kai", "kai", "mine", "mine"};
+
+    vector<string> ans = solution(players, callings);
+
+    for (const string& s : ans)
+    {
+        cout << s << "\n";
+    }
+
+    return 0;
+}

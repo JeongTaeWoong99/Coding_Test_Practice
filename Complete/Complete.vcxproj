@@ -419,6 +419,7 @@
     <None Include="백준\4_Platinum\P5_14003_가장긴증가하는부분수열5\Answer(정답).cpp.txt" />
     <None Include="백준\4_Platinum\P5_17071_숨바꼭질5\Answer(정답).cpp.txt" />
     <None Include="백준\4_Platinum\P5_3197_백조의호수\Answer(정답).cpp.txt" />
+    <None Include="프로그래머스\Level_1\172928_공원_산책\Answer(성공).cpp.txt" />
     <None Include="프로그래머스\Level_1\176963_추억_점수\Answer(성공).cpp.txt" />
     <None Include="프로그래머스\Level_1\178871_달리기_경주\Answer(성공).cpp.txt" />
     <None Include="프로그래머스\Level_1\250121_데이터_분석\Answer(성공).cpp.txt" />
@@ -666,6 +667,7 @@
     <None Include="백준\4_Platinum\P5_14003_가장긴증가하는부분수열5\README.md" />
     <None Include="백준\4_Platinum\P5_17071_숨바꼭질5\README.md" />
     <None Include="백준\4_Platinum\P5_3197_백조의호수\README.md" />
+    <None Include="프로그래머스\Level_1\172928_공원_산책\README.md" />
     <None Include="프로그래머스\Level_1\176963_추억_점수\README.md" />
     <None Include="프로그래머스\Level_1\178871_달리기_경주\README.md" />
     <None Include="프로그래머스\Level_1\250121_데이터_분석\README.md" />

@@ -1,0 +1,84 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// N S E W 순서
+int dy[] = {-1, 1, 0,  0};
+int dx[] = { 0, 0, 1, -1};
+
+// park에서 'S' 찾아 시작점 설정 후, routes 순서대로 이동 가능 여부 검사하여 위치 반환
+vector<int> solution(vector<string> park, vector<string> routes)
+{
+    int curY = 0;
+    int curX = 0;
+    int rows = (int)park.size();    // 세로 크기
+    int cols = (int)park[0].size(); // 가로 크기
+
+    // 시작 위치 'S' 탐색
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++)
+        {
+            // 시작 위치 저장
+            if (park[i][j] == 'S')
+            {
+                curY = i;
+                curX = j;
+            }
+        }
+    }
+
+    // 각 route 처리
+    for (string& route : routes)
+    {
+        char dir  = route[0];       // 방향 문자
+        int  step = route[2] - '0'; // 이동 칸 수 (1~9 한 자리 보장)
+
+        // 방향 인덱스 설정
+        int idx;
+        if      (dir == 'N') { idx = 0; } // N
+        else if (dir == 'S') { idx = 1; } // S
+        else if (dir == 'E') { idx = 2; } // E
+        else                 { idx = 3; } // W
+
+        int  tempY = curY;
+        int  tempX = curX;
+        bool valid = true;
+
+        // step만큼 한 칸씩 이동하며 유효성 검사
+        for (int i = 0; i < step; i++)
+        {
+            tempY += dy[idx];
+            tempX += dx[idx];
+
+            // 세로 범위 밖이면 이동 취소
+            if (tempY < 0 || tempY >= rows)
+            {
+                valid = false;
+                break;
+            }
+
+            // 가로 범위 밖이면 이동 취소
+            if (tempX < 0 || tempX >= cols)
+            {
+                valid = false;
+                break;
+            }
+
+            // 장애물이면 이동 취소
+            if (park[tempY][tempX] == 'X')
+            {
+                valid = false;
+                break;
+            }
+        }
+
+        // 유효한 경우에만 위치 갱신
+        if (valid)
+        {
+            curY = tempY;
+            curX = tempX;
+        }
+    }
+
+    return {curY, curX};
+}

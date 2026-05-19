@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2D 슬라이딩 윈도우 Min 시각화 | 선인장 숨기기</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      font-family: 'Consolas', 'Courier New', monospace;
+      padding: 28px 32px;
+      min-height: 100vh;
+    }
+
+    header { margin-bottom: 20px; }
+    h1 { color: #cba6f7; font-size: 1.5em; margin-bottom: 4px; }
+    .subtitle { color: #6c7086; font-size: 0.85em; }
+
+    /* Legend */
+    .legend {
+      display: flex; gap: 14px; flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.78em; color: #a6adc8; }
+    .legend-box { width: 14px; height: 14px; border-radius: 2px; flex-shrink: 0; }
+    .lb-window  { background: #f38ba8; }
+    .lb-current { background: #fab387; }
+    .lb-filled  { background: #a6e3a1; }
+    .lb-empty   { background: #313244; border: 1px solid #45475a; }
+    .lb-inf     { background: #313244; border: 1px dashed #6c7086; }
+    .lb-answer  { background: #cba6f7; }
+
+    /* Phase badge */
+    .phase-badge {
+      display: inline-block;
+      background: #313244; color: #89b4fa;
+      padding: 3px 10px; border-radius: 4px;
+      font-size: 0.8em; margin-bottom: 8px;
+    }
+
+    /* Description */
+    .desc-box {
+      background: #181825;
+      border-left: 3px solid #89b4fa;
+      padding: 12px 16px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.88em;
+      line-height: 1.6;
+      min-height: 64px;
+      margin-bottom: 22px;
+      white-space: pre-wrap;
+    }
+
+    /* Grid layout */
+    .grids-row {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      align-items: flex-start;
+    }
+    .grid-panel { flex-shrink: 0; }
+    .grid-label { font-size: 0.82em; color: #a6e3a1; font-weight: bold; margin-bottom: 4px; }
+    .grid-sub   { font-size: 0.72em; color: #6c7086; margin-bottom: 8px; }
+
+    table { border-collapse: separate; border-spacing: 3px; }
+
+    td {
+      width: 46px; height: 46px;
+      text-align: center; vertical-align: middle;
+      border-radius: 4px;
+      font-size: 0.9em; font-weight: bold;
+      transition: background 0.18s, color 0.18s;
+    }
+
+    /* Row/col header cells */
+    td.hdr { background: transparent; color: #45475a; font-size: 0.7em; font-weight: normal; width: 20px; }
+
+    td.cell-normal  { background: #313244; color: #cdd6f4; }
+    td.cell-inf     { background: #313244; color: #45475a; font-style: italic; }
+    td.cell-window  { background: #f38ba8; color: #1e1e2e; }
+    td.cell-current { background: #fab387; color: #1e1e2e; }
+    td.cell-filled  { background: #a6e3a1; color: #1e1e2e; }
+    td.cell-empty   { background: #181825; color: #45475a; }
+    td.cell-answer  { background: #cba6f7; color: #1e1e2e; }
+
+    /* Arrow between grids */
+    .arrow-between {
+      color: #89b4fa; font-size: 1.4em;
+      display: flex; align-items: center;
+      padding-top: 36px;
+    }
+
+    /* Deque panel */
+    .deque-panel {
+      background: #181825;
+      border: 1px solid #313244;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+    }
+    .deque-title { color: #f9e2af; font-size: 0.8em; margin-bottom: 8px; }
+    .deque-items { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; min-height: 28px; }
+    .deque-item {
+      background: #313244;
+      border: 1px solid #f9e2af;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 0.82em;
+      color: #f9e2af;
+    }
+    .deque-arrow { color: #45475a; font-size: 0.9em; }
+    .deque-empty { color: #45475a; font-style: italic; font-size: 0.82em; }
+    .deque-label { color: #6c7086; font-size: 0.72em; margin: 0 4px; }
+
+    /* Min value */
+    .min-panel {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #181825;
+      border: 1px solid #fab387;
+      border-radius: 6px;
+      padding: 8px 16px;
+      margin-bottom: 18px;
+      font-size: 0.88em;
+    }
+    .min-label { color: #fab387; }
+    .min-value { color: #a6e3a1; font-size: 1.15em; font-weight: bold; }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 8px;
+      padding-top: 16px;
+      border-top: 1px solid #313244;
+    }
+    button {
+      background: #313244; color: #cdd6f4;
+      border: 1px solid #45475a;
+      padding: 7px 20px; border-radius: 6px;
+      cursor: pointer; font-size: 0.88em;
+      font-family: inherit;
+      transition: background 0.12s;
+      user-select: none;
+    }
+    button:hover:not(:disabled) { background: #45475a; }
+    button:disabled { opacity: 0.35; cursor: default; }
+    .progress-wrap { flex: 1; height: 4px; background: #313244; border-radius: 2px; overflow: hidden; }
+    .progress-bar  { height: 100%; background: #89b4fa; border-radius: 2px; transition: width 0.15s; }
+    .step-counter  { color: #6c7086; font-size: 0.82em; white-space: nowrap; }
+    .key-hint { color: #45475a; font-size: 0.72em; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>2D 슬라이딩 윈도우 Min 시각화</h1>
+  <p class="subtitle">선인장 숨기기 | 예시: m=4, n=5, h=2, w=2 → 정답 [2, 2]</p>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-box lb-window"></div>현재 윈도우</div>
+  <div class="legend-item"><div class="legend-box lb-current"></div>현재 기록 중</div>
+  <div class="legend-item"><div class="legend-box lb-filled"></div>계산 완료</div>
+  <div class="legend-item"><div class="legend-box lb-empty"></div>미계산</div>
+  <div class="legend-item"><div class="legend-box lb-inf"></div>∞ (비 안 옴)</div>
+  <div class="legend-item"><div class="legend-box lb-answer"></div>정답</div>
+</div>
+
+<div class="phase-badge" id="phase-badge">시작</div>
+<div class="desc-box" id="description">로딩 중...</div>
+
+<div class="grids-row" id="grids-row">
+  <!-- Rendered by JS -->
+</div>
+
+<div class="deque-panel" id="deque-panel">
+  <div class="deque-title">📦 단조 덱 (Monotonic Deque)</div>
+  <div class="deque-items" id="deque-items"></div>
+</div>
+
+<div id="min-panel"></div>
+
+<div class="controls">
+  <button id="btn-prev" onclick="navigate(-1)">← 이전</button>
+  <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+  <span class="step-counter" id="step-counter"></span>
+  <button id="btn-next" onclick="navigate(1)">다음 →</button>
+  <span class="key-hint">← → 키 사용 가능</span>
+</div>
+
+<script>
+// ─── 데이터 설정 ───────────────────────────────────────────────
+const m = 4, n = 5, h = 2, w = 2;
+const INF = Infinity;
+const GRID = [
+  [1,   5,   3,   3,   INF],
+  [5,   5,   3,   3,   INF],
+  [2,   2,   6,   4,   INF],
+  [INF, INF, INF, INF, INF]
+];
+const nc = n - w + 1; // 4  (열 방향 유효 위치 수)
+const mr = m - h + 1; // 3  (행 방향 유효 위치 수)
+
+// ─── 유틸 ────────────────────────────────────────────────────
+function D(v) { return v === null ? '' : v === INF ? '∞' : String(v); }
+function cp(arr) { return arr.map(r => [...r]); }
+function nullGrid(rows, cols) { return Array(rows).fill(null).map(() => Array(cols).fill(null)); }
+
+// ─── 스텝 생성 ────────────────────────────────────────────────
+const steps = [];
+
+// 계산 결과 누적
+const rowMin  = nullGrid(m,  nc);
+const result  = nullGrid(mr, nc);
+
+// ── Step 0: 소개 ──
+steps.push({
+  phaseName: '원본 격자 확인',
+  description:
+`drops 배열로부터 m×n 격자를 구성합니다.
+각 셀의 값 = 해당 위치에 비가 오는 순서 (1-indexed)
+∞ = 비가 영원히 오지 않는 셀 (최적 은신처 후보)
+
+목표: h×w 윈도우의 min값이 최대인 위치 [r, c]를 찾아야 합니다.
+→ 2D 슬라이딩 윈도우 Min으로 O(m×n)에 해결!`,
+  gridWin: [], rowMinWin: [], rowMinCur: null,
+  rowMinSnap: cp(rowMin), resultWin: [], resultCur: null,
+  resultSnap: cp(result), resultAns: null,
+  deque: [], dequeAxis: '', minVal: null,
+});
+
+// ── Phase 1: 행 방향 슬라이딩 윈도우 Min ──
+for (let i = 0; i < m; i++) {
+  const dq = []; // 단조 증가 덱 (front = 현재 윈도우 최솟값 인덱스)
+  for (let j = 0; j < n; j++) {
+    while (dq.length && dq[0] <= j - w) dq.shift();
+    while (dq.length && GRID[i][dq[dq.length-1]] >= GRID[i][j]) dq.pop();
+    dq.push(j);
+
+    if (j >= w - 1) {
+      const col = j - w + 1;
+      rowMin[i][col] = GRID[i][dq[0]];
+
+      const winCells = [];
+      for (let c = col; c <= j; c++) winCells.push({r: i, c});
+
+      const vals = winCells.map(({r, c}) => D(GRID[r][c])).join(', ');
+
+      steps.push({
+        phaseName: 'Step 1 — 행 방향 슬라이딩 윈도우 Min (너비 w=' + w + ')',
+        description:
+`행 ${i}  |  윈도우 열 [${col} ~ ${j}]  →  값: [${vals}]
+→  min = ${D(rowMin[i][col])}  →  rowMin[${i}][${col}] 에 기록`,
+        gridWin:    winCells,
+        rowMinWin:  [],
+        rowMinCur:  {r: i, c: col},
+        rowMinSnap: cp(rowMin),
+        resultWin:  [], resultCur: null,
+        resultSnap: cp(result), resultAns: null,
+        deque: dq.map(idx => ({ idx, val: GRID[i][idx] })),
+        dequeAxis: `행 ${i}의 열 인덱스`,
+        minVal: rowMin[i][col],
+      });
+    }
+  }
+}
+
+// ── Phase 2: 열 방향 슬라이딩 윈도우 Min ──
+for (let j = 0; j < nc; j++) {
+  const dq = [];
+  for (let i = 0; i < m; i++) {
+    while (dq.length && dq[0] <= i - h) dq.shift();
+    while (dq.length && rowMin[dq[dq.length-1]][j] >= rowMin[i][j]) dq.pop();
+    dq.push(i);
+
+    if (i >= h - 1) {
+      const row = i - h + 1;
+      result[row][j] = rowMin[dq[0]][j];
+
+      const winCells = [];
+      for (let r = row; r <= i; r++) winCells.push({r, c: j});
+
+      const vals = winCells.map(({r}) => D(rowMin[r][j])).join(', ');
+
+      steps.push({
+        phaseName: 'Step 2 — 열 방향 슬라이딩 윈도우 Min (높이 h=' + h + ')',
+        description:
+`열 ${j}  |  윈도우 행 [${row} ~ ${i}]  →  값: [${vals}]
+→  min = ${D(result[row][j])}  →  result[${row}][${j}] 에 기록
+(result = 선인장 [${row}, ${j}] 배치 시 첫 피해 시점)`,
+        gridWin:    [],
+        rowMinWin:  winCells,
+        rowMinCur:  null,
+        rowMinSnap: cp(rowMin),
+        resultWin:  [],
+        resultCur:  {r: row, c: j},
+        resultSnap: cp(result), resultAns: null,
+        deque: dq.map(idx => ({ idx, val: rowMin[idx][j] })),
+        dequeAxis: `열 ${j}의 행 인덱스`,
+        minVal: result[row][j],
+      });
+    }
+  }
+}
+
+// ── 최종: max of min 탐색 ──
+let bestR = 0, bestC = 0, bestVal = -1;
+for (let i = 0; i < mr; i++) {
+  for (let j = 0; j < nc; j++) {
+    if (result[i][j] > bestVal) {
+      bestVal = result[i][j]; bestR = i; bestC = j;
+    }
+  }
+}
+
+steps.push({
+  phaseName: '완료 — max of min 탐색',
+  description:
+`result 테이블에서 최댓값을 찾습니다.
+최댓값 ${D(bestVal)} → result[${bestR}][${bestC}]
+
+선인장을 [${bestR}, ${bestC}]에 배치하면 ${D(bestVal)}번째 빗방울이 올 때 처음 맞습니다.
+→ 정답: [${bestR}, ${bestC}]  (가장 늦게 비를 맞는 위치)`,
+  gridWin:    [],
+  rowMinWin:  [],
+  rowMinCur:  null,
+  rowMinSnap: cp(rowMin),
+  resultWin:  [],
+  resultCur:  null,
+  resultSnap: cp(result),
+  resultAns:  {r: bestR, c: bestC},
+  deque: [], dequeAxis: '', minVal: null,
+});
+
+// ─── 렌더링 ────────────────────────────────────────────────────
+let cur = 0;
+
+function cellClass(val, isWin, isCur, isAns) {
+  if (isAns) return 'cell-answer';
+  if (isCur) return 'cell-current';
+  if (isWin) return 'cell-window';
+  if (val === null) return 'cell-empty';
+  if (val === INF)  return 'cell-inf';
+  return 'cell-filled';
+}
+
+function buildTable(data, rows, cols, winSet, curCell, ansCell, showHeader) {
+  let html = '<table>';
+  if (showHeader) {
+    html += '<tr><td class="hdr"></td>';
+    for (let c = 0; c < cols; c++) html += `<td class="hdr">${c}</td>`;
+    html += '</tr>';
+  }
+  for (let r = 0; r < rows; r++) {
+    html += '<tr>';
+    if (showHeader) html += `<td class="hdr">${r}</td>`;
+    for (let c = 0; c < cols; c++) {
+      const val   = data[r][c];
+      const isWin = winSet.has(`${r},${c}`);
+      const isCur = curCell && curCell.r === r && curCell.c === c;
+      const isAns = ansCell && ansCell.r === r && ansCell.c === c;
+      const cls   = cellClass(val, isWin, isCur, isAns);
+      html += `<td class="${cls}">${D(val)}</td>`;
+    }
+    html += '</tr>';
+  }
+  html += '</table>';
+  return html;
+}
+
+function render() {
+  const s = steps[cur];
+
+  document.getElementById('phase-badge').textContent = s.phaseName;
+  document.getElementById('description').textContent = s.description;
+
+  const gridsRow = document.getElementById('grids-row');
+  const gWin  = new Set(s.gridWin.map(({r,c})  => `${r},${c}`));
+  const rmWin = new Set(s.rowMinWin.map(({r,c}) => `${r},${c}`));
+
+  let html = '';
+
+  html += `<div class="grid-panel">
+    <div class="grid-label">원본 격자 grid</div>
+    <div class="grid-sub">m×n = ${m}×${n} | drops 순서 기록</div>
+    ${buildTable(GRID, m, n, gWin, null, null, true)}
+  </div>`;
+
+  html += `<div class="arrow-between">→</div>`;
+
+  html += `<div class="grid-panel">
+    <div class="grid-label">행 방향 min rowMin</div>
+    <div class="grid-sub">m×nc = ${m}×${nc} | 행별 너비 w=${w} 슬라이딩 min</div>
+    ${buildTable(s.rowMinSnap, m, nc, rmWin, s.rowMinCur, null, true)}
+  </div>`;
+
+  html += `<div class="arrow-between">→</div>`;
+
+  html += `<div class="grid-panel">
+    <div class="grid-label">결과 테이블 result</div>
+    <div class="grid-sub">mr×nc = ${mr}×${nc} | 열별 높이 h=${h} 슬라이딩 min</div>
+    ${buildTable(s.resultSnap, mr, nc, new Set(), s.resultCur, s.resultAns, true)}
+  </div>`;
+
+  gridsRow.innerHTML = html;
+
+  const dequeItems = document.getElementById('deque-items');
+  if (!s.deque || s.deque.length === 0) {
+    dequeItems.innerHTML = '<span class="deque-empty">비어있음 (empty)</span>';
+  } else {
+    let dhtml = '<span class="deque-label">front →</span>';
+    s.deque.forEach((item, idx) => {
+      if (idx > 0) dhtml += '<span class="deque-arrow">│</span>';
+      dhtml += `<div class="deque-item">idx=${item.idx} (${D(item.val)})</div>`;
+    });
+    dhtml += '<span class="deque-label">← back</span>';
+    if (s.dequeAxis) dhtml += `<span class="deque-label"> | ${s.dequeAxis}</span>`;
+    dequeItems.innerHTML = dhtml;
+  }
+
+  const minPanel = document.getElementById('min-panel');
+  if (s.minVal !== null) {
+    minPanel.innerHTML = `<div class="min-panel">
+      <span class="min-label">기록된 min값:</span>
+      <span class="min-value">${D(s.minVal)}</span>
+    </div>`;
+  } else {
+    minPanel.innerHTML = '';
+  }
+
+  document.getElementById('progress-bar').style.width = `${(cur + 1) / steps.length * 100}%`;
+  document.getElementById('step-counter').textContent = `${cur + 1} / ${steps.length}`;
+  document.getElementById('btn-prev').disabled = cur === 0;
+  document.getElementById('btn-next').disabled = cur === steps.length - 1;
+}
+
+function navigate(delta) {
+  const next = cur + delta;
+  if (next >= 0 && next < steps.length) {
+    cur = next;
+    render();
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigate(1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   navigate(-1);
+});
+
+render();
+</script>
+</body>
+</html>

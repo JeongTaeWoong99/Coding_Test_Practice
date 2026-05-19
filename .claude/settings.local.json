@@ -159,7 +159,12 @@
       "PowerShell(New-Item *)",
       "WebFetch(domain:school.programmers.co.kr)",
       "Skill(complete-process)",
-      "Skill(coding-style)"
+      "Skill(coding-style)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\" | ForEach-Object { \"$\\($_.PSIsContainer ? '[DIR]' : '[FILE]'\\) $\\($_.Name\\)\" })",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Complete\" | ForEach-Object { \"$\\($_.PSIsContainer ? '[DIR]' : '[FILE]'\\) $\\($_.Name\\)\" })",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Complete\\\\프로그래머스\" | ForEach-Object { \"$\\($_.PSIsContainer ? '[DIR]' : '[FILE]'\\) $\\($_.Name\\)\" })",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Complete\\\\프로그래머스\\\\Level_2\" | ForEach-Object { \"$\\($_.PSIsContainer ? '[DIR]' : '[FILE]'\\) $\\($_.Name\\)\" })",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Complete\\\\프로그래머스\\\\Level_1\" | ForEach-Object { \"$\\($_.PSIsContainer ? '[DIR]' : '[FILE]'\\) $\\($_.Name\\)\" })"
     ]
   },
   "outputStyle": "korean-terminal"

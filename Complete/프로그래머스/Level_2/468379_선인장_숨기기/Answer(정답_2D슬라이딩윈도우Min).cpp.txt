@@ -1,0 +1,103 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = INT_MAX; // 비가 오지 않는 셀 = 무한대 (영원히 안 맞음)
+
+vector<int> solution(int m, int n, int h, int w, vector<vector<int>> drops)
+{
+    // 격자 크기 초기화 및 모든 셀을 INF로
+    vector<int> gridRow(n, INF);
+    vector<vector<int>> grid(m, gridRow);
+
+    // drops 순서 기록 -> {drops[i]의 0번 = y,  drops[i]의 1번은 x}
+    for (int i = 0; i < (int)drops.size(); i++)
+    {
+        grid[drops[i][0]][drops[i][1]] = i + 1;
+    }
+
+    // Step 1: 행 방향 슬라이딩 윈도우 min (너비 w)
+    // rowMin[i][j] = min(grid[i][j .. j+w-1])
+    int nc = n - w + 1; // 열 방향 유효 위치 수
+    vector<int> rowMinRow(nc);
+    vector<vector<int>> rowMin(m, rowMinRow);
+
+    for (int i = 0; i < m; i++)
+    {
+        deque<int> dq; // front = 현재 윈도우의 최솟값 인덱스
+
+        for (int j = 0; j < n; j++)
+        {
+            // 윈도우 밖 인덱스 제거
+            while (!dq.empty() && dq.front() <= j - w)
+            {
+                dq.pop_front();
+            }
+
+            // 현재값보다 큰 인덱스 제거
+            while (!dq.empty() && grid[i][dq.back()] >= grid[i][j])
+            {
+                dq.pop_back();
+            }
+
+            dq.emplace_back(j);
+
+            if (j >= w - 1) // 윈도우가 꽉 찼을 때 결과 기록
+            {
+                rowMin[i][j - w + 1] = grid[i][dq.front()];
+            }
+        }
+    }
+
+    // Step 2: 열 방향 슬라이딩 윈도우 min (높이 h)
+    // result[i][j] = min(rowMin[i..i+h-1][j]) = h×w 직사각형의 min
+    int mr = m - h + 1; // 행 방향 유효 위치 수
+    vector<int> resultRow(nc);
+    vector<vector<int>> result(mr, resultRow);
+
+    for (int j = 0; j < nc; j++)
+    {
+        deque<int> dq; // front = 현재 윈도우의 최솟값 인덱스
+
+        for (int i = 0; i < m; i++)
+        {
+            // 윈도우 밖 인덱스 제거
+            while (!dq.empty() && dq.front() <= i - h)
+            {
+                dq.pop_front();
+            }
+
+            // 현재값보다 큰 인덱스 제거
+            while (!dq.empty() && rowMin[dq.back()][j] >= rowMin[i][j])
+            {
+                dq.pop_back();
+            }
+
+            dq.emplace_back(i);
+
+            // 윈도우가 꽉 찼을 때 결과 기록
+            if (i >= h - 1)
+            {
+                result[i - h + 1][j] = rowMin[dq.front()][j];
+            }
+        }
+    }
+
+    // Step 3: max of min 위치 탐색 (동점이면 먼저 발견된 위치 유지)
+    int bestR = 0, bestC = 0, bestVal = -1;
+
+    for (int i = 0; i < mr; i++)
+    {
+        for (int j = 0; j < nc; j++)
+        {
+            // INF도 비교 가능 (INF > 모든 유한값)
+            if (result[i][j] > bestVal)
+            {
+                bestVal = result[i][j];
+                bestR = i;
+                bestC = j;
+            }
+        }
+    }
+
+    return {bestR, bestC};
+}

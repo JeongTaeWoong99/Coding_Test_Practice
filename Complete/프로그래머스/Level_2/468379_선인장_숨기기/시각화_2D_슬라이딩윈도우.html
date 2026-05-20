@@ -1,466 +1,691 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2D 슬라이딩 윈도우 Min 시각화 | 선인장 숨기기</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #1e1e2e; color: #cdd6f4; font-family: 'Consolas', 'Courier New', monospace; padding: 22px 26px; min-height: 100vh; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2D 슬라이딩 윈도우 Min | 선인장 숨기기</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #1e1e2e; color: #cdd6f4; font-family: 'Consolas','Courier New',monospace; padding: 20px 24px; min-height: 100vh; }
 
-    header { margin-bottom: 14px; }
-    h1 { color: #cba6f7; font-size: 1.35em; margin-bottom: 3px; }
-    .subtitle { color: #6c7086; font-size: 0.8em; }
+h1 { color: #cba6f7; font-size: 1.32em; margin-bottom: 3px; }
+.subtitle { color: #6c7086; font-size: 0.78em; margin-bottom: 14px; }
 
-    /* Tabs */
-    .example-tabs { display: flex; gap: 7px; margin-bottom: 14px; flex-wrap: wrap; }
-    .tab { background: #313244; color: #6c7086; border: 1px solid #45475a; padding: 5px 16px; border-radius: 6px; cursor: pointer; font-size: 0.8em; font-family: inherit; transition: background .12s, color .12s; }
-    .tab:hover { background: #45475a; color: #cdd6f4; }
-    .tab.active { background: #45475a; color: #cba6f7; border-color: #cba6f7; }
+/* Example tabs */
+.ex-tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.tab { background: #313244; color: #6c7086; border: 1px solid #45475a; padding: 4px 14px; border-radius: 5px; cursor: pointer; font-size: 0.78em; font-family: inherit; }
+.tab:hover { background: #45475a; color: #cdd6f4; }
+.tab.active { background: #45475a; color: #cba6f7; border-color: #cba6f7; }
 
-    /* Legend */
-    .legend { display: flex; gap: 11px; flex-wrap: wrap; margin-bottom: 14px; }
-    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.73em; color: #a6adc8; }
-    .legend-box { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
-    .lb-normal  { background: #313244; border: 1px solid #585b70; }
-    .lb-proc    { background: #89dceb; }
-    .lb-window  { background: #f38ba8; }
-    .lb-current { background: #fab387; }
-    .lb-filled  { background: #a6e3a1; }
-    .lb-empty   { background: #181825; border: 1px solid #313244; }
-    .lb-inf     { background: #252535; border: 1px dashed #6c7086; }
-    .lb-answer  { background: #cba6f7; }
+/* Phase navigation */
+.phase-nav { display: flex; gap: 5px; margin-bottom: 12px; flex-wrap: wrap; }
+.pnav { background: #252535; color: #585b70; border: 1px solid #313244; padding: 3px 10px; border-radius: 4px; cursor: pointer; font-size: 0.73em; font-family: inherit; }
+.pnav:hover { background: #313244; }
+.pnav.active { background: #313244; color: #89b4fa; border-color: #89b4fa; }
 
-    .phase-badge { display: inline-block; background: #313244; color: #89b4fa; padding: 3px 10px; border-radius: 4px; font-size: 0.77em; margin-bottom: 7px; }
+/* Legend */
+.legend { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.legend-item { display: flex; align-items: center; gap: 4px; font-size: 0.71em; color: #a6adc8; }
+.lb { width: 11px; height: 11px; border-radius: 2px; flex-shrink: 0; }
 
-    .desc-box { background: #181825; border-left: 3px solid #89b4fa; padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 0.83em; line-height: 1.65; min-height: 54px; margin-bottom: 14px; white-space: pre-wrap; }
+/* Phase badge + description */
+.phase-badge { display: inline-block; background: #313244; color: #89b4fa; padding: 2px 9px; border-radius: 4px; font-size: 0.75em; margin-bottom: 6px; }
+.desc-box { background: #181825; border-left: 3px solid #89b4fa; padding: 9px 13px; border-radius: 0 5px 5px 0; font-size: 0.81em; line-height: 1.7; margin-bottom: 14px; white-space: pre-wrap; min-height: 50px; }
 
-    .grids-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 14px; align-items: flex-start; }
-    .grid-panel { flex-shrink: 0; }
-    .grid-label { font-size: 0.78em; color: #a6e3a1; font-weight: bold; margin-bottom: 3px; }
-    .grid-sub   { font-size: 0.68em; color: #6c7086; margin-bottom: 6px; }
+/* ─── CONCEPT 1D PANEL ─── */
+#concept-view { margin-bottom: 14px; }
+.c1d-panel { background: #181825; border: 1px solid #313244; border-radius: 7px; padding: 14px 16px; margin-bottom: 10px; }
+.c1d-label { color: #89dceb; font-size: 0.77em; font-weight: bold; margin-bottom: 10px; }
+.c1d-sub   { color: #6c7086; font-size: 0.7em; margin-bottom: 8px; }
 
-    table { border-collapse: separate; border-spacing: 3px; }
-    td { width: 42px; height: 42px; text-align: center; vertical-align: middle; border-radius: 4px; font-size: 0.86em; font-weight: bold; transition: background .14s, color .14s; }
-    td.hdr { background: transparent; color: #45475a; font-size: 0.66em; font-weight: normal; width: 16px; }
+.c1d-row { display: flex; gap: 5px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 10px; }
+.c1d-cell {
+  display: flex; flex-direction: column; align-items: center;
+  width: 52px; border-radius: 5px; padding: 5px 0;
+  transition: background .15s;
+}
+.c1d-idx { font-size: 0.62em; color: rgba(0,0,0,0.45); margin-bottom: 2px; }
+.c1d-val { font-size: 1.02em; font-weight: bold; }
+.c1d-n  { background: #313244; }  /* normal */
+.c1d-n .c1d-idx { color: #45475a; }
+.c1d-n .c1d-val { color: #cdd6f4; }
+.c1d-cur { background: #89dceb; }  /* current j */
+.c1d-cur .c1d-idx, .c1d-cur .c1d-val { color: #1e1e2e; }
+.c1d-win { background: #f38ba8; }  /* in window */
+.c1d-win .c1d-idx, .c1d-win .c1d-val { color: #1e1e2e; }
+.c1d-done { background: #a6e3a1; } /* result confirmed */
+.c1d-done .c1d-idx, .c1d-done .c1d-val { color: #1e1e2e; }
 
-    td.cell-normal  { background: #313244; color: #cdd6f4; }
-    td.cell-inf     { background: #252535; color: #45475a; font-style: italic; font-size: 0.73em; }
-    td.cell-proc    { background: #89dceb; color: #1e1e2e; }   /* 현재 처리 중인 위치 */
-    td.cell-window  { background: #f38ba8; color: #1e1e2e; }   /* 윈도우 범위 */
-    td.cell-current { background: #fab387; color: #1e1e2e; }   /* 결과 기록 중인 셀 */
-    td.cell-filled  { background: #a6e3a1; color: #1e1e2e; }   /* 계산 완료 */
-    td.cell-empty   { background: #181825; color: #313244; }   /* 미계산 */
-    td.cell-answer  { background: #cba6f7; color: #1e1e2e; }   /* 정답 */
+/* Results row */
+.c1d-res-row { display: flex; gap: 5px; margin-bottom: 10px; }
+.c1d-res-cell {
+  width: 52px; height: 34px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border-radius: 4px; font-size: 0.8em; font-weight: bold;
+}
+.c1d-res-empty  { background: #181825; color: #313244; border: 1px dashed #313244; }
+.c1d-res-filled { background: #cba6f7; color: #1e1e2e; }
 
-    .arrow-between { color: #89b4fa; font-size: 1.25em; display: flex; align-items: center; padding-top: 30px; }
+/* Deque 1D */
+.c1d-dq { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; min-height: 38px; }
+.c1d-dq-el {
+  display: flex; flex-direction: column; align-items: center;
+  border-radius: 5px; padding: 4px 9px; border: 1.5px solid;
+  font-size: 0.78em;
+}
+.c1d-dq-el .di { font-size: 0.65em; margin-bottom: 1px; opacity: 0.7; }
+.c1d-dq-el .dv { font-weight: bold; }
+.dq-norm    { background: #313244; border-color: #f9e2af; color: #f9e2af; }
+.dq-front   { background: #fab387; border-color: #fab387; color: #1e1e2e; }
+.dq-front .di { opacity: 0.6; color: #1e1e2e; }
+.dq-removing { background: rgba(243,139,168,0.25); border-color: #f38ba8; color: #f38ba8; text-decoration: line-through; opacity: 0.8; }
+.dq-adding   { background: rgba(166,227,161,0.3);  border-color: #a6e3a1; color: #a6e3a1; }
+.dq-sep  { color: #45475a; font-size: 0.88em; }
+.dq-lbl  { color: #585b70; font-size: 0.68em; }
+.dq-empty{ color: #45475a; font-style: italic; font-size: 0.78em; }
 
-    /* Operations log */
-    .ops-panel { background: #181825; border: 1px solid #313244; border-radius: 6px; padding: 10px 14px; margin-bottom: 12px; }
-    .ops-title { color: #89dceb; font-size: 0.77em; margin-bottom: 8px; font-weight: bold; }
-    .ops-list { display: flex; flex-direction: column; gap: 4px; min-height: 22px; }
-    .op-item { display: flex; align-items: flex-start; gap: 10px; font-size: 0.8em; line-height: 1.5; }
-    .op-num  { color: #45475a; flex-shrink: 0; width: 16px; }
-    .op-type { flex-shrink: 0; width: 80px; font-weight: bold; }
-    .op-detail { color: #f9e2af; }
-    .op-reason { color: #6c7086; }
-    .op-type.front-pop { color: #f38ba8; }
-    .op-type.back-pop  { color: #fab387; }
-    .op-type.push      { color: #a6e3a1; }
-    .op-type.record    { color: #cba6f7; }
-    .ops-empty { color: #45475a; font-style: italic; font-size: 0.8em; }
+/* Comparison box (for back_pop WHY) */
+.compare-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 8px; padding: 8px 10px; background: #252535; border-radius: 6px; border: 1px solid #313244; }
+.cmp-box { background: #1e1e2e; border: 1.5px solid; border-radius: 5px; padding: 5px 10px; font-size: 0.8em; text-align: center; }
+.cmp-old { border-color: #f38ba8; color: #f38ba8; }
+.cmp-new { border-color: #a6e3a1; color: #a6e3a1; }
+.cmp-op  { color: #fab387; font-size: 1.1em; font-weight: bold; }
+.cmp-result { color: #cba6f7; font-size: 0.78em; }
 
-    /* Deque panel */
-    .deque-panel { background: #181825; border: 1px solid #313244; border-radius: 6px; padding: 10px 14px; margin-bottom: 12px; }
-    .deque-title { color: #f9e2af; font-size: 0.77em; margin-bottom: 7px; }
-    .deque-items { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; min-height: 25px; }
-    .deque-item { background: #313244; border: 1px solid #f9e2af; padding: 2px 9px; border-radius: 4px; font-size: 0.79em; color: #f9e2af; }
-    .deque-item.is-front { background: #fab387; color: #1e1e2e; border-color: #fab387; }
-    .deque-sep   { color: #45475a; font-size: 0.82em; }
-    .deque-label { color: #6c7086; font-size: 0.68em; margin: 0 3px; }
-    .deque-empty { color: #45475a; font-style: italic; font-size: 0.79em; }
+/* ─── ALGORITHM 3-GRID VIEW ─── */
+#algo-view { margin-bottom: 14px; }
+.grids-row { display: flex; gap: 18px; flex-wrap: wrap; align-items: flex-start; }
+.grid-panel { flex-shrink: 0; }
+.grid-label { font-size: 0.77em; color: #a6e3a1; font-weight: bold; margin-bottom: 3px; }
+.grid-sub   { font-size: 0.67em; color: #6c7086; margin-bottom: 6px; }
+.arr-between { color: #89b4fa; font-size: 1.2em; display: flex; align-items: center; padding-top: 28px; }
 
-    .min-panel { display: inline-flex; align-items: center; gap: 9px; background: #181825; border: 1px solid #fab387; border-radius: 6px; padding: 6px 13px; margin-bottom: 14px; font-size: 0.83em; }
-    .min-label { color: #fab387; }
-    .min-value { color: #a6e3a1; font-size: 1.08em; font-weight: bold; }
+table { border-collapse: separate; border-spacing: 3px; }
+td { width: 40px; height: 40px; text-align: center; vertical-align: middle; border-radius: 4px; font-size: 0.85em; font-weight: bold; transition: background .13s; }
+td.hdr { background: transparent; color: #45475a; font-size: 0.64em; font-weight: normal; width: 15px; }
+td.cell-normal  { background: #313244; color: #cdd6f4; }
+td.cell-inf     { background: #252535; color: #45475a; font-style: italic; font-size: 0.72em; }
+td.cell-proc    { background: #89dceb; color: #1e1e2e; }
+td.cell-window  { background: #f38ba8; color: #1e1e2e; }
+td.cell-current { background: #fab387; color: #1e1e2e; }
+td.cell-filled  { background: #a6e3a1; color: #1e1e2e; }
+td.cell-empty   { background: #181825; color: #313244; }
+td.cell-answer  { background: #cba6f7; color: #1e1e2e; }
 
-    .controls { display: flex; align-items: center; gap: 11px; padding-top: 12px; border-top: 1px solid #313244; }
-    button.nav-btn { background: #313244; color: #cdd6f4; border: 1px solid #45475a; padding: 6px 17px; border-radius: 6px; cursor: pointer; font-size: 0.82em; font-family: inherit; transition: background .12s; user-select: none; }
-    button.nav-btn:hover:not(:disabled) { background: #45475a; }
-    button.nav-btn:disabled { opacity: 0.35; cursor: default; }
-    .progress-wrap { flex: 1; height: 4px; background: #313244; border-radius: 2px; overflow: hidden; }
-    .progress-bar  { height: 100%; background: #89b4fa; border-radius: 2px; transition: width .12s; }
-    .step-counter  { color: #6c7086; font-size: 0.78em; white-space: nowrap; }
-    .key-hint      { color: #45475a; font-size: 0.68em; }
-  </style>
+/* ─── OPERATION EXPLANATION PANEL ─── */
+.op-panel { background: #181825; border: 1px solid #313244; border-radius: 6px; padding: 10px 13px; margin-bottom: 10px; }
+.op-panel-title { color: #89dceb; font-size: 0.76em; font-weight: bold; margin-bottom: 8px; }
+.op-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 5px; font-size: 0.79em; line-height: 1.5; }
+.op-num  { color: #45475a; flex-shrink: 0; width: 14px; }
+.op-type { flex-shrink: 0; width: 74px; font-weight: bold; }
+.fp { color: #f38ba8; } .bp { color: #fab387; } .ps { color: #a6e3a1; } .rc { color: #cba6f7; }
+.op-why  { color: #6c7086; }
+.op-empty { color: #45475a; font-style: italic; font-size: 0.78em; }
+
+/* ─── DEQUE PANEL (algorithm) ─── */
+.dq-panel { background: #181825; border: 1px solid #313244; border-radius: 6px; padding: 9px 13px; margin-bottom: 10px; }
+.dq-panel-title { color: #f9e2af; font-size: 0.75em; margin-bottom: 7px; }
+.dq-items { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; min-height: 24px; }
+
+/* ─── CONTROLS ─── */
+.controls { display: flex; align-items: center; gap: 10px; padding-top: 12px; border-top: 1px solid #313244; }
+button.nav { background: #313244; color: #cdd6f4; border: 1px solid #45475a; padding: 5px 16px; border-radius: 5px; cursor: pointer; font-size: 0.8em; font-family: inherit; }
+button.nav:hover:not(:disabled) { background: #45475a; }
+button.nav:disabled { opacity: 0.33; cursor: default; }
+.pw { flex: 1; height: 4px; background: #313244; border-radius: 2px; overflow: hidden; }
+.pb { height: 100%; background: #89b4fa; border-radius: 2px; transition: width .11s; }
+.sc { color: #6c7086; font-size: 0.77em; white-space: nowrap; }
+.kh { color: #45475a; font-size: 0.67em; }
+</style>
 </head>
 <body>
-<header>
-  <h1>2D 슬라이딩 윈도우 Min 시각화</h1>
-  <p class="subtitle">선인장 숨기기 — 단조 덱 연산 과정 포함</p>
-</header>
 
-<div class="example-tabs">
-  <button class="tab active" id="tab-0" onclick="loadExample(0)">예제 1 &nbsp;|&nbsp; m=4, n=5, h=2, w=2 &nbsp;→&nbsp; [2, 2]</button>
-  <button class="tab"        id="tab-1" onclick="loadExample(1)">예제 2 &nbsp;|&nbsp; m=3, n=3, h=1, w=1 &nbsp;→&nbsp; [1, 1]</button>
+<h1>2D 슬라이딩 윈도우 Min 시각화</h1>
+<p class="subtitle">선인장 숨기기 — 단조 덱 개념 + 알고리즘 단계별 시각화</p>
+
+<div class="ex-tabs">
+  <button class="tab active" id="tab-0" onclick="loadEx(0)">예제 1 | m=4,n=5,h=2,w=2 → [2,2]</button>
+  <button class="tab"        id="tab-1" onclick="loadEx(1)">예제 2 | m=3,n=3,h=1,w=1 → [1,1]</button>
+</div>
+
+<div class="phase-nav">
+  <button class="pnav" id="pn-concept" onclick="jumpPhase('concept')">① 단조 덱 개념</button>
+  <button class="pnav" id="pn-p1"      onclick="jumpPhase('p1')">② Step 1 행 방향</button>
+  <button class="pnav" id="pn-p2"      onclick="jumpPhase('p2')">③ Step 2 열 방향</button>
+  <button class="pnav" id="pn-final"   onclick="jumpPhase('final')">④ 최종 결과</button>
 </div>
 
 <div class="legend">
-  <div class="legend-item"><div class="legend-box lb-normal"></div>원본 셀</div>
-  <div class="legend-item"><div class="legend-box lb-inf"></div>∞ (비 안 옴)</div>
-  <div class="legend-item"><div class="legend-box lb-proc"></div>현재 처리 위치</div>
-  <div class="legend-item"><div class="legend-box lb-window"></div>윈도우 범위</div>
-  <div class="legend-item"><div class="legend-box lb-current"></div>결과 기록 중</div>
-  <div class="legend-item"><div class="legend-box lb-filled"></div>계산 완료</div>
-  <div class="legend-item"><div class="legend-box lb-empty"></div>미계산</div>
-  <div class="legend-item"><div class="legend-box lb-answer"></div>정답</div>
+  <div class="legend-item"><div class="lb" style="background:#313244;border:1px solid #585b70"></div>원본셀</div>
+  <div class="legend-item"><div class="lb" style="background:#252535;border:1px dashed #6c7086"></div>∞비안옴</div>
+  <div class="legend-item"><div class="lb" style="background:#89dceb"></div>현재처리</div>
+  <div class="legend-item"><div class="lb" style="background:#f38ba8"></div>윈도우범위</div>
+  <div class="legend-item"><div class="lb" style="background:#fab387"></div>결과기록</div>
+  <div class="legend-item"><div class="lb" style="background:#a6e3a1"></div>계산완료</div>
+  <div class="legend-item"><div class="lb" style="background:#cba6f7"></div>정답</div>
+  <div class="legend-item"><div class="lb" style="background:#fab387;border:1.5px solid #fab387"></div>덱front(최솟값)</div>
+  <div class="legend-item"><div class="lb" style="background:rgba(243,139,168,.3);border:1px solid #f38ba8"></div>덱제거예정</div>
+  <div class="legend-item"><div class="lb" style="background:rgba(166,227,161,.3);border:1px solid #a6e3a1"></div>덱새로추가</div>
 </div>
 
-<div class="phase-badge" id="phase-badge">시작</div>
-<div class="desc-box" id="description"></div>
+<div class="phase-badge" id="pbadge"></div>
+<div class="desc-box"    id="desc"></div>
 
-<div class="grids-row" id="grids-row"></div>
-
-<div class="ops-panel">
-  <div class="ops-title">🔄 이번 단계 덱 연산 순서</div>
-  <div class="ops-list" id="ops-list"></div>
+<!-- CONCEPT VIEW -->
+<div id="concept-view">
+  <div class="c1d-panel">
+    <div class="c1d-label">배열 [3, 1, 4, 2, 5]  |  윈도우 크기 k=3</div>
+    <div class="c1d-sub">목표: 크기 3 윈도우의 min 값들 → [?, ?, ?]</div>
+    <div class="c1d-row" id="c1d-arr"></div>
+    <div class="c1d-sub" style="margin-bottom:5px">🎯 윈도우 min 결과:</div>
+    <div class="c1d-res-row" id="c1d-res"></div>
+    <div id="c1d-compare"></div>
+  </div>
+  <div class="dq-panel">
+    <div class="dq-panel-title">📦 단조 덱 상태  <span style="color:#6c7086;font-size:.75em">(front = 현재 윈도우의 최솟값)</span></div>
+    <div class="dq-items" id="c1d-dq"></div>
+  </div>
 </div>
 
-<div class="deque-panel">
-  <div class="deque-title">📦 단조 덱 상태 (연산 후)</div>
-  <div class="deque-items" id="deque-items"></div>
+<!-- ALGO VIEW -->
+<div id="algo-view">
+  <div class="grids-row" id="grids-row"></div>
+  <div class="op-panel">
+    <div class="op-panel-title">🔄 이번 단계 연산 (while 루프 추적)</div>
+    <div id="op-list"></div>
+  </div>
+  <div class="dq-panel">
+    <div class="dq-panel-title">📦 단조 덱 상태  <span style="color:#6c7086;font-size:.75em">(front = 현재 윈도우의 최솟값)</span></div>
+    <div class="dq-items" id="algo-dq"></div>
+  </div>
 </div>
-
-<div id="min-panel"></div>
 
 <div class="controls">
-  <button class="nav-btn" id="btn-prev" onclick="navigate(-1)">← 이전</button>
-  <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
-  <span class="step-counter" id="step-counter"></span>
-  <button class="nav-btn" id="btn-next" onclick="navigate(1)">다음 →</button>
-  <span class="key-hint">← → 키 사용 가능</span>
+  <button class="nav" id="bp" onclick="nav(-1)">← 이전</button>
+  <div class="pw"><div class="pb" id="pb"></div></div>
+  <span class="sc" id="sc"></span>
+  <button class="nav" id="bn" onclick="nav(1)">다음 →</button>
+  <span class="kh">← → 키 사용 가능</span>
 </div>
 
 <script>
 const INF = Infinity;
+const EX1 = { m:4,n:5,h:2,w:2, grid:[
+  [1,INF,INF,INF,8],[INF,5,INF,3,INF],[INF,INF,6,7,4],[INF,2,INF,INF,INF]
+]};
+const EX2 = { m:3,n:3,h:1,w:1, grid:[[1,2,3],[4,9,5],[6,7,8]] };
+const EXAMPLES = [EX1,EX2];
 
-const EX1 = {
-  m: 4, n: 5, h: 2, w: 2,
-  grid: [
-    [1,   INF, INF, INF, 8  ],
-    [INF, 5,   INF, 3,   INF],
-    [INF, INF, 6,   7,   4  ],
-    [INF, 2,   INF, INF, INF]
-  ]
-};
-const EX2 = {
-  m: 3, n: 3, h: 1, w: 1,
-  grid: [
-    [1, 2, 3],
-    [4, 9, 5],
-    [6, 7, 8]
-  ]
-};
-const EXAMPLES = [EX1, EX2];
+function D(v){ return v===null?'':v===INF?'∞':String(v); }
+function cp(a){ return a.map(r=>[...r]); }
+function nl(r,c){ return Array(r).fill(null).map(()=>Array(c).fill(null)); }
 
-function D(v) { return v === null ? '' : v === INF ? '∞' : String(v); }
-function cp(a) { return a.map(r => [...r]); }
-function nullGrid(r, c) { return Array(r).fill(null).map(() => Array(c).fill(null)); }
-
-// ─── 스텝 생성 ───────────────────────────────────────────────────
-function generateSteps(ex) {
-  const { m, n, h, w, grid } = ex;
-  const nc = n - w + 1, mr = m - h + 1;
-  const steps = [];
-  const rowMin = nullGrid(m, nc);
-  const result = nullGrid(mr, nc);
-
-  // ── 소개 ──
-  steps.push({
-    phase: 'intro',
-    phaseName: '원본 격자 확인',
-    description:
-`각 셀 = drops 배열에서 해당 좌표에 비가 오는 순서 (1-indexed)
-∞   = 비가 영원히 오지 않는 셀 (이 셀 포함 윈도우 = 완벽한 은신처)
-
-목표: h×w 윈도우의 min 최대인 위치 [r, c] → 2D 슬라이딩 윈도우 Min O(m×n)`,
-    gridProc: null, gridWin: [], rowMinWin: [], rowMinCur: null,
-    rowMinSnap: cp(rowMin), resultWin: [], resultCur: null,
-    resultSnap: cp(result), resultAns: null,
-    deque: [], dequeAxis: '', ops: [], minVal: null,
+// ═══════════════════════════════════════════════════
+// CONCEPT STEPS — 1D array [3,1,4,2,5] k=3
+// ═══════════════════════════════════════════════════
+function genConceptSteps(){
+  const arr=[3,1,4,2,5], k=3;
+  const res=new Array(arr.length-k+1).fill(null);
+  const steps=[];
+  const S=(pn,desc,j,dqDisplay,hlIdx,hlType,compare,recIdx)=>({
+    section:'concept', phaseName:pn, description:desc,
+    arr, k, j, dqDisplay:[...dqDisplay], hlIdx, hlType, compare,
+    res:[...res], recIdx:recIdx??null
   });
 
-  // ── Phase 1: 행 방향 (모든 j 스텝) ──
-  for (let i = 0; i < m; i++) {
-    const dq = [];
-    for (let j = 0; j < n; j++) {
-      const ops = [];
+  // 0. 도입
+  steps.push(S('① 단조 덱 개념 이해',
+`단조 덱(Monotonic Deque)이란?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-      // while 1: 윈도우 밖 앞 제거
-      while (dq.length && dq[0] <= j - w) {
-        const out = dq[0];
-        ops.push({ type: 'front_pop', idx: out, val: grid[i][out],
-          reason: `idx=${out} ≤ j-w = ${j}-${w} = ${j-w}  →  윈도우 왼쪽 밖으로 벗어남` });
+덱(deque) = 앞·뒤 양쪽에서 삽입/삭제 가능한 자료구조
+단조 덱   = 덱 안의 값이 항상 "앞→뒤로 증가" 하도록 유지한 덱
+
+  [front] 작은값 → ... → 큰값 [back]
+
+핵심 성질:
+  덱의 맨 앞(front) = 덱에서 가장 작은 값
+                    = 현재 윈도우의 최솟값   ← 항상 성립!
+
+아래에서 배열 [3,1,4,2,5], 윈도우 k=3 으로 직접 확인해봅니다.`,-1,[],null,null,null));
+
+  // 1. 목표 확인
+  steps.push(S('① 단조 덱 개념 이해',
+`목표: 크기 k=3 윈도우를 슬라이딩하며 각 위치의 최솟값 구하기
+
+배열:    [3, 1, 4, 2, 5]
+윈도우 1: min(3,1,4) = 1
+윈도우 2: min(1,4,2) = 1
+윈도우 3: min(4,2,5) = 2
+
+결과: [1, 1, 2]
+
+나이브 방법: 매 윈도우마다 k번 비교 → O(n×k)
+단조 덱:     각 원소 한 번씩만 처리   → O(n)   ← 이게 핵심!`,-1,[],null,null,null));
+
+  const dq=[];
+  for(let j=0;j<arr.length;j++){
+    // front pop
+    while(dq.length && dq[0].idx <= j-k){
+      const rm=dq[0];
+      const winStart=j-k+1;
+      steps.push(S('① 단조 덱 개념 이해',
+`j=${j} 처리 전 — ① while: 앞 제거 (윈도우 만료)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+조건: dq.front().idx <= j-k
+  dq.front() = idx=${rm.idx}
+  j-k = ${j}-${k} = ${j-k}
+  ${rm.idx} <= ${j-k}? YES → 제거!
+
+이유:
+  현재 윈도우는 [${winStart} ~ ${j}] 범위
+  idx=${rm.idx}은 ${winStart}보다 왼쪽에 있음
+  → 이미 윈도우 밖으로 벗어남 → 제거
+
+덱에서 앞(front)을 pop_front()`,
+j,dq,rm.idx,'removing',null));
+      dq.shift();
+    }
+    // back pop
+    while(dq.length && dq[dq.length-1].val >= arr[j]){
+      const rm=dq[dq.length-1];
+      steps.push(S('① 단조 덱 개념 이해',
+`j=${j} (값=${arr[j]}) — ② while: 뒤 제거 (단조성 유지)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+조건: dq.back().val >= arr[j]
+  dq.back() = idx=${rm.idx} (값=${rm.val})
+  arr[j]    = ${arr[j]}
+  ${rm.val} >= ${arr[j]}? YES → 제거!
+
+왜 버려도 되는가? (핵심!)
+  ┌─ 비교 ─────────────────────────────────┐
+  │ 뒤쪽: idx=${rm.idx} (값=${rm.val})          │
+  │ 새것: idx=${j}  (값=${arr[j]})            │
+  └────────────────────────────────────────┘
+  1. 새것(idx=${j})이 뒤쪽(idx=${rm.idx})보다 나중에 들어옴
+  2. 새것의 값(${arr[j]}) ≤ 뒤쪽의 값(${rm.val})
+  3. 새것은 뒤쪽보다 늦게 윈도우를 떠남
+
+  → 두 원소가 같은 윈도우에 있는 모든 순간:
+    새것이 더 작거나 같으므로 뒤쪽은 절대 최솟값 불가
+  → 뒤쪽은 영원히 쓸모없음 → 버린다!
+
+덱에서 뒤(back)를 pop_back()`,
+j,dq,rm.idx,'removing',{old:{idx:rm.idx,val:rm.val},nw:{idx:j,val:arr[j]}}));
+      dq.pop();
+    }
+    // push
+    dq.push({idx:j,val:arr[j]});
+    const isRec=j>=k-1;
+    if(isRec) res[j-k+1]=arr[dq[0].idx];
+    steps.push(S('① 단조 덱 개념 이해',
+`j=${j} (값=${arr[j]}) — ③ 삽입${isRec?' + ④ 기록':''}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+③ 삽입: idx=${j} (값=${arr[j]})를 덱 뒤에 추가 (push_back)
+  모든 뒤 제거가 끝났으므로, 덱의 값 순서가 유지됨
+  (앞→뒤로 값이 증가하는 단조 증가 덱 상태)
+${isRec?`
+④ 기록: 윈도우 [${j-k+1} ~ ${j}] 완성!
+  덱의 front = idx=${dq[0].idx} (값=${arr[dq[0].idx]})
+  → 이것이 윈도우 최솟값
+  → result[${j-k+1}] = ${res[j-k+1]} 기록  ✅
+
+  검증: 실제 min([${arr.slice(j-k+1,j+1).join(',')}]) = ${Math.min(...arr.slice(j-k+1,j+1))} ✅`:''}`,
+j,dq,j,'adding',null,isRec?j-k+1:null));
+  }
+
+  // 요약
+  steps.push(S('① 단조 덱 개념 이해 — 완료',
+`결과 확인
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+윈도우 [0~2] = {3,1,4} → min = ${res[0]}
+윈도우 [1~3] = {1,4,2} → min = ${res[1]}
+윈도우 [2~4] = {4,2,5} → min = ${res[2]}
+
+최종 결과: [${res.join(', ')}] ✅
+
+핵심 정리:
+  • front 제거: 윈도우 밖으로 나간 원소를 제거 → front는 항상 윈도우 안
+  • back  제거: 새 원소보다 크거나 같은 뒤쪽 원소를 제거 → front는 항상 최솟값
+  → 두 조건 덕분에 front = 현재 윈도우 최솟값이 항상 성립!
+
+다음: 이 원리를 2D 격자에 적용합니다 →`,
+arr.length-1,[...dq],null,null,null));
+
+  return steps;
+}
+
+// ═══════════════════════════════════════════════════
+// ALGORITHM STEPS — micro-step per operation
+// ═══════════════════════════════════════════════════
+function genAlgoSteps(ex){
+  const {m,n,h,w,grid}=ex;
+  const nc=n-w+1, mr=m-h+1;
+  const steps=[];
+  const rowMin=nl(m,nc), result=nl(mr,nc);
+
+  // intro
+  steps.push({section:'p1',phaseName:'② Step 1 — 행 방향 슬라이딩 윈도우 Min',
+    description:`각 행에 너비 w=${w}의 슬라이딩 윈도우 min을 적용합니다.
+rowMin[i][j] = grid[i][j ~ j+w-1] 범위의 최솟값
+
+m=${m}개 행 × n=${n}개 열 → rowMin[${m}][${nc}] 생성`,
+    gridProc:null,gridWin:[],rmWin:[],rmCur:null,rowMinSnap:cp(rowMin),
+    resCur:null,resSnap:cp(result),resAns:null,
+    algoDeque:[],ops:[],minVal:null});
+
+  // Phase 1
+  for(let i=0;i<m;i++){
+    const dq=[];
+    for(let j=0;j<n;j++){
+      const ops=[];
+      // while 1: front pop
+      while(dq.length && dq[0]<=j-w){
+        const out=dq[0];
+        const ws=j-w+1;
+        ops.push({type:'fp',idx:out,val:grid[i][out],
+          why:`idx=${out} ≤ j-w = ${j}-${w} = ${j-w}  →  윈도우[${ws}~${j}] 밖 → pop_front()`});
         dq.shift();
       }
-
-      // while 2: 현재값보다 크거나 같은 뒤 제거
-      while (dq.length && grid[i][dq[dq.length-1]] >= grid[i][j]) {
-        const out = dq[dq.length-1];
-        ops.push({ type: 'back_pop', idx: out, val: grid[i][out], newVal: grid[i][j],
-          reason: `뒤쪽 idx=${out}(값=${D(grid[i][out])}) ≥ 현재값(${D(grid[i][j])})  →  이후 최솟값 불가, 제거` });
+      // while 2: back pop
+      while(dq.length && grid[i][dq[dq.length-1]]>=grid[i][j]){
+        const out=dq[dq.length-1];
+        ops.push({type:'bp',idx:out,val:grid[i][out],newVal:grid[i][j],
+          why:`idx=${out}(값=${D(grid[i][out])}) ≥ 현재값(${D(grid[i][j])}) → idx=${out}은 최솟값 불가 → pop_back()`});
         dq.pop();
       }
-
-      // push
-      ops.push({ type: 'push', idx: j, val: grid[i][j],
-        reason: `j=${j} (값=${D(grid[i][j])}) → 덱 뒤에 삽입` });
       dq.push(j);
-
-      // record (if window full)
-      let minVal = null, rowMinCur = null;
-      if (j >= w - 1) {
-        const col = j - w + 1;
-        rowMin[i][col] = grid[i][dq[0]];
-        minVal = rowMin[i][col];
-        rowMinCur = { r: i, c: col };
-        ops.push({ type: 'record', row: i, col,
-          reason: `덱 front: idx=${dq[0]} (값=${D(grid[i][dq[0]])}) = 윈도우 [${col}~${j}] 최솟값  →  rowMin[${i}][${col}] = ${D(minVal)}` });
+      let rec=null;
+      if(j>=w-1){
+        const col=j-w+1;
+        rowMin[i][col]=grid[i][dq[0]];
+        rec={row:i,col,val:rowMin[i][col]};
+        ops.push({type:'rec',row:i,col,val:rowMin[i][col],
+          why:`front=idx=${dq[0]}(값=${D(rowMin[i][col])}) = 윈도우[${col}~${j}] 최솟값 → rowMin[${i}][${col}] 기록`});
       }
+      ops.push({type:'ps',idx:j,val:grid[i][j],
+        why:`idx=${j}(값=${D(grid[i][j])}) → push_back(${j})`});
 
-      // window cells in original grid
-      const winStart = Math.max(0, j - w + 1);
-      const winCells = (j >= w - 1) ? Array.from({length: w}, (_, k) => ({r: i, c: winStart + k})) : [];
-
-      steps.push({
-        phase: 'p1',
-        phaseName: `Step 1 — 행 방향  (행 ${i}, j=${j})`,
-        description:
-`행 ${i}  |  j = ${j}  (현재값: ${D(grid[i][j])})
-${j >= w-1 ? `윈도우 [${winStart}~${j}] 완성 → 최솟값 = ${D(minVal)} → rowMin[${i}][${winStart}] 기록` : `윈도우 크기: ${j+1}/${w} (아직 미완성)`}`,
-        gridProc: { r: i, c: j },
-        gridWin: winCells,
-        rowMinWin: [], rowMinCur,
-        rowMinSnap: cp(rowMin),
-        resultWin: [], resultCur: null,
-        resultSnap: cp(result), resultAns: null,
-        deque: dq.map(idx => ({ idx, val: grid[i][idx] })),
-        dequeAxis: `행 ${i}의 열 인덱스`,
-        ops, minVal,
-      });
+      const winCells=j>=w-1?Array.from({length:w},(_,k)=>({r:i,c:j-w+1+k})):[];
+      steps.push({section:'p1',
+        phaseName:`② Step 1 — 행 ${i}  |  j=${j}  (값: ${D(grid[i][j])})`,
+        description:`행 ${i}에서 j=${j} (값=${D(grid[i][j])}) 처리:${j>=w-1?`\n윈도우 [${j-w+1}~${j}] 완성 → 최솟값 = ${D(rowMin[i][j-w+1])} → rowMin[${i}][${j-w+1}] 기록`:'\n윈도우 미완성 (j < w-1)'}`,
+        gridProc:{r:i,c:j},gridWin:winCells,rmWin:[],rmCur:rec?{r:rec.row,c:rec.col}:null,
+        rowMinSnap:cp(rowMin),resCur:null,resSnap:cp(result),resAns:null,
+        algoDeque:dq.map(idx=>({idx,val:grid[i][idx]})),
+        ops:ops.filter(o=>o.type!=='ps').concat(ops.filter(o=>o.type==='ps')),
+        minVal:rec?rec.val:null});
     }
   }
 
-  // ── Phase 2: 열 방향 (모든 i 스텝) ──
-  for (let j = 0; j < nc; j++) {
-    const dq = [];
-    for (let i = 0; i < m; i++) {
-      const ops = [];
+  // Phase 2 intro
+  steps.push({section:'p2',phaseName:'③ Step 2 — 열 방향 슬라이딩 윈도우 Min',
+    description:`rowMin의 각 열에 높이 h=${h}의 슬라이딩 윈도우 min을 적용합니다.
+result[i][j] = rowMin[i ~ i+h-1][j] 범위의 최솟값
 
-      // while 1: 윈도우 밖 앞 제거
-      while (dq.length && dq[0] <= i - h) {
-        const out = dq[0];
-        ops.push({ type: 'front_pop', idx: out, val: rowMin[out][j],
-          reason: `idx=${out} ≤ i-h = ${i}-${h} = ${i-h}  →  윈도우 위쪽 밖으로 벗어남` });
+같은 단조 덱 원리를 열 방향으로 적용.`,
+    gridProc:null,gridWin:[],rmWin:[],rmCur:null,rowMinSnap:cp(rowMin),
+    resCur:null,resSnap:cp(result),resAns:null,
+    algoDeque:[],ops:[],minVal:null});
+
+  // Phase 2
+  for(let j=0;j<nc;j++){
+    const dq=[];
+    for(let i=0;i<m;i++){
+      const ops=[];
+      while(dq.length && dq[0]<=i-h){
+        const out=dq[0];
+        const ws=i-h+1;
+        ops.push({type:'fp',idx:out,val:rowMin[out][j],
+          why:`idx=${out} ≤ i-h = ${i}-${h} = ${i-h}  →  윈도우[${ws}~${i}][${j}] 밖 → pop_front()`});
         dq.shift();
       }
-
-      // while 2: 현재값보다 크거나 같은 뒤 제거
-      while (dq.length && rowMin[dq[dq.length-1]][j] >= rowMin[i][j]) {
-        const out = dq[dq.length-1];
-        ops.push({ type: 'back_pop', idx: out, val: rowMin[out][j], newVal: rowMin[i][j],
-          reason: `뒤쪽 idx=${out}(값=${D(rowMin[out][j])}) ≥ 현재값(${D(rowMin[i][j])})  →  이후 최솟값 불가, 제거` });
+      while(dq.length && rowMin[dq[dq.length-1]][j]>=rowMin[i][j]){
+        const out=dq[dq.length-1];
+        ops.push({type:'bp',idx:out,val:rowMin[out][j],newVal:rowMin[i][j],
+          why:`idx=${out}(값=${D(rowMin[out][j])}) ≥ 현재값(${D(rowMin[i][j])}) → 최솟값 불가 → pop_back()`});
         dq.pop();
       }
-
-      // push
-      ops.push({ type: 'push', idx: i, val: rowMin[i][j],
-        reason: `i=${i} (값=${D(rowMin[i][j])}) → 덱 뒤에 삽입` });
       dq.push(i);
-
-      // record
-      let minVal = null, resultCur = null;
-      if (i >= h - 1) {
-        const row = i - h + 1;
-        result[row][j] = rowMin[dq[0]][j];
-        minVal = result[row][j];
-        resultCur = { r: row, c: j };
-        ops.push({ type: 'record', row, col: j,
-          reason: `덱 front: idx=${dq[0]} (값=${D(rowMin[dq[0]][j])}) = 윈도우 [${row}~${i}][${j}] 최솟값  →  result[${row}][${j}] = ${D(minVal)}` });
+      let rec=null;
+      if(i>=h-1){
+        const row=i-h+1;
+        result[row][j]=rowMin[dq[0]][j];
+        rec={row,col:j,val:result[row][j]};
+        ops.push({type:'rec',row,col:j,val:result[row][j],
+          why:`front=idx=${dq[0]}(값=${D(result[row][j])}) = 윈도우[${row}~${i}][${j}] 최솟값 → result[${row}][${j}] 기록`});
       }
+      ops.push({type:'ps',idx:i,val:rowMin[i][j],
+        why:`i=${i}(rowMin값=${D(rowMin[i][j])}) → push_back(${i})`});
 
-      const winStart = Math.max(0, i - h + 1);
-      const winCells = (i >= h - 1) ? Array.from({length: h}, (_, k) => ({r: winStart + k, c: j})) : [];
-
-      steps.push({
-        phase: 'p2',
-        phaseName: `Step 2 — 열 방향  (열 ${j}, i=${i})`,
-        description:
-`열 ${j}  |  i = ${i}  (현재값 rowMin[${i}][${j}]: ${D(rowMin[i][j])})
-${i >= h-1 ? `윈도우 [${winStart}~${i}][${j}] 완성 → 최솟값 = ${D(minVal)} → result[${winStart}][${j}] 기록` : `윈도우 크기: ${i+1}/${h} (아직 미완성)`}`,
-        gridProc: null,
-        gridWin: [],
-        rowMinWin: winCells,
-        rowMinCur: null,
-        rowMinSnap: cp(rowMin),
-        resultWin: [], resultCur,
-        resultSnap: cp(result), resultAns: null,
-        deque: dq.map(idx => ({ idx, val: rowMin[idx][j] })),
-        dequeAxis: `열 ${j}의 행 인덱스`,
-        ops, minVal,
-      });
+      const winCells=i>=h-1?Array.from({length:h},(_,k)=>({r:i-h+1+k,c:j})):[];
+      steps.push({section:'p2',
+        phaseName:`③ Step 2 — 열 ${j}  |  i=${i}  (rowMin값: ${D(rowMin[i][j])})`,
+        description:`열 ${j}에서 i=${i} (rowMin[${i}][${j}]=${D(rowMin[i][j])}) 처리:${i>=h-1?`\n윈도우 [${i-h+1}~${i}][${j}] 완성 → 최솟값 = ${D(result[i-h+1][j])} → result[${i-h+1}][${j}] 기록`:'\n윈도우 미완성 (i < h-1)'}`,
+        gridProc:null,gridWin:[],rmWin:winCells,rmCur:null,
+        rowMinSnap:cp(rowMin),resCur:rec?{r:rec.row,c:rec.col}:null,
+        resSnap:cp(result),resAns:null,
+        algoDeque:dq.map(idx=>({idx,val:rowMin[idx][j]})),
+        ops:ops.filter(o=>o.type!=='ps').concat(ops.filter(o=>o.type==='ps')),
+        minVal:rec?rec.val:null});
     }
   }
 
-  // ── 최종 ──
-  let bR = 0, bC = 0, bV = -1;
-  for (let i = 0; i < mr; i++)
-    for (let j = 0; j < nc; j++)
-      if (result[i][j] > bV) { bV = result[i][j]; bR = i; bC = j; }
-
-  steps.push({
-    phase: 'final',
-    phaseName: '완료 — max of min 탐색',
-    description:
-`result 전체에서 가장 큰 값을 찾습니다.
+  // final
+  let bR=0,bC=0,bV=-1;
+  for(let i=0;i<mr;i++) for(let j=0;j<nc;j++) if(result[i][j]>bV){bV=result[i][j];bR=i;bC=j;}
+  steps.push({section:'final',phaseName:'④ 최종 — max of min 탐색',
+    description:`result 전체에서 가장 큰 값을 찾습니다.
 최댓값 ${D(bV)} → result[${bR}][${bC}]
 
-선인장을 [${bR}, ${bC}]에 두면 ${D(bV)}번째 빗방울이 올 때 처음 맞습니다.
+선인장을 [${bR},${bC}]에 놓으면 ${D(bV)}번째 빗방울이 올 때 처음 맞습니다.
 →  정답: [${bR}, ${bC}]`,
-    gridProc: null, gridWin: [], rowMinWin: [], rowMinCur: null,
-    rowMinSnap: cp(rowMin), resultWin: [], resultCur: null,
-    resultSnap: cp(result), resultAns: { r: bR, c: bC },
-    deque: [], dequeAxis: '', ops: [], minVal: null,
-  });
+    gridProc:null,gridWin:[],rmWin:[],rmCur:null,rowMinSnap:cp(rowMin),
+    resCur:null,resSnap:cp(result),resAns:{r:bR,c:bC},
+    algoDeque:[],ops:[],minVal:null});
 
-  return { steps, nc, mr };
+  return {steps,nc,mr};
 }
 
-// ─── 렌더링 ─────────────────────────────────────────────────────
-let curEx = EX1, steps = [], nc = 0, mr = 0, cur = 0;
+// ═══════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════
+let curEx=EX1,conceptSteps=[],algoSteps=[],allSteps=[];
+let nc=0,mr=0,cur=0;
+const phaseStart={concept:0,p1:0,p2:0,final:0};
 
-function cellClass(val, isProc, isWin, isCur, isAns, isSource) {
-  if (isAns)  return 'cell-answer';
-  if (isCur)  return 'cell-current';
-  if (isProc) return 'cell-proc';
-  if (isWin)  return 'cell-window';
-  if (val === null) return 'cell-empty';
-  if (val === INF)  return 'cell-inf';
-  return isSource ? 'cell-normal' : 'cell-filled';
+function cellCls(val,isProc,isWin,isCur,isAns,isSrc){
+  if(isAns) return 'cell-answer';
+  if(isCur) return 'cell-current';
+  if(isProc)return 'cell-proc';
+  if(isWin) return 'cell-window';
+  if(val===null)return 'cell-empty';
+  if(val===INF) return 'cell-inf';
+  return isSrc?'cell-normal':'cell-filled';
 }
 
-function buildTable(data, rows, cols, winSet, procCell, curCell, ansCell, isSource) {
-  let h = '<table><tr><td class="hdr"></td>';
-  for (let c = 0; c < cols; c++) h += `<td class="hdr">${c}</td>`;
-  h += '</tr>';
-  for (let r = 0; r < rows; r++) {
-    h += `<tr><td class="hdr">${r}</td>`;
-    for (let c = 0; c < cols; c++) {
-      const val    = data[r][c];
-      const isProc = procCell && procCell.r === r && procCell.c === c;
-      const isWin  = winSet.has(`${r},${c}`);
-      const isCur  = curCell && curCell.r === r && curCell.c === c;
-      const isAns  = ansCell && ansCell.r === r && ansCell.c === c;
-      h += `<td class="${cellClass(val, isProc, isWin, isCur, isAns, isSource)}">${D(val)}</td>`;
+function buildTbl(data,rows,cols,winSet,proc,cur2,ans,isSrc){
+  let h='<table><tr><td class="hdr"></td>';
+  for(let c=0;c<cols;c++) h+=`<td class="hdr">${c}</td>`;
+  h+='</tr>';
+  for(let r=0;r<rows;r++){
+    h+=`<tr><td class="hdr">${r}</td>`;
+    for(let c=0;c<cols;c++){
+      const v=data[r][c];
+      const ip=proc&&proc.r===r&&proc.c===c;
+      const iw=winSet.has(`${r},${c}`);
+      const ic=cur2&&cur2.r===r&&cur2.c===c;
+      const ia=ans&&ans.r===r&&ans.c===c;
+      h+=`<td class="${cellCls(v,ip,iw,ic,ia,isSrc)}">${D(v)}</td>`;
     }
-    h += '</tr>';
+    h+='</tr>';
   }
-  return h + '</table>';
+  return h+'</table>';
 }
 
-function render() {
-  const s = steps[cur];
-  const { m, n, h, w, grid } = curEx;
+function renderConcept(s){
+  document.getElementById('concept-view').style.display='';
+  document.getElementById('algo-view').style.display='none';
 
-  document.getElementById('phase-badge').textContent = s.phaseName;
-  document.getElementById('description').textContent = s.description;
-
-  const gWin  = new Set(s.gridWin.map(({r,c})  => `${r},${c}`));
-  const rmWin = new Set(s.rowMinWin.map(({r,c}) => `${r},${c}`));
-
-  let html = '';
-  html += `<div class="grid-panel">
-    <div class="grid-label">원본 격자 grid</div>
-    <div class="grid-sub">m×n = ${m}×${n}</div>
-    ${buildTable(grid, m, n, gWin, s.gridProc, null, null, true)}
-  </div>`;
-  html += `<div class="arrow-between">→</div>`;
-  html += `<div class="grid-panel">
-    <div class="grid-label">행 방향 min rowMin</div>
-    <div class="grid-sub">m×nc = ${m}×${nc}  |  w=${w}</div>
-    ${buildTable(s.rowMinSnap, m, nc, rmWin, null, s.rowMinCur, null, false)}
-  </div>`;
-  html += `<div class="arrow-between">→</div>`;
-  html += `<div class="grid-panel">
-    <div class="grid-label">결과 result</div>
-    <div class="grid-sub">mr×nc = ${mr}×${nc}  |  h=${h}</div>
-    ${buildTable(s.resultSnap, mr, nc, new Set(), null, s.resultCur, s.resultAns, false)}
-  </div>`;
-  document.getElementById('grids-row').innerHTML = html;
-
-  // Operations log
-  const opEl = document.getElementById('ops-list');
-  if (!s.ops || s.ops.length === 0) {
-    opEl.innerHTML = '<span class="ops-empty">연산 없음</span>';
-  } else {
-    let oh = '';
-    s.ops.forEach((op, k) => {
-      let typeLabel = '', typeCls = '';
-      if      (op.type === 'front_pop') { typeLabel = '🗑 앞 제거'; typeCls = 'front-pop'; }
-      else if (op.type === 'back_pop')  { typeLabel = '🗑 뒤 제거'; typeCls = 'back-pop';  }
-      else if (op.type === 'push')      { typeLabel = '➕ 삽입';    typeCls = 'push';      }
-      else if (op.type === 'record')    { typeLabel = '📝 기록';    typeCls = 'record';    }
-      oh += `<div class="op-item">
-        <span class="op-num">${k+1}.</span>
-        <span class="op-type ${typeCls}">${typeLabel}</span>
-        <span class="op-reason">${op.reason}</span>
-      </div>`;
-    });
-    opEl.innerHTML = oh;
+  const {arr,k,j,dqDisplay,hlIdx,hlType,compare,res,recIdx}=s;
+  // Array row
+  let ah='';
+  for(let i=0;i<arr.length;i++){
+    let cls='c1d-n';
+    if(i===j) cls='c1d-cur';
+    else if(j>=k-1 && i>=j-k+1 && i<j) cls='c1d-win';
+    else if(recIdx!==null && i===recIdx) cls='c1d-done';
+    ah+=`<div class="c1d-cell ${cls}"><span class="c1d-idx">[${i}]</span><span class="c1d-val">${arr[i]}</span></div>`;
   }
+  document.getElementById('c1d-arr').innerHTML=ah;
+
+  // Results row
+  let rh='<div style="font-size:.67em;color:#6c7086;display:flex;align-items:center;gap:3px;margin-right:6px">결과:</div>';
+  for(let i=0;i<arr.length-k+1;i++){
+    const v=res[i];
+    const cls=v!==null?'c1d-res-filled':'c1d-res-empty';
+    rh+=`<div class="c1d-res-cell ${cls}">${v!==null?v:''}</div>`;
+  }
+  document.getElementById('c1d-res').innerHTML=rh;
 
   // Deque
-  const di = document.getElementById('deque-items');
-  if (!s.deque || s.deque.length === 0) {
-    di.innerHTML = '<span class="deque-empty">비어있음 (empty)</span>';
+  let dh='';
+  if(!dqDisplay||dqDisplay.length===0){
+    dh='<span class="dq-empty">비어있음 (empty)</span>';
   } else {
-    let dh = '<span class="deque-label">front(min)→</span>';
-    s.deque.forEach((item, i) => {
-      if (i > 0) dh += '<span class="deque-sep"> | </span>';
-      const cls = i === 0 ? 'deque-item is-front' : 'deque-item';
-      dh += `<div class="${cls}">idx=${item.idx}&nbsp;(${D(item.val)})</div>`;
+    dh+='<span class="dq-lbl">front→</span>';
+    dqDisplay.forEach((el,idx)=>{
+      if(idx>0) dh+='<span class="dq-sep"> | </span>';
+      let cls='dq-norm';
+      if(el.idx===hlIdx && hlType==='removing') cls='dq-removing';
+      else if(el.idx===hlIdx && hlType==='adding')   cls='dq-adding';
+      else if(idx===0) cls='dq-front';
+      dh+=`<div class="c1d-dq-el ${cls}"><span class="di">idx=${el.idx}</span><span class="dv">${el.val}</span></div>`;
     });
-    dh += `<span class="deque-label">←back</span>`;
-    if (s.dequeAxis) dh += `<span class="deque-label"> ｜ ${s.dequeAxis}</span>`;
-    di.innerHTML = dh;
+    dh+='<span class="dq-lbl">←back</span>';
   }
+  document.getElementById('c1d-dq').innerHTML=dh;
 
-  // Min panel
-  const mp = document.getElementById('min-panel');
-  mp.innerHTML = s.minVal !== null
-    ? `<div class="min-panel"><span class="min-label">기록된 min:</span><span class="min-value">${D(s.minVal)}</span></div>` : '';
-
-  document.getElementById('progress-bar').style.width = `${(cur+1)/steps.length*100}%`;
-  document.getElementById('step-counter').textContent = `${cur+1} / ${steps.length}`;
-  document.getElementById('btn-prev').disabled = cur === 0;
-  document.getElementById('btn-next').disabled = cur === steps.length - 1;
+  // Compare box (for back_pop)
+  const cc=document.getElementById('c1d-compare');
+  if(compare){
+    cc.innerHTML=`<div class="compare-row">
+      <div class="cmp-box cmp-old">뒤쪽<br>idx=${compare.old.idx}<br>값=${compare.old.val}</div>
+      <div class="cmp-op">vs</div>
+      <div class="cmp-box cmp-new">새것<br>idx=${compare.nw.idx}<br>값=${compare.nw.val}</div>
+      <div style="flex:1"></div>
+      <div class="cmp-result">${compare.old.val} ≥ ${compare.nw.val} → 뒤쪽 제거<br>새것이 더 작고 더 오래 남아있음<br>뒤쪽은 미래 어떤 윈도우에서도 최솟값 불가</div>
+    </div>`;
+  } else {
+    cc.innerHTML='';
+  }
 }
 
-function navigate(d) { const n = cur + d; if (n >= 0 && n < steps.length) { cur = n; render(); } }
+function renderAlgo(s){
+  document.getElementById('concept-view').style.display='none';
+  document.getElementById('algo-view').style.display='';
+  const {m,n,h,w,grid}=curEx;
 
-function loadExample(idx) {
-  curEx = EXAMPLES[idx]; cur = 0;
-  const g = generateSteps(curEx); steps = g.steps; nc = g.nc; mr = g.mr;
-  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+  const gWin=new Set(s.gridWin.map(o=>`${o.r},${o.c}`));
+  const rWin=new Set(s.rmWin.map(o=>`${o.r},${o.c}`));
+
+  let gh='';
+  gh+=`<div class="grid-panel"><div class="grid-label">원본 격자 grid</div><div class="grid-sub">m×n=${m}×${n}</div>${buildTbl(grid,m,n,gWin,s.gridProc,null,null,true)}</div>`;
+  gh+=`<div class="arr-between">→</div>`;
+  gh+=`<div class="grid-panel"><div class="grid-label">행방향 min rowMin</div><div class="grid-sub">m×nc=${m}×${nc}  w=${w}</div>${buildTbl(s.rowMinSnap,m,nc,rWin,null,s.rmCur,null,false)}</div>`;
+  gh+=`<div class="arr-between">→</div>`;
+  gh+=`<div class="grid-panel"><div class="grid-label">결과 result</div><div class="grid-sub">mr×nc=${mr}×${nc}  h=${h}</div>${buildTbl(s.resSnap,mr,nc,new Set(),null,s.resCur,s.resAns,false)}</div>`;
+  document.getElementById('grids-row').innerHTML=gh;
+
+  // Ops list
+  const ol=document.getElementById('op-list');
+  if(!s.ops||s.ops.length===0){
+    ol.innerHTML='<span class="op-empty">연산 없음</span>';
+  } else {
+    let oh='';
+    let num=1;
+    s.ops.forEach(op=>{
+      let tl='',tc='';
+      if(op.type==='fp'){tl='🗑 앞 제거';tc='fp';}
+      else if(op.type==='bp'){tl='🗑 뒤 제거';tc='bp';}
+      else if(op.type==='ps'){tl='➕ 삽입';tc='ps';}
+      else if(op.type==='rec'){tl='📝 기록';tc='rc';}
+      oh+=`<div class="op-row"><span class="op-num">${num++}.</span><span class="op-type ${tc}">${tl}</span><span class="op-why">${op.why}</span></div>`;
+    });
+    ol.innerHTML=oh;
+  }
+
+  // Algo deque
+  const ad=document.getElementById('algo-dq');
+  if(!s.algoDeque||s.algoDeque.length===0){
+    ad.innerHTML='<span class="dq-empty">비어있음</span>';
+  } else {
+    let dh='<span class="dq-lbl">front(최솟값)→</span>';
+    s.algoDeque.forEach((el,i)=>{
+      if(i>0) dh+='<span class="dq-sep"> | </span>';
+      const cls=i===0?'dq-front':'dq-norm';
+      dh+=`<div class="c1d-dq-el ${cls}"><span class="di">idx=${el.idx}</span><span class="dv">${D(el.val)}</span></div>`;
+    });
+    dh+='<span class="dq-lbl">←back</span>';
+    ad.innerHTML=dh;
+  }
+}
+
+function render(){
+  const s=allSteps[cur];
+  document.getElementById('pbadge').textContent=s.phaseName;
+  document.getElementById('desc').textContent=s.description;
+
+  if(s.section==='concept') renderConcept(s);
+  else renderAlgo(s);
+
+  document.getElementById('pb').style.width=`${(cur+1)/allSteps.length*100}%`;
+  document.getElementById('sc').textContent=`${cur+1} / ${allSteps.length}`;
+  document.getElementById('bp').disabled=cur===0;
+  document.getElementById('bn').disabled=cur===allSteps.length-1;
+
+  // Phase nav highlight
+  const sec=s.section==='concept'?'concept':s.section==='p1'?'p1':s.section==='p2'?'p2':'final';
+  ['concept','p1','p2','final'].forEach(p=>{
+    document.getElementById('pn-'+p).classList.toggle('active',p===sec);
+  });
+}
+
+function nav(d){ const n=cur+d; if(n>=0&&n<allSteps.length){cur=n;render();} }
+
+function jumpPhase(ph){
+  const idx=phaseStart[ph];
+  if(idx!==undefined&&idx<allSteps.length){cur=idx;render();}
+}
+
+function loadEx(idx){
+  curEx=EXAMPLES[idx]; cur=0;
+  conceptSteps=genConceptSteps();
+  const ag=genAlgoSteps(curEx);
+  nc=ag.nc; mr=ag.mr;
+  algoSteps=ag.steps;
+  allSteps=[...conceptSteps,...algoSteps];
+
+  // Calculate phase start indices
+  phaseStart.concept=0;
+  phaseStart.p1=conceptSteps.length;
+  phaseStart.p2=conceptSteps.length+algoSteps.findIndex(s=>s.section==='p2');
+  phaseStart.final=conceptSteps.length+algoSteps.findIndex(s=>s.section==='final');
+
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
   render();
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigate(1);
-  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   navigate(-1);
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') nav(1);
+  if(e.key==='ArrowLeft' ||e.key==='ArrowUp')   nav(-1);
 });
 
-loadExample(0);
+loadEx(0);
 </script>
 </body>
 </html>

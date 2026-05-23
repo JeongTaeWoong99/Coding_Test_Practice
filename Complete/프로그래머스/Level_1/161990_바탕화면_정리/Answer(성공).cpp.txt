@@ -1,0 +1,36 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> solution(vector<string> wallpaper)
+{
+    int rowCnt = (int)wallpaper.size();    // 행 개수
+    int colCnt = (int)wallpaper[0].size(); // 열 개수
+
+    // 왼쪽과 위는 더 작은 # 위치를 찾으면, x y값 교체
+    int top  = rowCnt;
+    int left = colCnt;
+
+    // 오른쪽 아래는 더 큰 # 위치를 찾으면, x y값 교체
+    int bottom = 0;
+    int right  = 0;
+
+    // 전체를 순회하며 확인
+    for (int i = 0; i < rowCnt; i++)
+    {
+        for (int j = 0; j < colCnt; j++)
+        {
+            if (wallpaper[i][j] == '#')
+            {
+                // 더 작은 값 찾으면 교체
+                top  = min(top,  i);
+                left = min(left, j);
+
+                // 더 큰 값 찾으면 교체(-> 드래그 끝은 +1)
+                bottom = max(bottom, i + 1);
+                right  = max(right,  j + 1);
+            }
+        }
+    }
+
+    return {top, left, bottom, right};
+}

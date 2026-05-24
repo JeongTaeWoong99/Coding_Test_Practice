@@ -1,0 +1,40 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// section 배열 왼쪽부터 탐색, 미칠 구역 발견 시 m 길이로 오른쪽으로 칠하기
+int solution(int n, int m, vector<int> section)
+{
+    int paintCount = 0; // 페인팅 횟수
+    int startNum   = 0; // section 탐색 인덱스
+
+    while (startNum < (int)section.size())
+    {
+        int endNum = section[startNum] + m - 1; // 현재 위치에서 m 길이로 칠한 마지막 위치
+
+        // endNum 이하의 section은 모두 커버됨 → 스킵
+        while (startNum < (int)section.size() && section[startNum] <= endNum)
+        {
+            startNum++;
+        }
+
+        paintCount++;
+    }
+
+    return paintCount;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    // 테스트 1: n=8, m=4, section=[2,3,6] → 2
+    cout << solution(8, 4, {2, 3, 6}) << "\n";
+
+    // 테스트 2: n=5, m=4, section=[1,3] → 1
+    cout << solution(5, 4, {1, 3}) << "\n";
+
+    // 테스트 3: n=4, m=1, section=[1,2,3,4] → 4
+    cout << solution(4, 1, {1, 2, 3, 4}) << "\n";
+
+    return 0;
+}

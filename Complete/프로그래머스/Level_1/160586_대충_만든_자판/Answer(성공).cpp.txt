@@ -1,0 +1,48 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> answer;
+int         minPress[26]; // 각 알파벳을 누르는 최소 횟수
+
+vector<int> solution(vector<string> keymap, vector<string> targets)
+{
+    // 최솟값으로 초기화
+    fill_n(minPress, 26, INT_MAX);
+    
+    // 각 키맵에서
+    for (auto& km : keymap)
+    {
+        // min 발견 값 찾기
+        for (int i = 0; i < (int)km.size(); i++)
+        {
+            // 최저 값 = 현재 값 vs 발견 값
+            minPress[km[i] - 'A'] = min(minPress[km[i] - 'A'], i + 1);
+        }
+    }
+
+    // 각 타겟 결과 더하기
+    for (auto& t : targets)
+    {
+        int  sum      = 0;
+        bool possible = true;
+
+        for (char c : t)
+        {
+            // 타이핑 불가능한 문자
+            if (minPress[c - 'A'] == INT_MAX)
+            {
+                possible = false;
+                break;
+            }
+
+            // 결과 더하기
+            sum += minPress[c - 'A'];
+        }
+
+        // 가능하면 sum, 불가능하면 -1 넣기
+        if (possible) answer.push_back(sum);
+        else          answer.push_back(-1);
+    }
+
+    return answer;
+}

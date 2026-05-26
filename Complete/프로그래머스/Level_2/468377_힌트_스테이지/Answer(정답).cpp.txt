@@ -1,0 +1,57 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int heldHint[20];      // 각 스테이지 보유 힌트 수량 (1-indexed)
+int minCost = INT_MAX; // 발견된 최소 비용
+
+// hintIdx    : 현재 결정할 번들 인덱스 (0 ~ n-2)
+// bundleCost : 누적 번들 구매 비용
+// cost       : 클리어 비용 테이블, hint : 번들 목록
+void DFS(int hintIdx, int bundleCost, const vector<vector<int>>& cost, const vector<vector<int>>& hint)
+{
+    int n = (int)cost.size();
+    
+    // 모든 번들 구매 결정 완료 → 스테이지 클리어 비용 합산
+    if (hintIdx == n - 1)
+    {
+        int totalCost = bundleCost;
+
+        for (int i = 0; i < n; i++)
+        {
+            int maxHintIdx = (int)cost[i].size() - 1;
+            int usable     = min(heldHint[i + 1], maxHintIdx); // 힌트가 많아도 cost 배열 범위 초과 방지
+
+            totalCost += cost[i][usable]; // cost[스테이지][사용 힌트 수]
+        }
+
+        minCost = min(minCost, totalCost);
+        return;
+    }
+
+    // case 1 : 번들 미구매 → heldHint 변경 없이 다음 번들로
+    DFS(hintIdx + 1, bundleCost, cost, hint);
+
+    // case 2 : 번들 구매 → hint[hintIdx][1..] 의 각 스테이지에 힌트 1개씩 배분
+    // ex) hint[i] = [40, 2, 3] : 스테이지 2에 +1, 스테이지 3에 +1
+    for (int j = 1; j < (int)hint[hintIdx].size(); j++)
+    {
+        heldHint[hint[hintIdx][j]]++; // hint[i][j] = 힌트를 받을 스테이지 번호 (1-indexed)
+    }
+    
+    DFS(hintIdx + 1, bundleCost + hint[hintIdx][0], cost, hint); // hint[hintIdx][0] = 번들 가격
+
+    // 백트래킹 : 구매 전 상태로 복원 (다음 조합 탐색을 위해)
+    for (int j = 1; j < (int)hint[hintIdx].size(); j++)
+    {
+        heldHint[hint[hintIdx][j]]--;
+    }
+}
+
+int solution(vector<vector<int>> cost, vector<vector<int>> hint)
+{
+    fill_n(heldHint, 20, 0);
+
+    DFS(0, 0, cost, hint);
+
+    return minCost;
+}

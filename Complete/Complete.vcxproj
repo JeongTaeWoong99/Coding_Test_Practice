@@ -436,7 +436,7 @@
     <None Include="프로그래머스\Level_1\340213_동영상_재생기\Answer(정답).cpp.txt" />
     <None Include="프로그래머스\Level_1\388351_유연근무제\Answer(성공).cpp.txt" />
     <None Include="프로그래머스\Level_1\389478_택배상자꺼내기\Answer(2D배열).cpp.txt" />
-    <None Include="프로그래머스\Level_2\468377_힌트_스테이지\Answer(정답).cpp.txt" />
+    <None Include="프로그래머스\Level_2\468377_힌트_스테이지\Answer(성공).cpp.txt" />
     <None Include="프로그래머스\Level_2\468379_선인장_숨기기\Answer(정답_2D슬라이딩윈도우Min).cpp.txt" />
     <None Include="해커 랭크\1_Easy\Easy10_Vector_Erase(벡터_삭제)\Answer(정답).cpp.txt" />
     <None Include="해커 랭크\1_Easy\Easy10_Vector_Sort(벡터_정렬)\Answer(성공).cpp.txt" />

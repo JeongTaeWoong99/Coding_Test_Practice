@@ -1,0 +1,33 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+string solution(vector<string> cards1, vector<string> cards2, vector<string> goal)
+{
+    bool isPossible = true;
+    int  cards1Num  = 0;
+    int  cards2Num  = 0;
+
+    for (int i = 0; i < (int)goal.size(); i++)
+    {
+        if (cards1Num < (int)cards1.size() && goal[i] == cards1[cards1Num])
+        {
+            cards1Num++;
+        }
+        else if (cards2Num < (int)cards2.size() && goal[i] == cards2[cards2Num])
+        {
+            cards2Num++;
+        }
+        else
+        {
+            isPossible = false;
+            break;
+        }
+    }
+
+    string answer = "";
+
+    if (isPossible) answer = "Yes";
+    else            answer = "No";
+
+    return answer;
+}

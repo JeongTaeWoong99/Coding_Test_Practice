@@ -1,0 +1,49 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+unordered_set<char> skipAlapabat;
+
+// s     : index만큼 뒤로 밀린 문자열
+// skip  : 스킵에 있는 문자는 넘어감 
+// index : 인덱스 만큼 뒤로 밀기
+string solution(string s, string skip, int index) 
+{
+    string result = "";
+    
+    // 스킵 알파벳 미리 set으로 저장
+    for (const auto &c : skip)
+    {
+        skipAlapabat.insert(c); // set에 넣어서, 존재 or 비존재 빠르게 확인
+    }
+
+    // 모든 s의 알파벳에 대해서 밀기
+    for (const auto &c : s)
+    {
+        char curAlapa = c; // 현재 char
+        int  moveCnt  = 0; // 유효한 이동 횟수
+
+        // index만큼 유효한 알파벳 이동
+        while (moveCnt < index)
+        {
+            // 알파벳 char 이동
+            curAlapa++;
+
+            // z 초과 시 a로 순환
+            if (curAlapa > 'z')
+            {
+                curAlapa = 'a';
+            }
+
+            // 스킵 문자 아닐 때만 카운트
+            if (skipAlapabat.count(curAlapa) == 0)
+            {
+                moveCnt++;
+            }
+        }
+
+        // 변경한 char 더해주기
+        result += curAlapa;
+    }
+    
+    return result;
+}

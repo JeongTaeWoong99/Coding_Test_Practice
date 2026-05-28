@@ -1,0 +1,36 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// players.size() == 24 고정 → expire 배열로 만료 시간을 O(1)에 관리
+int solution(vector<int> players, int m, int k)
+{
+    int increaseCnt = 0;      // 증설 횟수
+    int runningCnt  = 0;      // 현재 운영 중인 증설 서버 수
+    int expire[24]  = {};     // expire[i] = i시에 반납되는 서버 수
+
+    for (int i = 0; i < (int)players.size(); i++)
+    {
+        // 만료된 서버 반납 (i시에 만료 예약된 서버 수 차감)
+        runningCnt -= expire[i];
+
+        // 현재 시간대에 필요한 증설 서버 수
+        int neededCnt = players[i] / m;
+
+        // 부족한 만큼만 증설
+        if (runningCnt < neededCnt)
+        {
+            int addCnt = neededCnt - runningCnt;
+            
+            increaseCnt += addCnt;
+            runningCnt += addCnt;
+
+            // i시에 증설 → k시간 후인 i+k시에 만료 예약 (시뮬레이션 범위 내에서만)
+            if (i + k < (int)players.size())
+            {
+                expire[i + k] += addCnt;
+            }
+        }
+    }
+
+    return increaseCnt;
+}

@@ -1,0 +1,37 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int solution(vector<int> players, int m, int k)
+{
+    int increaseCnt = 0;            // 증설 횟수
+    int runningCnt  = 0;            // 현재 운영 중인 증설 서버 수
+    queue<pair<int, int>> expireQ;  // 만료 예정 서버 큐 {만료 시간, 증설 서버 수}
+
+    for (int i = 0; i < (int)players.size(); i++)
+    {
+        // 만료된 서버 반납 (i시에 만료 시간이 i 이하인 서버는 이미 k시간이 지났으므로 반납)
+        while (!expireQ.empty() && expireQ.front().first <= i)
+        {
+            runningCnt -= expireQ.front().second; // 해당 묶음의 서버 수만큼 운영 수 차감
+            expireQ.pop();
+        }
+
+        // 현재 시간대에 필요한 증설 서버 수
+        int neededCnt = players[i] / m;
+
+        // 부족한 만큼만 증설
+        if (runningCnt < neededCnt)
+        {
+            // 증설 필요 수 = 필요 수 - 현재 수
+            int addCnt = neededCnt - runningCnt;
+
+            increaseCnt += addCnt;
+            runningCnt  += addCnt;
+
+            // i시에 증설 → k시간 후인 i+k시에 만료
+            expireQ.emplace(i + k, addCnt);
+        }
+    }
+
+    return increaseCnt;
+}

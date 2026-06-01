@@ -165,7 +165,8 @@
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Complete\\\\프로그래머스\" | ForEach-Object { \"$\\($_.PSIsContainer ? '[DIR]' : '[FILE]'\\) $\\($_.Name\\)\" })",
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Complete\\\\프로그래머스\\\\Level_2\" | ForEach-Object { \"$\\($_.PSIsContainer ? '[DIR]' : '[FILE]'\\) $\\($_.Name\\)\" })",
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Complete\\\\프로그래머스\\\\Level_1\" | ForEach-Object { \"$\\($_.PSIsContainer ? '[DIR]' : '[FILE]'\\) $\\($_.Name\\)\" })",
-      "Bash(Out-Null)"
+      "Bash(Out-Null)",
+      "Bash(Write-Output \"폴더 생성 완료\")"
     ]
   },
   "outputStyle": "korean-terminal"

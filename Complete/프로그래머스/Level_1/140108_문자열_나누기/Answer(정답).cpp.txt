@@ -1,0 +1,39 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// s를 기준 문자와 나머지 문자의 동수 방식으로 나눈 횟수 반환
+int solution(string s)
+{
+    int curIndex = 0; // 현재 인덱스
+    int splitCnt = 0; // 나눈 횟수
+
+    while (curIndex < (int)s.size())
+    {
+        char base = s[curIndex]; // 기준 문자 (현재 구간의 첫 문자)
+        int sameCnt = 0;         // 기준 문자 등장 횟수
+        int diffCnt = 0;         // 나머지 문자 등장 횟수
+
+        while (curIndex < (int)s.size())
+        {
+            if (s[curIndex] == base)
+            {
+                sameCnt++;
+            }
+            else
+            {
+                diffCnt++;
+            }
+
+            curIndex++;
+
+            if (sameCnt == diffCnt) // 동수 조건 충족 → 나누기
+            {
+                break;
+            }
+        }
+
+        splitCnt++;
+    }
+
+    return splitCnt;
+}

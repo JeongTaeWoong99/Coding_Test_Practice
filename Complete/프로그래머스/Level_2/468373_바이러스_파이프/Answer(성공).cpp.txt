@@ -1,0 +1,122 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+typedef pair<int, int> pii; // {인접 노드, 파이프 타입}
+
+int         nodes;         // 노드 수
+int         ans;           // 최대 감염 노드 수
+bool        infected[301]; // 감염 여부
+vector<pii> adj[301];      // 인접 리스트
+
+// openType 파이프를 전부 열어 BFS 확산, 새로 감염된 노드 목록 반환
+vector<int> SpreadBFS(int openType)
+{
+    vector<int> newNodes;
+    queue<int>  spreadQ;
+
+    // 현재 감염 노드 전부를 시작점으로 설정
+    for (int u = 1; u <= nodes; u++)
+    {
+        if (infected[u])
+        {
+            spreadQ.emplace(u);
+        }
+    }
+
+    // 감염 노드에서 확장 가능한 노드들 확인
+    while (!spreadQ.empty())
+    {
+        // 노드 1개 선택
+        int curNode = spreadQ.front();
+        spreadQ.pop();
+
+        // 노드의 모든 인접 노드 체크 탐색
+        for (const pii& edge : adj[curNode])
+        {
+            int nextNode = edge.first;  // 인접 노드 번호
+            int edgeType = edge.second; // 파이프 타입
+
+            // 파이프 타입이 같고 && 감염 전 노드면
+            if (edgeType == openType && !infected[nextNode])
+            {
+                infected[nextNode] = true;       // 감염 체크
+
+                newNodes.emplace_back(nextNode); // 추가된 노드 저장(반환용)
+                spreadQ.emplace(nextNode);       // 확장 노드 추가(확장 이어서 사용하는 용도)
+            }
+        }
+    }
+
+    return newNodes;
+}
+
+// 타입 선택 순서를 DFS로 탐색해 최대 감염 수 갱신
+// lastType : 직전 타입 (0 = 없음 / AA BB CCC 처럼 이전에 나온 타입은 불가.)
+// remain   : 남은 열기 가능 횟수
+void SelectDFS(int infectCnt, int lastType, int remain)
+{
+    // 현재 감염 최대값 갱신
+    ans = max(ans, infectCnt);
+
+    // 더 이상 열 수 없음
+    if (remain == 0)
+    {
+        return;
+    }
+
+    // 각 타입으로 모두 열어보면서 DFS 재귀 진행
+    for (int type = 1; type <= 3; type++)
+    {
+        // 연속 같은 타입 금지
+        if (type == lastType)
+        {
+            continue;
+        }
+
+        // 새 감염 노드 확인
+        vector<int> newNodes = SpreadBFS(type);
+
+        if (newNodes.empty()) // 스킵(-> 굳이 해당 파이프 타입을 열었는데, 확장이 안되면, 재귀를 할 필요가 없음)
+        {
+            continue;
+        }
+
+        // 재귀 진행(현재 값, 이전 타입, 남은 횟수)
+        SelectDFS(infectCnt + (int)newNodes.size(), type, remain - 1);
+
+        // 백트래킹
+        for (int node : newNodes)
+        {
+            infected[node] = false;
+        }
+    }
+}
+
+int solution(int n, int infection, vector<vector<int>> edges, int k)
+{
+    nodes = n; // 총 노드 수
+    ans   = 1; // 정답
+
+    // 전역 배열 초기화 (테스트케이스마다 solution 재호출 대비)
+    for (int i = 0; i <= n; i++)
+    {
+        adj[i].clear();
+        infected[i] = false;
+    }
+
+    // 양방향 간선 등록(e[2] 자리는 알파벳 A or B or C)
+    for (auto& edge : edges)
+    {
+        adj[edge[0]].emplace_back(edge[1], edge[2]);
+        adj[edge[1]].emplace_back(edge[0], edge[2]);
+    }
+
+    // 시작점은 감염 상태
+    infected[infection] = true;
+
+    // 탐색 시작
+    SelectDFS(1, 0, k);
+
+    // 정답 리턴
+    return ans;
+}

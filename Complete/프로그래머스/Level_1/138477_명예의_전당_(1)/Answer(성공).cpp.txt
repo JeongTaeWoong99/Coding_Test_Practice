@@ -1,0 +1,23 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// score를 하루씩 추가하며 명예의 전당 k-th 최고 점수를 반환
+vector<int> solution(int k, vector<int> score)
+{
+    vector<int> answer;
+    priority_queue<int, vector<int>, greater<int>> pq; // 최솟값 우선 (min-heap)
+
+    for (int s : score)
+    {
+        pq.emplace(s);
+
+        if ((int)pq.size() > k) // k개 초과 시 최솟값 제거
+        {
+            pq.pop();
+        }
+
+        answer.emplace_back(pq.top()); // 현재 k-th 최고 점수 (명예의 전당 최솟값)
+    }
+
+    return answer;
+}

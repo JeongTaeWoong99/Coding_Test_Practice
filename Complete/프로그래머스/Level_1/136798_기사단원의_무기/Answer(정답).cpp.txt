@@ -18,7 +18,9 @@ int solution(int number, int limit, int power)
             {
                 divisorCnt++;
 
-                if (j != i / j) // 완전제곱수가 아닌 경우 대칭 약수 추가
+                // j ≠ i/j : 서로 다른 약수 쌍 존재 → 둘 다 추가 (예: i=12, j=2 → {2, 6})
+                // j == i/j : 완전제곱수의 제곱근 → 하나만 추가 (예: i=9, j=3 → {3})
+                if (j != i / j)
                 {
                     divisorCnt++;
                 }

@@ -1,0 +1,38 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// number번 기사까지 각 기사 번호의 약수 개수를 구해 무게 합산
+// 약수 개수 > limit 이면 power로 대체
+int solution(int number, int limit, int power)
+{
+    int totalWeight = 0;
+
+    for (int i = 1; i <= number; i++)
+    {
+        int divisorCnt = 0;
+
+        // sqrt(i)까지만 탐색해 약수 쌍으로 개수 계산
+        for (int j = 1; j * j <= i; j++)
+        {
+            if (i % j == 0)
+            {
+                divisorCnt++;
+
+                if (j != i / j) // 완전제곱수가 아닌 경우 대칭 약수 추가
+                {
+                    divisorCnt++;
+                }
+            }
+        }
+
+        // limit 초과 시 power로 대체
+        if (divisorCnt > limit)
+        {
+            divisorCnt = power;
+        }
+
+        totalWeight += divisorCnt;
+    }
+
+    return totalWeight;
+}

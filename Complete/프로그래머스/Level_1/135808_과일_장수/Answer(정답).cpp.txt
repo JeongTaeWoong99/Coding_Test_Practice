@@ -1,0 +1,25 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// k 미사용. 필요가 없음
+int solution(int k, int m, vector<int> score)
+{
+    int answer = 0;
+
+    // 점수를 내림차순 정렬 (높은 점수부터 그룹을 구성)
+    sort(score.begin(), score.end(), greater<int>());
+
+    int n = (int)score.size();
+
+    // m개씩 묶어 한 상자 구성, m개를 채우지 못하는 나머지(가장 낮은 점수들)는 버림
+    for (int i = 0; i + m <= n; i += m)
+    {
+        // 내림차순 정렬이므로 그룹의 마지막 원소가 곧 그룹의 최소값
+        int boxMin = score[i + m - 1];
+
+        // 상자 가격 = 그룹 내 최소 점수 x 상자에 담기는 개수(m)
+        answer += boxMin * m;
+    }
+
+    return answer;
+}

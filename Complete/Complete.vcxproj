@@ -419,7 +419,8 @@
     <None Include="백준\4_Platinum\P5_14003_가장긴증가하는부분수열5\Answer(정답).cpp.txt" />
     <None Include="백준\4_Platinum\P5_17071_숨바꼭질5\Answer(정답).cpp.txt" />
     <None Include="백준\4_Platinum\P5_3197_백조의호수\Answer(정답).cpp.txt" />
-    <None Include="프로그래머스\Level_1\134240_푸드_파이트_대회\Answer(성공).cpp.txt" />
+    <None Include="프로그래머스\Level_1\134240_푸드_파이트_대회\Answer(성공_2중for문).cpp.txt" />
+    <None Include="프로그래머스\Level_1\134240_푸드_파이트_대회\Answer(성공_string문법사용).cpp.txt" />
     <None Include="프로그래머스\Level_1\135808_과일_장수\Answer(정답).cpp.txt" />
     <None Include="프로그래머스\Level_1\136798_기사단원의_무기\Answer(정답).cpp.txt" />
     <None Include="프로그래머스\Level_1\138477_명예의_전당_(1)\Answer(성공).cpp.txt" />

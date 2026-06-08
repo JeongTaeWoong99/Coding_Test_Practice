@@ -1,0 +1,21 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// food를 절반씩 나눠 좌우 대칭 형태의 대진표 문자열로 반환
+string solution(vector<int> food)
+{
+    string left = ""; // 왼쪽 절반 (물 제외)
+
+    // 1번 음식부터 순서대로 (개수 / 2)번씩 이어 붙이기
+    for (int i = 1; i < (int)food.size(); i++)
+    {
+        left += string(food[i] / 2, '0' + i);
+    }
+
+    string mid = string(food[0], '0'); // 가운데 물
+
+    string right = left; // 오른쪽 절반 (왼쪽을 뒤집어서 대칭)
+    reverse(right.begin(), right.end());
+
+    return left + mid + right;
+}

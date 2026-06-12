@@ -1,0 +1,25 @@
+﻿#include <bits/stdc++.h>
+
+using namespace std;
+
+// 입력 배열을 그대로 스택으로 재사용 — top 인덱스만 관리해 추가 메모리 없이 처리
+int solution(vector<int> ingredient)
+{
+    int answer = 0; // 완성한 햄버거 수
+    int top    = 0; // 스택 쓰기 위치 (= 쌓인 재료 수)
+
+    for (int cur : ingredient)
+    {
+        ingredient[top++] = cur; // 현재 재료를 스택 맨 위에 쌓기
+
+        // 맨 위 4개가 1-2-3-1이면 햄버거 1개 완성
+        if (top >= 4 && ingredient[top - 4] == 1 && ingredient[top - 3] == 2 && ingredient[top - 2] == 3 && ingredient[top - 1] == 1)
+        {
+            top -= 4; // 사용한 재료 4개만큼 포인터 되돌리기
+
+            answer++;
+        }
+    }
+
+    return answer;
+}

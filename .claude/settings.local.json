@@ -168,7 +168,9 @@
       "Bash(Out-Null)",
       "Bash(Write-Output \"폴더 생성 완료\")",
       "Bash(grep -n \"136798\\\\|138477\\\\|프로그래머스\\\\\\\\\\\\\\\\Level_1\" \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Complete\\\\Complete.vcxproj.filters\")",
-      "PowerShell(Remove-Item *)"
+      "PowerShell(Remove-Item *)",
+      "Bash(./test_run)",
+      "Bash(rm -f test_run.exe test_run)"
     ]
   },
   "outputStyle": "korean-terminal"

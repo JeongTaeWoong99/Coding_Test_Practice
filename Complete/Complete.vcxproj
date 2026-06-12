@@ -446,8 +446,6 @@
     <None Include="프로그래머스\Level_1\340213_동영상_재생기\Answer(정답).cpp.txt" />
     <None Include="프로그래머스\Level_1\388351_유연근무제\Answer(성공).cpp.txt" />
     <None Include="프로그래머스\Level_1\389478_택배상자꺼내기\Answer(2D배열).cpp.txt" />
-    <None Include="프로그래머스\Level_2\133502_햄버거_만들기\Answer(성공_스택).cpp.txt" />
-    <None Include="프로그래머스\Level_2\133502_햄버거_만들기\Answer(다른_풀이_제자리_스택).cpp.txt" />
     <None Include="프로그래머스\Level_2\389479_서버_증설_횟수\Answer(성공_Queue).cpp.txt" />
     <None Include="프로그래머스\Level_2\389479_서버_증설_횟수\Answer(다른_풀이_배열).cpp.txt" />
     <None Include="프로그래머스\Level_2\468373_바이러스_파이프\Answer(성공).cpp.txt" />
@@ -722,7 +720,6 @@
     <None Include="프로그래머스\Level_1\468370_중요한_단어를_스포_방지\Answer(위치_추적).cpp.txt" />
     <None Include="프로그래머스\Level_1\468370_중요한_단어를_스포_방지\README(문자_인코딩).md" />
     <None Include="프로그래머스\Level_1\468370_중요한_단어를_스포_방지\README(위치_추적).md" />
-    <None Include="프로그래머스\Level_2\133502_햄버거_만들기\README.md" />
     <None Include="프로그래머스\Level_2\389479_서버_증설_횟수\README.md" />
     <None Include="프로그래머스\Level_2\468373_바이러스_파이프\README.md" />
     <None Include="프로그래머스\Level_2\468377_힌트_스테이지\README.md" />
@@ -771,6 +768,8 @@
     <Content Include="연습\피보나치 수열\피보나치 수열(순수 재귀).txt" />
     <Content Include="연습\피보나치 수열\피보나치 수열 탑다운 문제.txt" />
     <Content Include="연습\피보나치 수열\피보나치 수열.md" />
+    <Content Include="프로그래머스\Level_1\133502_햄버거_만들기\Answer(성공_스택).cpp.txt" />
+    <Content Include="프로그래머스\Level_1\133502_햄버거_만들기\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

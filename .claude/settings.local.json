@@ -170,7 +170,13 @@
       "Bash(grep -n \"136798\\\\|138477\\\\|프로그래머스\\\\\\\\\\\\\\\\Level_1\" \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Complete\\\\Complete.vcxproj.filters\")",
       "PowerShell(Remove-Item *)",
       "Bash(./test_run)",
-      "Bash(rm -f test_run.exe test_run)"
+      "Bash(rm -f test_run.exe test_run)",
+      "Bash(npx --version)",
+      "Bash(npx ccusage *)",
+      "Bash(node \"C:/Users/ASUS/.claude/ccusage-statusline.js\")",
+      "Bash(node -e ' *)",
+      "Bash(node ccusage-statusline.js)",
+      "Bash(grep -n \"ItemGroup\\\\|<None Include=\\\\\"프로그래머스\\\\\\\\\\\\\\\\Level_1\\\\\\\\\\\\\\\\13\\\\|<Content Include=\\\\\"프로그래머스\\\\\\\\\\\\\\\\Level_1\\\\\\\\\\\\\\\\13\" Complete.vcxproj)"
     ]
   },
   "outputStyle": "korean-terminal"

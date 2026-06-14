@@ -1,0 +1,56 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 하나의 단어가 발음 가능한지 검사 (같은 발음 연속 금지)
+bool CanSpeak(string word)
+{
+    vector<string> sounds = {"aya", "ye", "woo", "ma"}; // 발음 가능한 4개
+
+    int    idx  = 0;  // 현재 검사 위치
+    string prev = ""; // 직전에 사용한 발음
+
+    while (idx < (int)word.size())
+    {
+        bool matched = false; // 이번 위치에서 매칭 성공 여부
+
+        for (string& s : sounds)
+        {
+            if (s == prev) // 직전과 같은 발음은 연속 금지
+            {
+                continue;
+            }
+
+            // 현재 위치에서 발음 s 와 일치하는지 확인
+            if (word.compare(idx, s.size(), s) == 0)
+            {
+                idx += (int)s.size();
+                prev    = s;
+                matched = true;
+
+                break;
+            }
+        }
+
+        if (!matched) // 어떤 발음과도 매칭 안 되면 발음 불가
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int solution(vector<string> babbling)
+{
+    int answer = 0; // 발음 가능한 단어 수
+
+    for (string& word : babbling)
+    {
+        if (CanSpeak(word))
+        {
+            answer++;
+        }
+    }
+
+    return answer;
+}

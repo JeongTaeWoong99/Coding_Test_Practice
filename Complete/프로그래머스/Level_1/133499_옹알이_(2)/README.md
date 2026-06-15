@@ -38,17 +38,17 @@
 ### 1️⃣ 직전 발음 추적으로 연속 금지 처리
 
 ```cpp
-for (string& s : sounds)
+for (string& curS : possibleSound)
 {
-    if (s == prev) // 직전과 같은 발음은 연속 금지
+    if (curS == prev) // 직전과 같은 발음은 연속 금지
     {
         continue;
     }
 
-    if (word.compare(idx, s.size(), s) == 0)
+    if (word.compare(idx, curS.size(), curS) == 0)
     {
-        idx += (int)s.size();
-        prev    = s;
+        idx    += (int)curS.size();
+        prev    = curS;
         matched = true;
 
         break;
@@ -65,10 +65,10 @@ for (string& s : sounds)
 ### 3️⃣ `string::compare`로 부분 일치 검사
 
 ```cpp
-word.compare(idx, s.size(), s) == 0
+word.compare(idx, curS.size(), curS) == 0
 ```
 
-`idx` 위치부터 `s.size()` 길이만큼 잘라 `s`와 비교 → 일치 시 0 반환. `substr` 생성 없이 비교 가능해 간결하다.
+`idx` 위치부터 `curS.size()` 길이만큼 잘라 `curS`와 비교 → 일치 시 0 반환. `substr` 생성 없이 비교 가능해 간결하다.
 
 ---
 

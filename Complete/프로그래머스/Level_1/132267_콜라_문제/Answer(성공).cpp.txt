@@ -1,0 +1,22 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// a : 필요 병 수
+// b : 마트가 주는 병 수
+// n : 시작 병 수
+int solution(int a, int b, int n) 
+{
+    int answer = 0;
+    
+    // 교환 가능할 때(현재 병 >= 필요 병)까지 반복
+    while (n >= a)
+    {
+        int received = n / a * b; // 빈병으로 나온 결과값(몫에다가 b를 곱해줘야 남은 빈병이 나옴)
+        int rested   = n % a;     // 나머지
+        
+        answer += received;          // 구한 빈병 수 더해주기
+        n       = received + rested; // 남은 현재 병 = 몫 + 나머지 
+    }
+    
+    return answer;
+}

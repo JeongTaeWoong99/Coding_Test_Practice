@@ -1,0 +1,25 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int solution(vector<int> number) 
+{
+    int answer = 0;
+    int n      = number.size();
+
+    // 서로 다른 3개를 뽑는 조합 → 인덱스 i < j < k 로 중복 없이 순회
+    for (int i = 0; i < n - 2; i++)
+    {
+        for (int j = i + 1; j < n - 1; j++)
+        {
+            for (int k = j + 1; k < n; k++)
+            {
+                if (number[i] + number[j] + number[k] == 0)
+                {
+                    answer++; // 세 수의 합이 0이면 카운트
+                }
+            }
+        }
+    }
+
+    return answer;
+}

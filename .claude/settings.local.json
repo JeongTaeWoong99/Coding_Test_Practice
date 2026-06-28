@@ -176,7 +176,9 @@
       "Bash(node \"C:/Users/ASUS/.claude/ccusage-statusline.js\")",
       "Bash(node -e ' *)",
       "Bash(node ccusage-statusline.js)",
-      "Bash(grep -n \"ItemGroup\\\\|<None Include=\\\\\"프로그래머스\\\\\\\\\\\\\\\\Level_1\\\\\\\\\\\\\\\\13\\\\|<Content Include=\\\\\"프로그래머스\\\\\\\\\\\\\\\\Level_1\\\\\\\\\\\\\\\\13\" Complete.vcxproj)"
+      "Bash(grep -n \"ItemGroup\\\\|<None Include=\\\\\"프로그래머스\\\\\\\\\\\\\\\\Level_1\\\\\\\\\\\\\\\\13\\\\|<Content Include=\\\\\"프로그래머스\\\\\\\\\\\\\\\\Level_1\\\\\\\\\\\\\\\\13\" Complete.vcxproj)",
+      "Bash(./test_run.exe)",
+      "Bash(rm -f test_run.exe)"
     ]
   },
   "outputStyle": "korean-terminal"

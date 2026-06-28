@@ -1,0 +1,43 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// X, Y 각 자릿수(0~9)로 만들 수 있는 가장 큰 짝꿍 수를 반환
+string solution(string X, string Y)
+{
+    string answer   = ""; // 9부터 0까지 큰 숫자를 앞에 채워 가장 큰 수 구성. 각 숫자는 min(X개수, Y개수) 만큼만 짝꿍 가능
+    int    cntX[10] = {}; // X의 숫자별 등장 횟수 (0~9, 0으로 초기화)
+    int    cntY[10] = {}; // Y의 숫자별 등장 횟수 (0~9, 0으로 초기화)
+
+    // 각 문자열의 숫자 개수 카운트
+    for (char c : X) // X 카운트
+    {
+        cntX[c - '0']++;
+    }
+
+    for (char c : Y) // Y 카운트
+    {
+        cntY[c - '0']++;
+    }
+
+    // 큰 수를 만들기 위해 9부터 0까지 내림차순으로 개수 확인
+    for (int d = 9; d >= 0; d--)
+    {
+        int pairCnt = min(cntX[d], cntY[d]); // 짝꿍으로 쓸 수 있는 개수 (적은 쪽 사용)
+
+        answer += string(pairCnt, char('0' + d));
+    }
+
+    // 공통 숫자가 하나도 없는 경우
+    if (answer.empty())
+    {
+        return "-1";
+    }
+
+    // 0으로만 이루어진 경우 (예 : "00" -> "0")
+    if (answer[0] == '0')
+    {
+        return "0";
+    }
+
+    return answer;
+}

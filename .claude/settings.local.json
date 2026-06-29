@@ -178,7 +178,11 @@
       "Bash(node ccusage-statusline.js)",
       "Bash(grep -n \"ItemGroup\\\\|<None Include=\\\\\"프로그래머스\\\\\\\\\\\\\\\\Level_1\\\\\\\\\\\\\\\\13\\\\|<Content Include=\\\\\"프로그래머스\\\\\\\\\\\\\\\\Level_1\\\\\\\\\\\\\\\\13\" Complete.vcxproj)",
       "Bash(./test_run.exe)",
-      "Bash(rm -f test_run.exe)"
+      "Bash(rm -f test_run.exe)",
+      "Read(//mnt/c/Users/ASUS/Desktop/Code/CoTe/Coding-Test-Practice/**)",
+      "Bash(/tmp/test_run)",
+      "PowerShell($g = Get-Command g++ -ErrorAction SilentlyContinue; if \\($g\\) { & g++ -std=c++17 \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Test\\\\Test.cpp\" -o \"$env:TEMP\\\\test_run.exe\"; & \"$env:TEMP\\\\test_run.exe\"; Remove-Item \"$env:TEMP\\\\test_run.exe\" -ErrorAction SilentlyContinue } else { \"g++ not found\" })",
+      "Bash(grep -n \"프로그래머스\\\\\\\\\\\\\\\\Level_1\\\\\\\\\\\\\\\\1\" Complete.vcxproj)"
     ]
   },
   "outputStyle": "korean-terminal"

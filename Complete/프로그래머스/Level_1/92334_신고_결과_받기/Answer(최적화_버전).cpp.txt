@@ -1,0 +1,58 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 규칙 1 : 한명 당 한명 신고 가능
+// -> 신고 횟수 제한 없음.
+// -> 한 유저에 대한 여러번 신고는 1개로 계산(중복 안됨.)
+
+// 규칙 2 : k번 이상 신고된 유저는 계시판 이용 정지
+// -> 정지된 유저를 신고한 모든 유저에게 안내메일 발송
+
+// (전체 아이디) id_list : ["muzi", "frodo", "apeach", "neo"]
+// (신고 로그)   report  : ["muzi frodo","apeach frodo","frodo neo","muzi neo","apeach muzi"]
+// (알림 상한)   k       : 2
+vector<int> solution(vector<string> id_list, vector<string> report, int k)
+{
+    unordered_set<string>                 checkSet;      // 중복 신고 제거용 : "신고자_피신고자" 문자열을 저장(있으면 이미 처리한 신고)
+    unordered_map<string, int>            reportedCount; // 피신고자 -> (고유) 신고당한 횟수
+    unordered_map<string, vector<string>> reporters;     // 피신고자 -> 그를 신고한 사람들 목록 (정지 시 메일 보낼 대상)
+    unordered_map<string, int>            mailCount;     // 각 유저가 받은 메일 수 (정답 계산용)
+
+    // 1) 모든 report를 중복 제거하며 관계 저장
+    for (int i = 0; i < report.size(); ++i)
+    {
+        // 공백을 기준으로 앞(신고자) 뒤(피신고자) 나누기
+        int    space = report[i].find(' ');                           // 공백 위치 찾기
+        string front = report[i].substr(0, space);                    // 신고자
+        string back  = report[i].substr(space + 1, report[i].size()); // 피신고자
+
+        // 생성된 map의 키
+        string key = front + '_' + back;
+
+        // 이미 처리한 신고면 패스 (중복은 계산하지 않는다.)
+        if (checkSet.count(key)) continue;
+
+        checkSet.insert(key);             // 처리 표시
+        reportedCount[back]++;            // 피신고자 카운트 증가
+        reporters[back].push_back(front); // 신고자 기록
+    }
+
+    // 2) k번 이상 신고당한 유저 -> 정지 -> 신고자들에게 메일
+    for (auto& p : reportedCount)
+    {
+        if (p.second >= k)
+        {
+            for (string& who : reporters[p.first])
+                mailCount[who]++;
+        }
+    }
+
+    // 3) id_list 순서대로 각 유저의 메일 수를 답에 담기
+    vector<int> answer;
+
+    for (int i = 0; i < id_list.size(); ++i)
+        answer.push_back(mailCount[id_list[i]]);
+
+    // ex) [2,1,1,0]
+    return answer;
+}

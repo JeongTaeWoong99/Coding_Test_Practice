@@ -11,8 +11,10 @@ int solution(string s)
     for (int num = 0; num < 10; num++)
     {
         size_t pos;
+        
         while ((pos = s.find(words[num])) != string::npos)
         {
+            // pos자리부터 words[num].size() 크기만큼, to_string(num)으로 교체.
             s.replace(pos, words[num].size(), to_string(num));
         }
     }

@@ -1,0 +1,37 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int solution(string s)
+{
+    // 영단어 → 숫자 대응표 (인덱스 = 숫자)
+    string words[10] = { "zero", "one", "two",   "three", "four",
+                         "five", "six", "seven", "eight", "nine" };
+
+    string result;   // 완성될 숫자 문자열
+
+    // i를 앞에서부터 한 번만 훑는다 (재탐색 없음 → 뒤로 되돌아가지 않음)
+    for (int i = 0; i < (int)s.size(); )
+    {
+        // 숫자면 그대로 붙이고 한 칸 이동
+        if (isdigit(s[i]))
+        {
+            result += s[i];
+            i++;
+            continue;
+        }
+
+        // 영단어면 i 위치부터 어떤 단어와 일치하는지 검사
+        for (int num = 0; num < 10; num++)
+        {
+            // s의 i자리부터 words[num].size() 크기만큼이 words[num]과 같은지 비교
+            if (s.compare(i, words[num].size(), words[num]) == 0)
+            {
+                result += to_string(num);   // 해당 숫자 붙이기
+                i += words[num].size();     // 단어 길이만큼 점프
+                break;
+            }
+        }
+    }
+
+    return stoi(result);
+}

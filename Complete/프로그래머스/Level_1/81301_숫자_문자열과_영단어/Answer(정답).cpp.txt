@@ -1,0 +1,22 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int solution(string s)
+{
+    // 영단어 → 숫자 대응표 (인덱스 = 숫자)
+    string words[10] = { "zero", "one", "two",   "three", "four",
+                         "five", "six", "seven", "eight", "nine" };
+
+    // 문자열 안의 모든 영단어를 해당 숫자로 치환
+    for (int num = 0; num < 10; num++)
+    {
+        size_t pos;
+        while ((pos = s.find(words[num])) != string::npos)
+        {
+            s.replace(pos, words[num].size(), to_string(num));
+        }
+    }
+
+    // 이제 s는 숫자로만 이루어진 문자열 → 정수로 변환
+    return stoi(s);
+}

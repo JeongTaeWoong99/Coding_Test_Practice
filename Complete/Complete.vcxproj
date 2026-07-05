@@ -420,6 +420,7 @@
     <None Include="백준\4_Platinum\P5_17071_숨바꼭질5\Answer(정답).cpp.txt" />
     <None Include="백준\4_Platinum\P5_3197_백조의호수\Answer(정답).cpp.txt" />
     <None Include="프로그래머스\Level_1\42864_최소직사각형\Answer(성공).cpp.txt" />
+    <None Include="프로그래머스\Level_1\81301_숫자_문자열과_영단어\Answer(정답).cpp.txt" />
     <None Include="프로그래머스\Level_1\92334_신고_결과_받기\Answer(최적화_버전).cpp.txt" />
     <None Include="프로그래머스\Level_1\118666_성격_유형_검사하기\Answer(성공).cpp.txt" />
     <None Include="프로그래머스\Level_1\131128_숫자_짝꿍\Answer(성공).cpp.txt" />
@@ -694,6 +695,7 @@
     <None Include="백준\4_Platinum\P5_17071_숨바꼭질5\README.md" />
     <None Include="백준\4_Platinum\P5_3197_백조의호수\README.md" />
     <None Include="프로그래머스\Level_1\42864_최소직사각형\README.md" />
+    <None Include="프로그래머스\Level_1\81301_숫자_문자열과_영단어\README.md" />
     <None Include="프로그래머스\Level_1\92334_신고_결과_받기\README.md" />
     <None Include="프로그래머스\Level_1\118666_성격_유형_검사하기\README.md" />
     <None Include="프로그래머스\Level_1\131128_숫자_짝꿍\README.md" />

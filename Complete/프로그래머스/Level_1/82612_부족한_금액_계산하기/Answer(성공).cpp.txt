@@ -1,0 +1,15 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// price : 1회 이용료, money : 가진 돈, count : 이용 횟수
+long long solution(int price, int money, int count)
+{
+    // 총 필요 금액 = price*(1 + 2 + ... + count)
+    // count가 최대 1000, price가 최대 10만 → int 오버플로우 위험 → long long 사용
+    long long total = (long long)price * count * (count + 1) / 2;
+    
+    // 부족한 금액 (money가 더 많으면 부족하지 않으므로 0)
+    long long lack = total - money;
+    
+    return lack > 0 ? lack : 0;
+}

@@ -1,0 +1,14 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// numbers : 0~9 중 일부가 담긴 배열
+int solution(vector<int> numbers) 
+{
+    int answer = 45; // 0부터 9까지의 합 (0+1+...+9)
+    
+    // 있는 숫자들을 45에서 빼면 없는 숫자들의 합만 남음
+    for (int n : numbers)
+        answer -= n;
+    
+    return answer;
+}

@@ -1,0 +1,47 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// [방식 1] 약수의 개수를 직접 세어 짝/홀 판별
+int solution(int left, int right)
+{
+    int answer = 0;
+
+    // left ~ right 모든 구간 수에 대하여, 확인
+    for (int curN = left; curN <= right; ++curN)
+    {
+        int curCnt = 0; // 약수의 개수
+
+        // curN의 약수 개수 구하기
+        for (int checkN = 1; checkN <= curN; ++checkN)
+        {
+            if (curN % checkN == 0)
+            {
+                ++curCnt;
+            }
+        }
+
+        // 약수 개수가 짝수면 더하고, 홀수면 빼기
+        if (curCnt % 2 == 0) answer += curN;
+        else                 answer -= curN;
+    }
+
+    return answer;
+}
+
+// [방식 2] 완전제곱수만 약수 개수가 홀수 → sqrt로 판별
+int solutionSqrt(int left, int right)
+{
+    int answer = 0;
+
+    // left ~ right 모든 구간 수에 대하여, 확인
+    for (int curN = left; curN <= right; ++curN)
+    {
+        int rootN = (int)sqrt((double)curN); // curN의 제곱근 (정수부)
+
+        // 완전제곱수면 약수 개수 홀수 → 빼고, 아니면 짝수 → 더하기
+        if (rootN * rootN == curN) answer -= curN;
+        else                       answer += curN;
+    }
+
+    return answer;
+}

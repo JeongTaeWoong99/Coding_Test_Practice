@@ -185,7 +185,8 @@
       "Bash(grep -n \"프로그래머스\\\\\\\\\\\\\\\\Level_1\\\\\\\\\\\\\\\\1\" Complete.vcxproj)",
       "Bash(grep -n \"프로그래머스\\\\\\\\\\\\\\\\Level_1\" Complete.vcxproj)",
       "Bash(grep *)",
-      "Bash(cd *)"
+      "Bash(cd *)",
+      "Bash(/tmp/t.exe)"
     ]
   },
   "outputStyle": "korean-terminal"

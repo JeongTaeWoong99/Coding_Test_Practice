@@ -1,0 +1,18 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// participant : 참가자 명단,  completion : 완주자 명단 (participant보다 1명 적음)
+string solution(vector<string> participant, vector<string> completion)
+{
+    unordered_map<string, int> countMap;
+
+    // 참가자는 +1, 완주자는 -1 → 완주 못한 한 명만 개수가 남음
+    for (string& p : participant) countMap[p]++;
+    for (string& c : completion)  countMap[c]--;
+
+    for (auto& person : countMap)
+        if (person.second > 0)
+            return person.first;
+
+    return "";
+}

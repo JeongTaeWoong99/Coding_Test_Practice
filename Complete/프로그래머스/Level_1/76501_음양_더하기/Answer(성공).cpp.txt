@@ -1,0 +1,17 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// absolutes : 각 수의 절댓값,  signs : true면 양수 / false면 음수
+int solution(vector<int> absolutes, vector<bool> signs)
+{
+    int answer = 0;
+
+    for (int i = 0; i < absolutes.size(); ++i)
+    {
+        // 부호가 true(양수)면 더하고, false(음수)면 뺀다
+        if (signs[i]) answer += absolutes[i];
+        else          answer -= absolutes[i];
+    }
+
+    return answer;
+}

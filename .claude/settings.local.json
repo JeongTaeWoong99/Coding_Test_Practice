@@ -186,7 +186,8 @@
       "Bash(grep -n \"프로그래머스\\\\\\\\\\\\\\\\Level_1\" Complete.vcxproj)",
       "Bash(grep *)",
       "Bash(cd *)",
-      "Bash(/tmp/t.exe)"
+      "Bash(/tmp/t.exe)",
+      "PowerShell($dir = \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Complete\\\\프로그래머스\\\\Level_1\\\\72410_신규_아이디_추천\"; foreach \\($f in @\\(\"Answer\\(정답\\).cpp.txt\", \"README.md\"\\)\\) { $p = Join-Path $dir $f; $c = Get-Content -LiteralPath $p -Raw -Encoding UTF8; [System.IO.File]::WriteAllText\\($p, $c, \\(New-Object System.Text.UTF8Encoding $true\\)\\) }; foreach \\($f in @\\(\"Answer\\(정답\\).cpp.txt\", \"README.md\"\\)\\) { $p = Join-Path $dir $f; $b = [System.IO.File]::ReadAllBytes\\($p\\)[0..2] -join ','; \"$f : $b\" })"
     ]
   },
   "outputStyle": "korean-terminal"

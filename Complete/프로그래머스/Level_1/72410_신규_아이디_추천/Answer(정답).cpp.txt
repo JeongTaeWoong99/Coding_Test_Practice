@@ -13,7 +13,8 @@ string RemoveEdgeDot(string s)
     // 뒤쪽 마침표 제거
     while (!s.empty() && s.back() == '.')
     {
-        s.pop_back();
+        // OR -> s.erase(prev(s.end()));
+        s.erase(s.end() - 1);
     }
 
     return s;

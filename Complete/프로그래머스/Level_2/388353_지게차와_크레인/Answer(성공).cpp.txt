@@ -1,0 +1,124 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+int dY[4] = {0, 1,  0, -1};
+int dX[4] = {1, 0, -1,  0};
+
+int            n, m;  // n : 패딩 포함 행 수, m : 패딩 포함 열 수
+vector<string> board; // 창고 격자 ('.' = 빈 공간, 테두리 1칸 패딩)
+
+// storage  : ["AZWQY", "CAABX", "BBDDA", "ACACA"]
+// requests : ["A", "BB", "A"]
+// 결과 : 11
+
+// 알파벳 1번 = 지게차(외부와 연결된 빈 공간에 닿아야 꺼냄)
+// 알파벳 2번 = 크레인(상관없이 모두 제거)
+
+// 창고 바깥(0, 0)에서 BFS로 빈 공간을 타고 이동, target에 닿으면 제거 후보로 수집
+void BFS(char target)
+{
+    vector<vector<bool>>   visited(n, vector<bool>(m, false)); // 방문 체크
+    queue<pair<int, int>>  bfsQ;                               // 지게차가 지나갈 빈 공간
+    vector<pair<int, int>> removeList;                         // 동시에 꺼낼 컨테이너 목록
+
+    visited[0][0] = true;
+    bfsQ.emplace(0, 0);   // 패딩 덕분에 (0, 0)은 항상 창고 바깥
+
+    while (!bfsQ.empty())
+    {
+        auto [y, x] = bfsQ.front();
+        bfsQ.pop();
+
+        for (int d = 0; d < 4; ++d) // 4방향 탐색
+        {
+            int nY = y + dY[d];
+            int nX = x + dX[d];
+
+            if (nY < 0 || nX < 0 || nY >= n || nX >= m) // 격자 밖
+            {
+                continue;
+            }
+            if (visited[nY][nX])
+            {
+                continue;
+            }
+
+            visited[nY][nX] = true;
+
+            if (board[nY][nX] == '.') // 빈 공간 → 계속 이동
+            {
+                bfsQ.emplace(nY, nX);
+            }
+            else if (board[nY][nX] == target) // 요청 알파벳 → 후보로만 저장(지금 제거 X)
+            {
+                removeList.emplace_back(nY, nX);
+            }
+            // 다른 알파벳 → 벽이므로 큐에 넣지 않음(막힘)
+        }
+    }
+
+    // 탐색이 끝난 뒤 한꺼번에 제거(동시 제거 → 연쇄 제거 방지)
+    for (auto [y, x] : removeList)
+    {
+        board[y][x] = '.';
+    }
+}
+
+int solution(vector<string> storage, vector<string> requests)
+{
+    int answer = 0;
+
+    n = storage.size()    + 2; // 테두리 1칸씩 패딩
+    m = storage[0].size() + 2;
+
+    // 패딩된 격자 구성(바깥 테두리는 전부 빈 공간)
+    board.assign(n, string(m, '.'));
+
+    for (int i = 0; i < storage.size(); ++i)
+    {
+        for (int j = 0; j < storage[i].size(); ++j)
+        {
+            board[i + 1][j + 1] = storage[i][j];
+        }
+    }
+
+    // 요청 만큼 진행
+    for (int i = 0; i < requests.size(); ++i)
+    {
+        char target = requests[i][0]; // 찾는 알파벳(1개만 필요)
+
+        // 알파벳 길이 1 → 지게차(외부와 연결된 빈 공간에 닿은 것만 제거)
+        if (requests[i].length() == 1)
+        {
+            BFS(target);
+        }
+        // 알파벳 길이 2 → 크레인(위치 상관없이 모두 제거)
+        else
+        {
+            for (int y = 1; y < n - 1; ++y)
+            {
+                for (int x = 1; x < m - 1; ++x)
+                {
+                    if (board[y][x] == target)
+                    {
+                        board[y][x] = '.';
+                    }
+                }
+            }
+        }
+    }
+
+    // 남아있는 알파벳 수 카운트해서 answer 리턴(테두리 제외)
+    for (int y = 1; y < n - 1; ++y)
+    {
+        for (int x = 1; x < m - 1; ++x)
+        {
+            if (board[y][x] != '.')
+            {
+                answer++;
+            }
+        }
+    }
+
+    return answer;
+}

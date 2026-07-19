@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>비밀 코드 해독 — 단계별 시각화</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Segoe UI", "Malgun Gothic", sans-serif;
+        background: #0f1420;
+        color: #e6e9ef;
+        line-height: 1.6;
+        padding: 32px 16px;
+    }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 26px; margin-bottom: 6px; color: #fff; }
+    .subtitle { color: #8b93a7; font-size: 14px; margin-bottom: 28px; }
+
+    .card {
+        background: #1a2130;
+        border: 1px solid #2a3346;
+        border-radius: 14px;
+        padding: 22px 24px;
+        margin-bottom: 22px;
+    }
+    .card h2 {
+        font-size: 18px; color: #fff; margin-bottom: 14px;
+        display: flex; align-items: center; gap: 8px;
+    }
+    .card p { color: #c2c8d6; font-size: 15px; margin-bottom: 10px; }
+    .hl { color: #ffd27d; font-weight: 600; }
+    .hl-g { color: #6ee7a8; font-weight: 600; }
+    .hl-r { color: #ff8a8a; font-weight: 600; }
+
+    .key-box {
+        background: linear-gradient(135deg, #26314a, #1d2740);
+        border-left: 4px solid #7da7ff;
+        border-radius: 8px;
+        padding: 16px 18px;
+        margin: 14px 0;
+    }
+    .key-box b { color: #a9c6ff; }
+
+    /* 문제 설정 테이블 */
+    .setup { display: flex; flex-direction: column; gap: 8px; }
+    .try-row {
+        display: flex; align-items: center; gap: 10px;
+        flex-wrap: wrap;
+    }
+    .try-label { width: 70px; color: #8b93a7; font-size: 13px; flex-shrink: 0; }
+    .num {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 40px; height: 40px; border-radius: 9px;
+        background: #232c3e; border: 1px solid #313c52;
+        font-weight: 600; font-size: 15px; color: #cfd6e4;
+        transition: all .25s;
+    }
+    .num.match { background: #234b34; border-color: #3f8f5f; color: #8affb4; transform: translateY(-3px); }
+    .hint-tag {
+        margin-left: 6px; padding: 3px 10px; border-radius: 20px;
+        font-size: 13px; background: #2b2140; border: 1px solid #4a3a6b; color: #d3b6ff;
+    }
+    .cmp {
+        margin-left: 8px; font-size: 14px; font-weight: 600;
+        min-width: 118px;
+    }
+    .cmp.ok { color: #6ee7a8; }
+    .cmp.bad { color: #ff8a8a; }
+
+    /* 후보 선택 버튼 */
+    .btns { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+    .cand-btn {
+        cursor: pointer; border-radius: 9px;
+        padding: 9px 14px; font-size: 14px; font-weight: 600;
+        background: #232c3e; color: #cfd6e4; border: 1px solid #37425a;
+        transition: all .18s;
+    }
+    .cand-btn:hover { border-color: #5b7bd6; }
+    .cand-btn.active { background: #2f3d5c; border-color: #7da7ff; color: #fff; }
+    .cand-btn.pass { border-left: 4px solid #3f8f5f; }
+    .cand-btn.fail { border-left: 4px solid #a84a4a; }
+
+    .verdict {
+        margin-top: 16px; padding: 14px 18px; border-radius: 10px;
+        font-size: 16px; font-weight: 700; text-align: center;
+    }
+    .verdict.pass { background: #1c3b28; border: 1px solid #3f8f5f; color: #8affb4; }
+    .verdict.fail { background: #3b1c1c; border: 1px solid #a84a4a; color: #ff9a9a; }
+
+    .result-final {
+        text-align: center; font-size: 20px; padding: 20px;
+        background: linear-gradient(135deg, #23314e, #1a2942);
+        border-radius: 12px; border: 1px solid #3a5b8f;
+    }
+    .result-final .big { font-size: 40px; font-weight: 800; color: #8affb4; display: block; margin-top: 6px; }
+
+    code {
+        background: #0c1018; padding: 2px 7px; border-radius: 5px;
+        font-family: Consolas, monospace; color: #ffd27d; font-size: 14px;
+    }
+    .step-note { font-size: 13px; color: #8b93a7; margin-top: 12px; }
+    ol { padding-left: 22px; color: #c2c8d6; }
+    ol li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <h1>🔐 비밀 코드 해독</h1>
+    <div class="subtitle">2025 프로그래머스 코드챌린지 1차 예선 · Level 2 · 예제 1 단계별 시각화</div>
+
+    <!-- 핵심 발상 -->
+    <div class="card">
+        <h2>🤔 "정답을 모르는데 어떻게 비교하지?"</h2>
+        <p>우리는 비밀 코드가 무엇인지 <b>모릅니다.</b> 대신 이렇게 뒤집어 생각해요.</p>
+        <div class="key-box">
+            <b>"만약 비밀 코드가 이 5개라면, 주어진 힌트와 앞뒤가 맞을까?"</b><br>
+            힌트(<code>ans</code>)는 출제자가 <b>진짜 정답을 가지고 미리 계산해 둔 단서</b>입니다.<br>
+            그러니 내가 가정한 후보가 진짜 정답이라면, 그 후보로 직접 센 겹침 개수가
+            <span class="hl">모든 힌트와 정확히 똑같아야</span> 합니다.
+        </div>
+        <p>→ 하나라도 어긋나면 그 후보는 <span class="hl-r">정답일 수 없음</span>.
+           5개 힌트를 전부 통과하면 <span class="hl-g">가능한 정답</span>.</p>
+        <p>정답을 "알아내는" 게 아니라, <b>가능한 후보를 전부 대입해 힌트와 모순 없는 것만 세는</b> 것 —
+           이게 이 문제의 핵심입니다.</p>
+    </div>
+
+    <!-- 문제 설정 -->
+    <div class="card">
+        <h2>📋 문제 설정 (num = 10)</h2>
+        <p>1~10 중 <b>5개</b>를 고른 것이 비밀 코드. 아래는 5번의 시도와 각 힌트입니다.</p>
+        <div class="setup" id="setup"></div>
+        <p class="step-note">힌트 = 비밀 코드와 그 시도가 몇 개 겹치는지. 예: 첫 줄은 "정답과 2개 겹친다".</p>
+    </div>
+
+    <!-- 인터랙티브 대조 -->
+    <div class="card">
+        <h2>🧪 후보를 하나 가정해 힌트와 대조해보기</h2>
+        <p>아래 후보 조합을 눌러보세요. 각 시도에서 <span class="hl-g">겹치는 숫자</span>가 초록으로 뜨고,
+           겹침 개수가 힌트와 일치하는지 즉시 확인됩니다.</p>
+        <div class="btns" id="btns"></div>
+        <div class="setup" id="compare" style="margin-top:16px;"></div>
+        <div class="verdict" id="verdict"></div>
+    </div>
+
+    <!-- 완전탐색 요약 -->
+    <div class="card">
+        <h2>🔁 그래서 코드는 이렇게 동작합니다</h2>
+        <ol>
+            <li><b>DFS</b>로 1~10 중 5개짜리 조합을 <b>전부</b> 만든다 → <code>C(10,5) = 252가지</code></li>
+            <li>각 조합마다 <b>Check</b>로 5개 시도와의 겹침을 세어 힌트와 비교</li>
+            <li>5개 힌트를 <b>전부</b> 통과한 조합만 <code>answer++</code></li>
+        </ol>
+        <div class="result-final" style="margin-top:18px;">
+            252개 후보 중 모든 힌트를 통과한 조합의 개수
+            <span class="big">result = 3</span>
+        </div>
+        <p class="step-note" style="text-align:center;">
+            통과 조합 : {3,4,7,9,10} · {3,5,7,8,9} · {3,5,7,8,10}
+        </p>
+    </div>
+</div>
+
+<script>
+    const tries = [
+        [1, 2, 3, 4, 5],
+        [6, 7, 8, 9, 10],
+        [3, 7, 8, 9, 10],
+        [2, 5, 7, 9, 10],
+        [3, 4, 5, 6, 7]
+    ];
+    const hint = [2, 3, 4, 3, 3];
+
+    // 후보 목록 (탈락 예시 + 정답 3개)
+    const candidates = [
+        { set: [1, 2, 3, 4, 5],  type: 'fail' },
+        { set: [6, 7, 8, 9, 10], type: 'fail' },
+        { set: [3, 4, 7, 9, 10], type: 'pass' },
+        { set: [3, 5, 7, 8, 9],  type: 'pass' },
+        { set: [3, 5, 7, 8, 10], type: 'pass' }
+    ];
+
+    // 문제 설정 렌더
+    const setupEl = document.getElementById('setup');
+    tries.forEach((t, i) => {
+        const row = document.createElement('div');
+        row.className = 'try-row';
+        row.innerHTML = `<span class="try-label">시도 ${i + 1}</span>` +
+            t.map(n => `<span class="num">${n}</span>`).join('') +
+            `<span class="hint-tag">힌트 ${hint[i]}개 겹침</span>`;
+        setupEl.appendChild(row);
+    });
+
+    // 후보 버튼 렌더
+    const btnsEl = document.getElementById('btns');
+    candidates.forEach((c, idx) => {
+        const b = document.createElement('div');
+        b.className = 'cand-btn ' + c.type;
+        b.textContent = '{' + c.set.join(', ') + '}';
+        b.onclick = () => selectCandidate(idx, b);
+        btnsEl.appendChild(b);
+    });
+
+    const compareEl = document.getElementById('compare');
+    const verdictEl = document.getElementById('verdict');
+
+    function selectCandidate(idx, btn) {
+        document.querySelectorAll('.cand-btn').forEach(x => x.classList.remove('active'));
+        btn.classList.add('active');
+
+        const cand = new Set(candidates[idx].set);
+        compareEl.innerHTML = '';
+        let allPass = true;
+
+        tries.forEach((t, i) => {
+            let overlap = 0;
+            const nums = t.map(n => {
+                const hit = cand.has(n);
+                if (hit) overlap++;
+                return `<span class="num ${hit ? 'match' : ''}">${n}</span>`;
+            }).join('');
+
+            const ok = overlap === hint[i];
+            if (!ok) allPass = false;
+
+            const row = document.createElement('div');
+            row.className = 'try-row';
+            row.innerHTML = `<span class="try-label">시도 ${i + 1}</span>` + nums +
+                `<span class="hint-tag">힌트 ${hint[i]}</span>` +
+                `<span class="cmp ${ok ? 'ok' : 'bad'}">겹침 ${overlap} ${ok ? '= ' + hint[i] + ' ✓' : '≠ ' + hint[i] + ' ✗'}</span>`;
+            compareEl.appendChild(row);
+        });
+
+        verdictEl.className = 'verdict ' + (allPass ? 'pass' : 'fail');
+        verdictEl.textContent = allPass
+            ? '✅ 5개 힌트를 전부 통과 → 가능한 비밀 코드! (answer++)'
+            : '❌ 힌트와 어긋나는 시도가 있음 → 정답이 될 수 없음';
+    }
+
+    // 첫 화면: 탈락 예시 자동 선택
+    selectCandidate(0, btnsEl.children[0]);
+</script>
+</body>
+</html>

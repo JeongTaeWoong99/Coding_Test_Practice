@@ -192,7 +192,9 @@
       "PowerShell($sp = \"C:\\\\Users\\\\ASUS\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-ASUS-Desktop-Code-CoTe-Coding-Test-Practice\\\\5a838727-e004-47c8-a6e3-781cfe894811\\\\scratchpad\"; cmd /c \"call `\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\VC\\\\Auxiliary\\\\Build\\\\vcvars64.bat`\" >nul 2>&1 && cd /d `\"$sp`\" && cl /std:c++17 /EHsc /nologo /W0 verify.cpp\")",
       "PowerShell(& \"C:\\\\Users\\\\ASUS\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-ASUS-Desktop-Code-CoTe-Coding-Test-Practice\\\\5a838727-e004-47c8-a6e3-781cfe894811\\\\scratchpad\\\\verify.exe\")",
       "PowerShell(Get-Content \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Test\\\\Test.cpp\" | ForEach-Object -Begin {$i=0} -Process {$i++; \"{0,3}: {1}\" -f $i, $_})",
-      "PowerShell($sp = \"C:\\\\Users\\\\ASUS\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-ASUS-Desktop-Code-CoTe-Coding-Test-Practice\\\\5a838727-e004-47c8-a6e3-781cfe894811\\\\scratchpad\"; cmd /c \"call `\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\VC\\\\Auxiliary\\\\Build\\\\vcvars64.bat`\" >nul 2>&1 && cd /d `\"$sp`\" && cl /std:c++17 /EHsc /nologo /W0 trace.cpp >nul && trace.exe\")"
+      "PowerShell($sp = \"C:\\\\Users\\\\ASUS\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-ASUS-Desktop-Code-CoTe-Coding-Test-Practice\\\\5a838727-e004-47c8-a6e3-781cfe894811\\\\scratchpad\"; cmd /c \"call `\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\VC\\\\Auxiliary\\\\Build\\\\vcvars64.bat`\" >nul 2>&1 && cd /d `\"$sp`\" && cl /std:c++17 /EHsc /nologo /W0 trace.cpp >nul && trace.exe\")",
+      "Bash(command -v py python python3)",
+      "Bash(py -c \"print\\('py ok'\\)\")"
     ]
   },
   "outputStyle": "korean-terminal"

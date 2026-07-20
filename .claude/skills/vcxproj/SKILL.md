@@ -76,7 +76,7 @@ description: vcxproj 수정 및 파일 등록 시 참고. Visual Studio 프로�
 파일 등록을 마치면 검증 스크립트로 정합성을 확인한다.
 
 ```powershell
-pwsh tools/check-vcxproj.ps1
+pwsh .claude/skills/vcxproj/scripts/check-vcxproj.ps1
 ```
 
 ## 🚨 주의사항

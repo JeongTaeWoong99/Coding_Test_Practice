@@ -15,7 +15,7 @@
             "type": "command",
             "shell": "powershell",
             "statusMessage": "UTF-8 BOM 확인 중",
-            "command": "try { $j = [Console]::In.ReadToEnd() | ConvertFrom-Json; $f = $j.tool_input.file_path; if ($f -like '*.cpp.txt') { $r = if ($env:CLAUDE_PROJECT_DIR) { $env:CLAUDE_PROJECT_DIR } else { $PWD }; & \"$r\\tools\\ensure-bom.ps1\" -Path $f } } catch { }"
+            "command": "try { $j = [Console]::In.ReadToEnd() | ConvertFrom-Json; $f = $j.tool_input.file_path; if ($f -like '*.cpp.txt') { $r = if ($env:CLAUDE_PROJECT_DIR) { $env:CLAUDE_PROJECT_DIR } else { $PWD }; & \"$r\\.claude\\skills\\encoding\\scripts\\ensure-bom.ps1\" -Path $f } } catch { }"
           }
         ]
       }

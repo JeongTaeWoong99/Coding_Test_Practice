@@ -28,14 +28,14 @@ description: 한글 깨짐 및 인코딩 문제 발생 시 참고. UTF-8 BOM 설
 ### 🤖 자동 보정 (훅)
 
 `.claude/settings.json` 의 PostToolUse 훅이 `Complete/**/*.cpp.txt` 저장 직후
-`tools/ensure-bom.ps1` 을 실행해 **BOM 이 없으면 자동으로 부여**한다.
+`.claude/skills/encoding/scripts/ensure-bom.ps1` 을 실행해 **BOM 이 없으면 자동으로 부여**한다.
 
 - 훅이 있으므로 수동으로 BOM 을 챙기지 못해도 결과적으로 보장된다
-- 훅을 우회한 파일이 있는지는 `pwsh tools/check-vcxproj.ps1` 로 확인 가능
+- 훅을 우회한 파일이 있는지는 `pwsh .claude/skills/vcxproj/scripts/check-vcxproj.ps1` 로 확인 가능
 - 기존 파일을 일괄 보정하려면 :
 
 ```powershell
-pwsh tools/ensure-bom.ps1 -Path "Complete" -Recurse
+pwsh .claude/skills/encoding/scripts/ensure-bom.ps1 -Path "Complete" -Recurse
 ```
 
 ### Visual Studio 설정 방법

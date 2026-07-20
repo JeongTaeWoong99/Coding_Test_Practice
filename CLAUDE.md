@@ -49,10 +49,12 @@ C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\Test\Test.cpp
 
 ## 🛠️ 검증 도구
 
+각 스크립트는 개념상 주인인 스킬 폴더의 `scripts/` 안에 있다.
+
 | 스크립트 | 용도 |
 |---------|-----|
-| `tools/check-vcxproj.ps1` | Complete 폴더 ↔ vcxproj 정합성 검사 (미등록/스테일/태그/BOM/README/HTML 링크) |
-| `tools/ensure-bom.ps1` | `.cpp.txt` 에 UTF-8 BOM 부여 (PostToolUse 훅에서 자동 실행) |
+| `.claude/skills/vcxproj/scripts/check-vcxproj.ps1` | Complete 폴더 ↔ vcxproj 정합성 검사 (미등록/스테일/태그/BOM/README/HTML 링크) |
+| `.claude/skills/encoding/scripts/ensure-bom.ps1` | `.cpp.txt` 에 UTF-8 BOM 부여 (PostToolUse 훅에서 자동 실행) |
 
 ---
 

@@ -172,7 +172,7 @@ HTML이 있으면 README에 **문제 링크 바로 다음, 접근법 바로 위*
 ### 🤖 검증 스크립트 실행 (마지막 필수 단계)
 
 ```powershell
-pwsh tools/check-vcxproj.ps1
+pwsh .claude/skills/vcxproj/scripts/check-vcxproj.ps1
 ```
 
 - 미등록 파일 / 스테일 항목 / 태그 오용 / BOM 누락 / README 누락 / HTML 미링크를 일괄 검사

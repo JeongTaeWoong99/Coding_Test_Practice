@@ -8,11 +8,11 @@
 
 .EXAMPLE
     # 파일 하나 (훅에서 사용)
-    pwsh tools/ensure-bom.ps1 -Path "Complete/백준/3_Gold/G5_1916_최소비용구하기/Answer.cpp.txt"
+    pwsh .claude/skills/encoding/scripts/ensure-bom.ps1 -Path "Complete/백준/3_Gold/G5_1916_최소비용구하기/Answer.cpp.txt"
 
 .EXAMPLE
     # 폴더 일괄 보정
-    pwsh tools/ensure-bom.ps1 -Path "Complete" -Recurse
+    pwsh .claude/skills/encoding/scripts/ensure-bom.ps1 -Path "Complete" -Recurse
 #>
 
 [CmdletBinding()]

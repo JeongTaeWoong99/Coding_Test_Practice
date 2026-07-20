@@ -1,4 +1,4 @@
-// 누적합(Prefix Sum) 방식
+﻿// 누적합(Prefix Sum) 방식
 #include <bits/stdc++.h>
 using namespace std;
 

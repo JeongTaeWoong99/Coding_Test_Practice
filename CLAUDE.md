@@ -12,7 +12,9 @@
 ## ✍️ 작업 파일 규칙 (⚠️ 중요)
 
 사용자가 **"연습장"**, **"test.cpp"**, **"스크립트"**, **"정답 코드 작성"** 등을 언급하면
-**항상 아래 단일 파일을 의미**한다. 새 파일을 만들지 말 것.
+**항상 아래 단일 파일을 의미**한다. 
+
+새 파일을 만들지 말 것.
 
 ```
 C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\Test\Test.cpp
@@ -45,4 +47,13 @@ C:\Users\ASUS\Desktop\Code\CoTe\Coding-Test-Practice\Test\Test.cpp
 
 ---
 
-**📅 마지막 업데이트 :** 2026-06-14
+## 🛠️ 검증 도구
+
+| 스크립트 | 용도 |
+|---------|-----|
+| `tools/check-vcxproj.ps1` | Complete 폴더 ↔ vcxproj 정합성 검사 (미등록/스테일/태그/BOM/README/HTML 링크) |
+| `tools/ensure-bom.ps1` | `.cpp.txt` 에 UTF-8 BOM 부여 (PostToolUse 훅에서 자동 실행) |
+
+---
+
+**📅 마지막 업데이트 :** 2026-07-20

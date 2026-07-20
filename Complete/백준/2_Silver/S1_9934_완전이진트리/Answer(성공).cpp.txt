@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+﻿#include <bits/stdc++.h>
 using namespace std;
 
 int          K, M;           // K = 트리의 깊이, M = 총 노드 개수 (2^K - 1)

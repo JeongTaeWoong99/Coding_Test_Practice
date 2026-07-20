@@ -1,4 +1,4 @@
-\xEF\xBB\xBF#include <bits/stdc++.h>
+﻿\xEF\xBB\xBF#include <bits/stdc++.h>
 using namespace std;
 
 int  n, m;       // n : 목표 채널, m : 고장난 버튼 수

@@ -1,4 +1,4 @@
-// N개 입력. K개 누적
+﻿// N개 입력. K개 누적
 // 슬라이딩 윈도우(Sliding Window) 방식
 
 #include <bits/stdc++.h>

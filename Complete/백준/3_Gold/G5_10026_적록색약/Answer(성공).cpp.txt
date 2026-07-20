@@ -1,4 +1,4 @@
-\ufeff#include <bits/stdc++.h>
+﻿\ufeff#include <bits/stdc++.h>
 using namespace std;
 
 const int dy[4] = {0, 1,  0, -1};

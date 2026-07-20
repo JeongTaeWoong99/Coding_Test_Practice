@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+﻿#include <bits/stdc++.h>
 using namespace std;
 
 const int  MAX = 200000; // N과 K의 최대는 100000 이지만, X*2 순간이동으로 인해 범위를 초과할 수 있기 때문에, 여유롭게 2배로 설정

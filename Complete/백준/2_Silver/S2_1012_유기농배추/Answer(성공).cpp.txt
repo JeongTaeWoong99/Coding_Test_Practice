@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+﻿#include <bits/stdc++.h>
 using namespace std;
 
 // 전역 변수 (큰 배열은 전역으로 선언하여 스택 오버플로우 방지)

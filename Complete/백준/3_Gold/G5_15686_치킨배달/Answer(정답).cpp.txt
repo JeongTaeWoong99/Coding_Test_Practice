@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+﻿#include <bits/stdc++.h>
 using namespace std;
 
 int N, M;                             // N : 도시 크기, M : 살릴 치킨집 개수

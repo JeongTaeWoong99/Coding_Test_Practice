@@ -1,0 +1,62 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+typedef pair<double, int> pdi; // {실패율, 스테이지 번호}
+
+// [실패율]
+// 실패율 = (스테이지에 도달했으나 아직 클리어 못한 인원) / (스테이지에 도달한 인원)
+// → 실패율이 높은 스테이지부터 내림차순 정렬, 같으면 번호가 작은 순으로 반환.
+
+// 실패율 내림차순, 같으면 스테이지 번호 오름차순
+bool Compare(const pdi& a, const pdi& b)
+{
+    if (a.first != b.first)
+    {
+        return a.first > b.first; // 실패율 높은 순
+    }
+
+    return a.second < b.second;   // 번호 작은 순
+}
+
+vector<int> solution(int N, vector<int> stages)
+{
+    vector<int> stop(N + 2, 0); // stop[i] = 스테이지 i에 멈춰있는 인원
+
+    // 각 스테이지별로 멈춰있는 인원 집계 (i = N + 1 은 전부 클리어한 인원)
+    for (int s : stages)
+    {
+        stop[s]++;
+    }
+
+    int total = stages.size(); // 현재 스테이지에 도달한 인원 (처음엔 전체)
+
+    vector<pdi> rates; // {실패율, 스테이지 번호}
+
+    // 스테이지 1 ~ N 의 실패율 계산
+    for (int i = 1; i <= N; i++)
+    {
+        double rate = 0.0; // 도달한 인원이 없으면 실패율 0
+
+        // 도달한 인원이 있을 때만 실패율 계산
+        if (total > 0)
+        {
+            rate = (double)stop[i] / total;
+        }
+
+        rates.emplace_back(rate, i);
+
+        total -= stop[i]; // 다음 스테이지 도달 인원 = 현재 - 멈춘 인원
+    }
+
+    // 실패율 기준 정렬
+    sort(rates.begin(), rates.end(), Compare);
+
+    vector<int> answer; // 정렬된 스테이지 번호
+
+    for (auto [rate, stage] : rates)
+    {
+        answer.emplace_back(stage);
+    }
+
+    return answer;
+}

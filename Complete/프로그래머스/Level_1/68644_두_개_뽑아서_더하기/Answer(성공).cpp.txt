@@ -1,0 +1,31 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 넘버는 0 이상 100 이하이니, 2개의 합은 0 ~ 200까지 나올 수 있음.
+// 오름차순 할 필요도 없이, 모든 2개 조합을 만들어서, 값에 해당하는 배열에 ++한다.
+// 마지막에, 값이 0이 아닌 배열값만 리턴에 포함.
+vector<int> solution(vector<int> numbers)
+{
+    vector<int> answer;
+    int         numArr[201] = {}; // 합(0~200)의 등장 횟수, 0으로 초기화
+
+    // 서로 다른 두 인덱스의 모든 조합
+    for (int i = 0; i < numbers.size(); ++i)
+    {
+        for (int j = i + 1; j < numbers.size(); ++j)
+        {
+            numArr[numbers[i] + numbers[j]]++;
+        }
+    }
+
+    // 작은 값부터 순회하므로 결과는 자동으로 오름차순
+    for (int sum = 0; sum <= 200; ++sum)
+    {
+        if (numArr[sum] != 0) // 한 번이라도 만들어진 합만 담기
+        {
+            answer.emplace_back(sum);
+        }
+    }
+
+    return answer;
+}

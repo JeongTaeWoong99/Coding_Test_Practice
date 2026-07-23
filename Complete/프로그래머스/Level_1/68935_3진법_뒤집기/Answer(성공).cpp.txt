@@ -1,0 +1,17 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// n을 3진법으로 바꾼 뒤 앞뒤를 뒤집어 10진수로 반환
+int solution(int n)
+{
+    int answer = 0; // 뒤집은 3진수를 10진수로 누적
+
+    // 3진법 자릿수를 낮은 자리부터 꺼내면 그 순서가 곧 뒤집은 순서
+    while (n > 0)
+    {
+        answer = answer * 3 + (n % 3); // 꺼낸 자릿수를 결과의 가장 낮은 자리로 붙임
+        n /= 3;
+    }
+
+    return answer;
+}

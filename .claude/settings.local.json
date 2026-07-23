@@ -11,27 +11,22 @@
       "WebFetch(domain:justicehui.github.io)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-
       "Write(Complete/**/*.cpp.txt)",
       "Write(Complete/**/*.md)",
       "Write(Complete/**/*.html)",
       "Edit(Complete/Complete.vcxproj)",
-
       "Skill(complete-process)",
       "Skill(coding-style)",
       "Skill(boj-info)",
       "Skill(encoding)",
       "Skill(vcxproj)",
-
       "Bash(git:*)",
       "Bash(gh api:*)",
-
       "Bash(g++:*)",
       "Bash(./test:*)",
       "Bash(./test.exe:*)",
       "Bash(./verify:*)",
       "Bash(./verify.exe:*)",
-
       "Bash(ls:*)",
       "Bash(cat:*)",
       "Bash(grep:*)",
@@ -44,20 +39,19 @@
       "Bash(chmod:*)",
       "Bash(curl:*)",
       "Bash(cd:*)",
-
       "Bash(python:*)",
       "Bash(python3:*)",
       "Bash(py:*)",
-
       "Bash(pwsh:*)",
       "Bash(powershell:*)",
       "Bash(powershell.exe:*)",
-
       "PowerShell(Get-ChildItem *)",
       "PowerShell(Get-Content *)",
       "PowerShell(New-Item *)",
       "PowerShell(Remove-Item *)",
-      "PowerShell(pwsh *)"
+      "PowerShell(pwsh *)",
+      "PowerShell(pwsh .claude/skills/encoding/scripts/ensure-bom.ps1; pwsh .claude/skills/vcxproj/scripts/check-vcxproj.ps1)",
+      "PowerShell(pwsh .claude/skills/vcxproj/scripts/check-vcxproj.ps1)"
     ]
   }
 }

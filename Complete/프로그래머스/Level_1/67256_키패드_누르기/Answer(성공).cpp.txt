@@ -1,0 +1,78 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+typedef pair<int, int> pii; // {행, 열} 키패드 좌표
+
+// 키패드 숫자의 {행, 열} 좌표 반환 (0은 * 0 # 줄의 가운데)
+pii GetPos(int num)
+{
+    if (num == 0)
+    {
+        return { 3, 1 };
+    }
+
+    return { (num - 1) / 3, (num - 1) % 3 };
+}
+
+// 두 좌표 사이의 맨해튼 거리 (키패드는 상하좌우로만 이동 가능)
+int GetDist(pii a, pii b)
+{
+    return abs(a.first - b.first) + abs(a.second - b.second);
+}
+
+// 1/4/7 은 무조건 왼손, 3/6/9 는 무조건 오른손, 2/5/8/0 은 더 가까운 손(같으면 주로 쓰는 손).
+// 매번 사용한 손의 현재 위치만 갱신해주면 되므로, 좌표 두 개로 시뮬레이션한다.
+// numbers : 누를 번호 순서, hand : 주로 쓰는 손("left" / "right")
+string solution(vector<int> numbers, string hand)
+{
+    string answer;
+    pii    leftPos  = { 3, 0 }; // 왼손 시작 위치 (*)
+    pii    rightPos = { 3, 2 }; // 오른손 시작 위치 (#)
+
+    for (int num : numbers)
+    {
+        pii  target = GetPos(num);
+        char useHand;               // 이번에 사용할 손 ('L' 또는 'R')
+
+        if (num == 1 || num == 4 || num == 7) // 왼쪽 열
+        {
+            useHand = 'L';
+        }
+        else if (num == 3 || num == 6 || num == 9) // 오른쪽 열
+        {
+            useHand = 'R';
+        }
+        else // 가운데 열(2, 5, 8, 0) → 거리 비교
+        {
+            int leftDist  = GetDist(leftPos,  target);
+            int rightDist = GetDist(rightPos, target);
+
+            if (leftDist < rightDist)
+            {
+                useHand = 'L';
+            }
+            else if (rightDist < leftDist)
+            {
+                useHand = 'R';
+            }
+            else // 거리가 같으면 주로 쓰는 손
+            {
+                useHand = (hand == "left") ? 'L' : 'R';
+            }
+        }
+
+        // 사용한 손의 위치를 방금 누른 번호로 갱신
+        if (useHand == 'L')
+        {
+            leftPos = target;
+        }
+        else
+        {
+            rightPos = target;
+        }
+
+        answer += useHand;
+    }
+
+    return answer;
+}

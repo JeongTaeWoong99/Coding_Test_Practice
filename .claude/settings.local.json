@@ -58,7 +58,13 @@
       "Bash(printf '@echo off\\\\r\\\\ncall \"C:\\\\\\\\Program Files\\\\\\\\Microsoft Visual Studio\\\\\\\\2022\\\\\\\\Community\\\\\\\\VC\\\\\\\\Auxiliary\\\\\\\\Build\\\\\\\\vcvars64.bat\" > nul\\\\r\\\\ncl /nologo /EHsc /std:c++17 main.cpp /Fe:main.exe > nul\\\\r\\\\nmain.exe\\\\r\\\\n')",
       "Bash(cmd /c build.bat)",
       "PowerShell(& \"C:\\\\Users\\\\ASUS\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-ASUS-Desktop-Code-CoTe-Coding-Test-Practice\\\\5f3006ea-1f42-4c8a-85bb-b618c3de5d78\\\\scratchpad\\\\main.exe\")",
-      "PowerShell(Set-Location \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\"; pwsh .claude/skills/vcxproj/scripts/check-vcxproj.ps1)"
+      "PowerShell(Set-Location \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\"; pwsh .claude/skills/vcxproj/scripts/check-vcxproj.ps1)",
+      "PowerShell(Set-Location *)",
+      "Bash(cmd //c build.bat)",
+      "Bash(cmd //c \"C:\\\\\\\\Users\\\\\\\\ASUS\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\C--Users-ASUS-Desktop-Code-CoTe-Coding-Test-Practice\\\\\\\\5f3006ea-1f42-4c8a-85bb-b618c3de5d78\\\\\\\\scratchpad\\\\\\\\build.bat\")",
+      "PowerShell(& cmd.exe /c '\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\VC\\\\Auxiliary\\\\Build\\\\vcvars64.bat\" && where cl' 2>&1 | Select-Object -Last 15)",
+      "PowerShell($sp=\"C:\\\\Users\\\\ASUS\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-ASUS-Desktop-Code-CoTe-Coding-Test-Practice\\\\5f3006ea-1f42-4c8a-85bb-b618c3de5d78\\\\scratchpad\"; & cmd.exe /c \"`\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\VC\\\\Auxiliary\\\\Build\\\\vcvars64.bat`\" && cd /d `\"$sp`\" && cl /nologo /EHsc /std:c++17 main.cpp /Fe:main.exe && main.exe\" 2>&1 | Select-Object -Last 8)",
+      "PowerShell($p=\"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\\\\Test\\\\Test.cpp\"; $t=[System.IO.File]::ReadAllText\\($p\\); [System.IO.File]::WriteAllText\\($p,$t,\\(New-Object System.Text.UTF8Encoding $true\\)\\); $b=[System.IO.File]::ReadAllBytes\\($p\\); \"Test.cpp BOM: $\\($b[0]\\) $\\($b[1]\\) $\\($b[2]\\)\"; Set-Location \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\Code\\\\CoTe\\\\Coding-Test-Practice\"; pwsh .claude/skills/vcxproj/scripts/check-vcxproj.ps1)"
     ]
   }
 }

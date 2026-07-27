@@ -14,17 +14,16 @@ description: C++ 코드 작성 및 스타일 확인 시 참고. 코딩 스타일
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef long long      ll;  // INF 합산 등 오버플로우 방지 시 사용
-typedef pair<int, int> pii; // {가중치, 정점} 등 반복 쌍 자료형 alias
+typedef long long ll; // INF 합산 등 오버플로우 방지 시 사용
 
 // 전역 변수는 상단에 선언하고 타입/의미별로 정렬
 // 주석은 선언 위 별도 줄이 아닌, 같은 줄 오른쪽 인라인으로 작성
 // 주석 시작 위치(// )는 컬럼 정렬로 맞춤
-int         n, m;       // n : 원소 수, m : 쿼리 수  ← 한 줄에 여러 변수 → 이름 명시
-int         arr[54];    // 입력 배열
-ll          dp[54][21]; // dp[idx][sum] = 경우의 수 (값이 커지므로 ll)
-bool        flag;       // 상태 플래그 (int보다 bool 권장)
-vector<pii> graph[54];  // graph[u] = {가중치, 목적지}
+int                    n, m;       // n : 원소 수, m : 쿼리 수  ← 한 줄에 여러 변수 → 이름 명시
+int                    arr[54];    // 입력 배열
+ll                     dp[54][21]; // dp[idx][sum] = 경우의 수 (값이 커지므로 ll)
+bool                   flag;       // 상태 플래그 (int보다 bool 권장)
+vector<pair<int, int>> graph[54];  // graph[u] = {가중치, 목적지}
 ```
 
 **정렬 규칙 :**
@@ -38,13 +37,13 @@ vector<pii> graph[54];  // graph[u] = {가중치, 목적지}
 
 ```cpp
 // ✅ 전역변수 : 타입과 변수명 사이를 패딩 → 변수명/주석 시작 위치를 수직 정렬
-int         n, e;       // n : 정점 수, e : 간선 수
-int         v1, v2;     // 반드시 거쳐야 하는 두 정점
-vector<pii> graph[801]; // graph[u] = {가중치, 목적지}
+int                    n, e;       // n : 정점 수, e : 간선 수
+int                    v1, v2;     // 반드시 거쳐야 하는 두 정점
+vector<pair<int, int>> graph[801]; // graph[u] = {가중치, 목적지}
 
 // ✅ 지역변수 : 선언은 컴팩트하게, 세미콜론 이후를 패딩 → 주석 시작 위치만 정렬
-vector<int> dist(n + 1, INF);                       // 모든 거리 INF로 초기화
-priority_queue<pii, vector<pii>, greater<pii>> pq;  // 최솟값 우선 (min-heap)
+vector<int> dist(n + 1, INF); // 모든 거리 INF로 초기화
+priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq; // 최솟값 우선 (min-heap)
 
 // ❌ 지역변수에 전역변수 방식 적용 금지 — 타입과 변수명 사이 패딩 하지 말 것
 vector<int>                            dist(n + 1, INF); // ← 타입 사이 패딩은 금지
@@ -54,22 +53,24 @@ vector<int>                            dist(n + 1, INF); // ← 타입 사이 �
 
 ## 🔗 typedef 규칙
 
-`pair<int,int>` 처럼 반복되거나 길어지는 자료형은 반드시 `typedef`로 alias 선언 후 사용.
+typedef는 **`ll` 에만** 사용한다. `pair<int, int>` 는 몇 번 등장하든 **alias 없이 그대로 풀어서** 작성.
 
 ```cpp
-// ✅ typedef로 선언 후 사용
+// ✅ ll 만 typedef
+typedef long long ll;
+
+vector<pair<int, int>> graph[801]; // graph[u] = {가중치, 목적지}
+pair<int, int>         target;     // 타입이 뭔지 선언만 봐도 바로 보임
+
+// ❌ pair 계열 alias 금지 — pii 정의를 찾아 올라가야 타입을 알 수 있음
 typedef pair<int, int> pii;
 
-vector<pii>                            graph[801]; // graph[u] = {가중치, 목적지}
-priority_queue<pii, vector<pii>, greater<pii>> pq; // 한 줄로 깔끔하게
-
-// ❌ typedef 없이 직접 사용 — 길어지고 반복 발생
-vector<pair<int, int>>                                      graph[801];
-priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+vector<pii> graph[801];
+pii         target;
 ```
 
 **적용 기준 :**
-- `pair<int,int>` 가 2회 이상 등장하면 반드시 `pii` typedef 선언
+- `pair<int, int>` → **항상 풀어서 작성** (`pii` 등 alias 선언 금지)
 - `ll` 은 오버플로우 가능성만 있어도 미리 선언 (INF 합산, 큰 곱셈 등)
 - typedef는 헤더 바로 아래, 전역 변수 선언 전에 위치
 
@@ -175,8 +176,8 @@ bool Check(char x, char y, char op) { }
 // src를 시작점으로 다익스트라 실행, 각 정점까지의 최단 거리 반환
 vector<int> Dijkstra(int src)
 {
-    vector<int>                            dist(n + 1, INF); // INF로 초기화
-    priority_queue<pii, vector<pii>, greater<pii>> pq;       // 최솟값 우선 (min-heap)
+    vector<int> dist(n + 1, INF); // INF로 초기화
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq; // 최솟값 우선 (min-heap)
 
     dist[src] = 0;
     pq.emplace(0, src); // {거리, 정점}
@@ -248,6 +249,48 @@ for (int i = 0; i < k; i++)
 **적용 범위 :**
 - 루프 내에서 임시 변수를 선언해 입력받고 컨테이너에 삽입하는 패턴
 - 입력받은 값으로 즉시 연산/함수 호출하는 패턴 전반
+
+---
+
+## 🗺️ 값 변환은 공식보다 매핑 테이블
+
+경우의 수가 **적고 고정**되어 있는 변환(숫자 → 좌표, 문자 → 인덱스 등)은
+공식으로 계산하지 말고 **미리 배열에 적어두고 꺼내 쓴다.**
+
+```cpp
+// ✅ 매핑 테이블 — 키패드 모양이 코드에 그대로 보임
+pair<int, int> keyPos[10] =
+{
+    { 3, 1 }, // 0
+    { 0, 0 }, // 1
+    { 0, 1 }, // 2
+    { 0, 2 }, // 3
+    { 1, 0 }, // 4
+    { 1, 1 }, // 5
+    { 1, 2 }, // 6
+    { 2, 0 }, // 7
+    { 2, 1 }, // 8
+    { 2, 2 }  // 9
+};
+
+pair<int, int> target = keyPos[num]; // 인덱싱 한 번이면 끝
+
+// ❌ 공식 계산 — 예외(0)를 위해 분기가 붙고, 공식이 맞는지 머리로 검산해야 함
+pair<int, int> GetPos(int num)
+{
+    if (num == 0)
+    {
+        return { 3, 1 };
+    }
+
+    return { (num - 1) / 3, (num - 1) % 3 };
+}
+```
+
+**적용 기준 :**
+- 값의 개수가 적고 고정 → **표**
+- 공식에 예외 케이스가 하나라도 생김 → **표** (분기 없이 표에 적어두면 끝)
+- 표는 전역에 선언하고, 각 원소 오른쪽에 인라인 주석으로 무엇에 대응하는지 명시
 
 ---
 
@@ -415,7 +458,8 @@ int main()
 - [ ] 주석이 정렬되어 있는가?
 - [ ] 단일 변수 줄의 인라인 주석에서 변수명을 중복 작성하지 않았는가?
 - [ ] 다중 변수 줄의 인라인 주석에서 `이름 : 설명` 형식으로 각각 구분했는가?
-- [ ] `pair<int,int>` 등 반복 자료형을 typedef(pii 등)로 선언했는가?
+- [ ] `pair<int, int>` 를 `pii` 등으로 typedef 하지 않고 그대로 풀어 썼는가?
+- [ ] 경우의 수가 적고 고정된 변환을 공식 대신 매핑 테이블로 처리했는가?
 - [ ] `ll` typedef를 선언했는가? (오버플로우 가능성 있으면 선언)
 - [ ] `push_back` / `push` 대신 `emplace_back` / `emplace` 를 사용했는가?
 - [ ] `pq.top()` 과 `pq.pop()` 을 두 줄로 분리했는가?

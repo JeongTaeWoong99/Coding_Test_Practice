@@ -1,0 +1,45 @@
+﻿#include <bits/stdc++.h>
+using namespace std;
+
+// 수포자 3명의 찍기 패턴 — 규칙을 공식으로 세우지 않고 미리 표로 만들어 둠
+vector<int> patterns[3] =
+{
+    { 1, 2, 3, 4, 5 },                 // 1번 수포자 : 5개 주기
+    { 2, 1, 2, 3, 2, 4, 2, 5 },        // 2번 수포자 : 8개 주기
+    { 3, 3, 1, 1, 2, 2, 4, 4, 5, 5 }   // 3번 수포자 : 10개 주기
+};
+
+// 각 수포자의 패턴은 자기 주기로 계속 반복되므로, i % 주기 로 인덱스를 순환시켜 꺼내면 된다.
+// 비교 횟수는 문제 수(answers 크기)만큼이며, 최고 점수가 여러 명이면 번호 오름차순으로 모두 반환한다.
+// answers : 실제 정답 배열, 반환값 : 가장 많이 맞힌 수포자 번호(오름차순)
+vector<int> solution(vector<int> answers)
+{
+    int score[3] = {}; // 수포자별 맞힌 개수
+
+    // 문제 수만큼만 비교 (패턴은 % 로 순환)
+    for (int i = 0; i < (int)answers.size(); i++)
+    {
+        for (int p = 0; p < 3; p++)
+        {
+            if (answers[i] == patterns[p][i % patterns[p].size()])
+            {
+                score[p]++;
+            }
+        }
+    }
+
+    int maxScore = max({ score[0], score[1], score[2] }); // 최고 점수
+
+    vector<int> answer;
+
+    // 최고 점수와 같은 수포자만 번호 순으로 담기 (동점자 모두 포함)
+    for (int p = 0; p < 3; p++)
+    {
+        if (score[p] == maxScore)
+        {
+            answer.emplace_back(p + 1);
+        }
+    }
+
+    return answer;
+}

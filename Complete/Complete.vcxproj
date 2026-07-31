@@ -451,6 +451,7 @@
     <None Include="프로그래머스\Level_1\389478_택배상자꺼내기\Answer(2D배열).cpp.txt" />
     <None Include="프로그래머스\Level_1\389478_택배상자꺼내기\Answer(정답_수학공식).cpp.txt" />
     <None Include="프로그래머스\Level_1\42576_완주하지_못한_선수\Answer(성공).cpp.txt" />
+    <None Include="프로그래머스\Level_1\42840_모의고사\Answer(성공).cpp.txt" />
     <None Include="프로그래머스\Level_1\42864_최소직사각형\Answer(성공).cpp.txt" />
     <None Include="프로그래머스\Level_1\42889_실패율\Answer.cpp.txt" />
     <None Include="프로그래머스\Level_1\468370_중요한_단어를_스포_방지\Answer(문자_인코딩).cpp.txt" />
@@ -763,6 +764,7 @@
     <None Include="프로그래머스\Level_1\389478_택배상자꺼내기\README.md" />
     <None Include="프로그래머스\Level_1\389478_택배상자꺼내기\시각화.html" />
     <None Include="프로그래머스\Level_1\42576_완주하지_못한_선수\README.md" />
+    <None Include="프로그래머스\Level_1\42840_모의고사\README.md" />
     <None Include="프로그래머스\Level_1\42864_최소직사각형\README.md" />
     <None Include="프로그래머스\Level_1\42889_실패율\README.md" />
     <None Include="프로그래머스\Level_1\468370_중요한_단어를_스포_방지\README(문자_인코딩).md" />

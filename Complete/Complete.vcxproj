@@ -456,6 +456,7 @@
     <None Include="프로그래머스\Level_1\42889_실패율\Answer.cpp.txt" />
     <None Include="프로그래머스\Level_1\468370_중요한_단어를_스포_방지\Answer(문자_인코딩).cpp.txt" />
     <None Include="프로그래머스\Level_1\468370_중요한_단어를_스포_방지\Answer(위치_추적).cpp.txt" />
+    <None Include="프로그래머스\Level_1\64061_크레인_인형뽑기_게임\Answer(성공).cpp.txt" />
     <None Include="프로그래머스\Level_1\67256_키패드_누르기\Answer(성공).cpp.txt" />
     <None Include="프로그래머스\Level_1\68644_두_개_뽑아서_더하기\Answer(성공).cpp.txt" />
     <None Include="프로그래머스\Level_1\68935_3진법_뒤집기\Answer(성공).cpp.txt" />
@@ -769,6 +770,7 @@
     <None Include="프로그래머스\Level_1\42889_실패율\README.md" />
     <None Include="프로그래머스\Level_1\468370_중요한_단어를_스포_방지\README(문자_인코딩).md" />
     <None Include="프로그래머스\Level_1\468370_중요한_단어를_스포_방지\README(위치_추적).md" />
+    <None Include="프로그래머스\Level_1\64061_크레인_인형뽑기_게임\README.md" />
     <None Include="프로그래머스\Level_1\67256_키패드_누르기\README.md" />
     <None Include="프로그래머스\Level_1\68644_두_개_뽑아서_더하기\README.md" />
     <None Include="프로그래머스\Level_1\68935_3진법_뒤집기\README.md" />
